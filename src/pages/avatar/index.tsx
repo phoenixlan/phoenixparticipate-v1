@@ -23,7 +23,7 @@ const StyledShadowBox = styled(ShadowBox)`
 
 export const Avatar: React.FC = () => {
     const { client } = useAuth();
-    const avatar_uuid = client.user?.avatar_uuid
+    const avatar_uuid = client.user?.avatar_uuid;
     const { data: avatar } = useAvatar(avatar_uuid);
 
     const [file, setFile] = useState<File | null>(null);

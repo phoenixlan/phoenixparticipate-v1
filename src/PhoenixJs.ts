@@ -3,6 +3,6 @@
  * @project phoenixparticipate-v1
  * @author andreasjj
  */
-import { PhoenixJsClient } from "./authentication/client/PhoenixJsClient";
+import { PhoenixJsClient } from './authentication/client/PhoenixJsClient';
 
 export const PhoenixJs = new PhoenixJsClient();

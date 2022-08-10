@@ -151,24 +151,24 @@ export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, e
                         <SubTitle>Name</SubTitle>
                         <span>PHOENIX_{ticket.ticket_id}</span>
                     </Row>
-                    {
-                        ticket.seat ? (
-                            <Seat>
-                                <SeatRow>
-                                    <SubTitle>Row</SubTitle>
-                                    <span>todo</span>
-                                </SeatRow>
-                                <SeatRow>
-                                    <SubTitle>Seat</SubTitle>
-                                    <span>ticket.seat.number</span>
-                                </SeatRow>
-                            </Seat>
-                        ) : (
-                            ticket.ticket_type.seatable ? 
-                            (<span><b>Ikke seatet</b></span>) : 
-                            (<span>Ikke sittebillett</span>)
-                        )
-                    }
+                    {ticket.seat ? (
+                        <Seat>
+                            <SeatRow>
+                                <SubTitle>Row</SubTitle>
+                                <span>todo</span>
+                            </SeatRow>
+                            <SeatRow>
+                                <SubTitle>Seat</SubTitle>
+                                <span>ticket.seat.number</span>
+                            </SeatRow>
+                        </Seat>
+                    ) : ticket.ticket_type.seatable ? (
+                        <span>
+                            <b>Ikke seatet</b>
+                        </span>
+                    ) : (
+                        <span>Ikke sittebillett</span>
+                    )}
                 </InnerTop>
             </Top>
             <Bottom enlarge={enlarge}>

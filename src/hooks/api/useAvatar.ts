@@ -5,12 +5,12 @@ import { AuthClient } from '../../authentication/client/AuthClient';
 
 export const avatarDefaultQueryKey = 'getCrews';
 
-const _getAvatar= (client: AuthClient, uuid?: string): Promise<Avatar.Avatar | undefined> => {
+const _getAvatar = (client: AuthClient, uuid?: string): Promise<Avatar.Avatar | undefined> => {
     try {
-        if(!uuid) {
+        if (!uuid) {
             return new Promise((res) => {
-                res(undefined)
-            })
+                res(undefined);
+            });
         }
         return Avatar.getAvatar(uuid);
     } catch (e) {
@@ -29,4 +29,3 @@ export const useAvatar = (uuid?: string): QueryObserverResult<Avatar.Avatar | un
         queryFn: () => _getAvatar(client, uuid),
     });
 };
-

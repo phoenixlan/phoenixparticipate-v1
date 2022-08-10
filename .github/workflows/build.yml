@@ -29,7 +29,7 @@ jobs:
         with:
           build-args: |
             BASE_URL=https://api.phoenixlan.no
-            HOST=delta.phoenixlan.no
+            HOST=https://delta.phoenixlan.no
             REACT_APP_OAUTH_CLIENT_ID=phoenix-delta
           file: "docker/production/Dockerfile"
           context: .
@@ -55,7 +55,7 @@ jobs:
         with:
           build-args: |
             BASE_URL=https://api.test.phoenixlan.no
-            HOST=delta.test.phoenixlan.no
+            HOST=https://delta.test.phoenixlan.no
             REACT_APP_OAUTH_CLIENT_ID=phoenix-delta-test
           file: "docker/production/Dockerfile"
           context: .

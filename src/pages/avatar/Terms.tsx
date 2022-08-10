@@ -33,7 +33,9 @@ export const Terms: React.FC = () => {
                     en ny avatar som bedre følger rettningslinjene
                 </li>
             </ul>
-            <I>Kontakt Phoenix på <a href="mailto:info@phoenixlan.no">info@phoenixlan.no</a> ved videre spørsmål</I>
+            <I>
+                Kontakt Phoenix på <a href="mailto:info@phoenixlan.no">info@phoenixlan.no</a> ved videre spørsmål
+            </I>
         </Container>
     );
 };

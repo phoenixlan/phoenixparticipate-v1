@@ -41,7 +41,7 @@ export const Router: React.FC = () => {
                                 <Crew />
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/">
-                                <Tickets/>
+                                <Tickets />
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/avatar">
                                 <Avatar />

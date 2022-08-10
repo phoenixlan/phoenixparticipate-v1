@@ -18,7 +18,7 @@ export const getAvatar = (user: User.BaseUser, quality: 'hd' | 'sd' | 'thumb') =
             case 'thumb':
                 return user.avatar_urls.thumb;
             default:
-                return ""
+                return '';
         }
     }
 };

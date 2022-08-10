@@ -3,9 +3,9 @@
  * @project phoenixparticipate-v1
  * @author andreasjj
  */
-import {AuthClient, AuthClientError, AuthClientInitOptions} from "./AuthClient";
-import {AuthError, User} from "@phoenixlan/phoenix.js";
-import {getInitialState, persistState, removeState} from "../../utils";
+import { AuthClient, AuthClientError, AuthClientInitOptions } from './AuthClient';
+import { AuthError, User } from '@phoenixlan/phoenix.js';
+import { getInitialState, persistState, removeState } from '../../utils';
 
 export class PhoenixJsClient implements AuthClient {
     token?: string = undefined;
@@ -22,7 +22,7 @@ export class PhoenixJsClient implements AuthClient {
 
     async init(initOptions: AuthClientInitOptions): Promise<void> {
         const url = new URL(window.location.href);
-        const code = url.searchParams.get("code");
+        const code = url.searchParams.get('code');
         if (code) {
             const success = await User.Oauth.authenticateByCode(code);
             if (success) {
@@ -34,17 +34,17 @@ export class PhoenixJsClient implements AuthClient {
                     token: this.token,
                     refreshToken: this.refreshToken,
                     user: this.user,
-                })
+                });
             }
         } else {
-            let authState = getInitialState<{token?: string, refreshToken?: string, user?: User.FullUser}>('auth')
+            const authState = getInitialState<{ token?: string; refreshToken?: string; user?: User.FullUser }>('auth');
             if (authState) {
                 this.token = authState.token;
                 this.refreshToken = authState.refreshToken;
                 this.user = authState.user;
 
                 //Update the library
-                await User.Oauth.setAuthState(this.token, this.refreshToken ?? "");
+                await User.Oauth.setAuthState(this.token, this.refreshToken ?? '');
             }
         }
 
@@ -54,13 +54,13 @@ export class PhoenixJsClient implements AuthClient {
 
         this.onReady && this.onReady();
 
-        if(code) {
+        if (code) {
             window.location.href = url.origin;
         }
 
         return new Promise<void>((resolve) => {
             resolve();
-        })
+        });
     }
 
     parsedToken() {
@@ -79,12 +79,15 @@ export class PhoenixJsClient implements AuthClient {
 
         return new Promise<void>((resolve) => {
             resolve();
-        })
+        });
     }
 
     login() {
         if (process.env.HOST) {
-            const url = User.getAuthenticationUrl(`${process.env.HOST}`, process.env.REACT_APP_OAUTH_CLIENT_ID??"phoenix-delta-test");
+            const url = User.getAuthenticationUrl(
+                `${process.env.HOST}`,
+                process.env.REACT_APP_OAUTH_CLIENT_ID ?? 'phoenix-delta-test',
+            );
             window.location.replace(url);
         }
     }

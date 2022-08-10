@@ -24,8 +24,8 @@ const Img = styled.img`
 `;
 
 interface StatusProps {
-    avatar: Avatar.Avatar
-};
+    avatar: Avatar.Avatar;
+}
 
 export const Status: React.FC<StatusProps> = ({ avatar }) => {
     const { client } = useAuth();

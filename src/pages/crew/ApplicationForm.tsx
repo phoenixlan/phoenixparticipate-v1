@@ -84,7 +84,7 @@ export const ApplicationForm: React.FC = () => {
                 <Info>
                     Velkommen! Som crew vil du oppleve ting du aldri ville som deltaker, få erfaring du kan sette på
                     CV-en, og møte mange nye og spennende mennesker. Dersom det er første gang du skal søke crew på
-                    Phoenix, anbefaler vi at du leser igjennom beskrivelsene av våre crew. 
+                    Phoenix, anbefaler vi at du leser igjennom beskrivelsene av våre crew.
                 </Info>
                 <CrewSelect onlyApplyable={true} />
                 <TextArea name="applicationText" />

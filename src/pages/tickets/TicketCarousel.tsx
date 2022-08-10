@@ -40,11 +40,11 @@ export const TicketCarousel: React.FC<Props> = () => {
     const { show, remove } = useModal();
     const { client } = useAuth();
 
-    const tickets = (client.user?.owned_tickets)??[];
+    const tickets = client.user?.owned_tickets ?? [];
     console.log(tickets);
 
     const snapList = useRef<HTMLDivElement | null>(null);
-/*
+    /*
     useEffect(() => {
         const ticketWidth = 165;
         if (snapList.current !== null) {
@@ -83,7 +83,7 @@ export const TicketCarousel: React.FC<Props> = () => {
     });
 
     const showTicket = (index: number) => {
-        show(<Ticket ticket={tickets[index]} qr={"placeholder"} showQr={true} enlarge={true} />);
+        show(<Ticket ticket={tickets[index]} qr={'placeholder'} showQr={true} enlarge={true} />);
     };
 
     return (
@@ -94,15 +94,11 @@ export const TicketCarousel: React.FC<Props> = () => {
                         <SnapItem key={ticket.ticket_id} margin={{ left: '15px', right: '15px' }} snapAlign="center">
                             {index > tickets.length - 1 ? (
                                 <Hidden>
-                                    <Ticket ticket={ticket} qr={"placeholder"} />
+                                    <Ticket ticket={ticket} qr={'placeholder'} />
                                 </Hidden>
                             ) : (
                                 <Visibility visible={visible === index}>
-                                    <Ticket
-                                        ticket={ticket}
-                                        onClick={() => showTicket(index)}
-                                        qr={"placeholder"}
-                                    />
+                                    <Ticket ticket={ticket} onClick={() => showTicket(index)} qr={'placeholder'} />
                                 </Visibility>
                             )}
                         </SnapItem>

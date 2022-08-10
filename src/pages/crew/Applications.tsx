@@ -130,7 +130,7 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                     <ExitIcon size="1.5rem" onClick={hideSelectedApplicationView} />
                     <ApplicationVewCrew>
                         <strong>Crew: </strong>
-                        { selectedApplication.crew.name }
+                        {selectedApplication.crew.name}
                     </ApplicationVewCrew>
                     <ApplicationVewContent>
                         <strong>Søknadstekst: </strong>
