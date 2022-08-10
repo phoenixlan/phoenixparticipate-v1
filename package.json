@@ -68,7 +68,7 @@
   "dependencies": {
     "@hookform/error-message": "^0.0.5",
     "@hookform/resolvers": "^2.0.0-rc.1",
-    "@phoenixlan/phoenix.js": "^1.1.0",
+    "@phoenixlan/phoenix.js": "^2.0.0",
     "history": "^5.0.0",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.1",
