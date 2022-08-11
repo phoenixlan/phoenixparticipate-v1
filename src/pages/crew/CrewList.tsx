@@ -20,7 +20,7 @@ export const CrewList: React.FC = () => {
                     <p>{crew.description}</p>
                     {!crew.is_applyable ? (
                         <p>
-                            <b>Kan ikke søkes til - du må ofte ha erfaring med LANet for å bli invitert hit</b>
+                            <b>Kan ikke søkes til - du må ofte ha erfaring med LANet for å bli utnevnt hit.</b>
                         </p>
                     ) : null}
                 </CrewEntry>
