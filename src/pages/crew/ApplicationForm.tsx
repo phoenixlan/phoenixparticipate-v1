@@ -15,6 +15,7 @@ import { TextArea } from '../../sharedComponents/forms/TextArea';
 import { Crew } from '@phoenixlan/phoenix.js';
 import { useMutation, useQueryClient } from 'react-query';
 import { userApplicationDefaultQueryKey } from '../../hooks/api/useUserApplications';
+import { InlineSpinner, LoadingSpinner } from '../../sharedComponents/LoadingSpinner';
 
 const Form = styled.form`
     display: flex;
@@ -88,7 +89,7 @@ export const ApplicationForm: React.FC = () => {
                 </Info>
                 <CrewSelect onlyApplyable={true} />
                 <TextArea name="applicationText" />
-                <PositiveButton>Søk</PositiveButton>
+                {addApplicationMutation.isLoading ? <InlineSpinner /> : <PositiveButton>Søk</PositiveButton>}
             </Form>
         </FormProvider>
     );

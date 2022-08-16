@@ -130,7 +130,13 @@ export const UploadArea: React.FC<Props> = ({ onFileDrop, maxSize = 16000000, mi
         >
             <Info>
                 <StyledUpload />
-                <Input ref={inputRef} type="file" id="fileElem" accept="image/*" onChange={onFileChange} />
+                <Input
+                    ref={inputRef}
+                    type="file"
+                    id="fileElem"
+                    accept="image/png, image/jpeg"
+                    onChange={onFileChange}
+                />
                 <label htmlFor="fileElem">Click or drag file to upload</label>
             </Info>
         </Container>

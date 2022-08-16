@@ -9,8 +9,8 @@ import { Ticket as PhoenixTicket } from '@phoenixlan/phoenix.js';
 import { SnapList, SnapItem, useVisibleElements, useScroll } from 'react-snaplist-carousel';
 import { Ticket } from './Ticket';
 import { useSwipeable } from 'react-swipeable';
-import { useModal } from '../../sharedComponents/modal/useModal';
-import { useAuth } from '../../authentication/useAuth';
+import { useModal } from '../../../sharedComponents/modal/useModal';
+import { useAuth } from '../../../authentication/useAuth';
 
 const Container = styled.div`
     display: flex;
@@ -25,18 +25,7 @@ const Visibility = styled.div<{ visible: boolean }>`
     ${({ visible }) => !visible && 'opacity: 0.4'};
 `;
 
-interface Props {
-    _tickets: Array<{
-        id: string;
-        name: string;
-        seat: number;
-        row: number;
-        date: Date;
-        qr: string;
-    }>;
-}
-
-export const TicketCarousel: React.FC<Props> = () => {
+export const TicketCarousel: React.FC = () => {
     const { show, remove } = useModal();
     const { client } = useAuth();
 

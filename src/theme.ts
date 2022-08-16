@@ -6,6 +6,7 @@
 export enum Colors {
     Black = '#2C2C2C',
     LightGray = '#f8f8f8',
+    LinkColor = '#0000EE',
     Gray = '#e9e9e9',
     SemiDarkGray = '#e7e9eb',
     DarkGray = '#808080',
@@ -26,6 +27,7 @@ export enum Colors {
 
 const theme = {
     colors: {
+        LinkColor: Colors.LinkColor,
         Black: Colors.Black,
         LightGray: Colors.LightGray,
         Gray: Colors.Gray,
@@ -37,6 +39,11 @@ const theme = {
         tertiary: Colors.Black,
         positive: Colors.Green,
         negative: Colors.Red,
+        accentHighlight: Colors.PhoenixLightPink,
+        accent: Colors.PhoenixPink,
+        accentDark: Colors.PhoenixDarkPink,
+        accent2: Colors.PhoenixCyan,
+        accent2Dark: Colors.PhoenixDarkCyan,
         SnackbarRed: Colors.SnackbarRed,
         SnackbarGreen: Colors.SnackbarGreen,
         SnackbarYellow: Colors.SnackbarYellow,

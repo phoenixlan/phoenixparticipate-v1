@@ -46,6 +46,11 @@ const SkeletonAnimation = styled.div`
     }
 `;
 
+const Placeholder = styled.div`
+    width: 100%;
+    height: 25px;
+`;
+
 interface Props {
     loading?: boolean;
 }
@@ -55,4 +60,12 @@ export const Skeleton: React.FC<Props> = ({ children, loading = false }) => {
         return <SkeletonAnimation>{children}</SkeletonAnimation>;
     }
     return <>{children}</>;
+};
+
+export const SkeletonPlaceholder: React.FC = () => {
+    return (
+        <Skeleton loading={true}>
+            <Placeholder></Placeholder>
+        </Skeleton>
+    );
 };

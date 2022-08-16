@@ -20,8 +20,15 @@ module.exports = {
                 use: ['style-loader', 'css-loader'],
             },
             {
-                test: /\.(png|svg)$/,
-                use: ['file-loader'],
+                test: /\.(png)$/,
+                loader: 'file-loader',
+                options: {
+                    publicPath: '/',
+                }
+            },
+            {
+                test: /\.svg$/,
+                use: ['svg-react-loader'],
             },
         ],
     },
