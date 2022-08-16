@@ -175,16 +175,16 @@ export const Template: React.FC = ({ children }) => {
                                         {(state) => (
                                             <Links state={state}>
                                                 <ActiveLink to="/" onClick={onClick}>
-                                                    Tickets
+                                                    Billetter
                                                 </ActiveLink>
                                                 <ActiveLink to="/crew" onClick={onClick}>
-                                                    Crew Applications
+                                                    Søk crew
                                                 </ActiveLink>
                                                 <ActiveLink to="/my-crew" onClick={onClick}>
-                                                    My Crew
+                                                    Mitt crew
                                                 </ActiveLink>
                                                 <ActiveLink to="/friends" onClick={onClick}>
-                                                    Friends
+                                                    Venner
                                                 </ActiveLink>
                                             </Links>
                                         )}
