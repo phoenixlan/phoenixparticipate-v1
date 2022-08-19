@@ -13,7 +13,7 @@ module.exports = merge(common, {
     output: {
         path: path.resolve(__dirname, 'public'),
         filename: '[name].[fullhash].bundle.js',
-        publicPath: "",
+        publicPath: "/",
     },
     module: {
         rules: [
