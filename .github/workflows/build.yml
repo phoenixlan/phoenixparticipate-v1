@@ -32,6 +32,7 @@ jobs:
             HOST=https://delta.phoenixlan.no
             REACT_APP_MAIN_SITE=https://phoenixlan.no
             REACT_APP_OAUTH_CLIENT_ID=phoenix-delta
+            STRIPE_PK=placeholder
           file: "docker/production/Dockerfile"
           context: .
           push: true
@@ -59,6 +60,7 @@ jobs:
             HOST=https://delta.test.phoenixlan.no
             REACT_APP_MAIN_SITE=https://test.phoenixlan.no
             REACT_APP_OAUTH_CLIENT_ID=phoenix-delta-test
+            STRIPE_PK=${{ secrets.STRIPE_PK_TEST }}
           file: "docker/production/Dockerfile"
           context: .
           push: true
