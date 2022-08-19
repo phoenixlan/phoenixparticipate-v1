@@ -9,6 +9,7 @@ import { CenterBox } from '../../sharedComponents/boxes/CenterBox';
 import { SplitBox } from '../../sharedComponents/boxes/SplitBox';
 import { NextLanInformation } from './NextLanInformation';
 import { LoginForm } from './LoginForm';
+import { LoginDisclaimer } from './Disclaimer';
 import { Header1 } from '../../sharedComponents/Header1';
 
 export const Login: React.FC = () => {
@@ -16,6 +17,7 @@ export const Login: React.FC = () => {
         <CenterBox centerVertically={true}>
             <Header1>Login - Tickets</Header1>
             <SplitBox left={<NextLanInformation />} right={<LoginForm />} />
+            <LoginDisclaimer />
         </CenterBox>
     );
 };

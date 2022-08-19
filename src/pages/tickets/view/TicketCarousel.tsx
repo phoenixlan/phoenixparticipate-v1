@@ -10,12 +10,13 @@ import { SnapList, SnapItem, useVisibleElements, useScroll } from 'react-snaplis
 import { Ticket } from './Ticket';
 import { useSwipeable } from 'react-swipeable';
 import { useModal } from '../../../sharedComponents/modal/useModal';
-import { useAuth } from '../../../authentication/useAuth';
 
 const Container = styled.div`
     display: flex;
     flex-direction: row;
 `;
+
+const OuterContainer = styled.div``;
 
 const Hidden = styled.div`
     visibility: hidden;
@@ -25,12 +26,13 @@ const Visibility = styled.div<{ visible: boolean }>`
     ${({ visible }) => !visible && 'opacity: 0.4'};
 `;
 
-export const TicketCarousel: React.FC = () => {
-    const { show, remove } = useModal();
-    const { client } = useAuth();
+interface TicketCarouselProps {
+    tickets: Array<PhoenixTicket.BasicTicket>;
+    used?: boolean;
+}
 
-    const tickets = client.user?.owned_tickets ?? [];
-    console.log(tickets);
+export const TicketCarousel: React.FC<TicketCarouselProps> = ({ tickets, used }) => {
+    const { show, remove } = useModal();
 
     const snapList = useRef<HTMLDivElement | null>(null);
     /*
@@ -87,7 +89,11 @@ export const TicketCarousel: React.FC = () => {
                                 </Hidden>
                             ) : (
                                 <Visibility visible={visible === index}>
-                                    <Ticket ticket={ticket} onClick={() => showTicket(index)} qr={'placeholder'} />
+                                    <Ticket
+                                        ticket={ticket}
+                                        onClick={() => showTicket(index)}
+                                        qr={`PHOENIX_TICKET_${ticket.ticket_id}`}
+                                    />
                                 </Visibility>
                             )}
                         </SnapItem>
