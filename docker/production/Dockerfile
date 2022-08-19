@@ -3,6 +3,7 @@ FROM node:16 as build
 ARG BASE_URL
 ARG HOST
 ARG REACT_APP_OAUTH_CLIENT_ID
+ARG STRIPE_PK
 
 COPY . .
 RUN yarn install
