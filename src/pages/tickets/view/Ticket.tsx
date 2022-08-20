@@ -130,7 +130,7 @@ const SeatRow = styled.div`
 `;
 
 interface Props {
-    ticket: PhoenixTicket.BasicTicket;
+    ticket: PhoenixTicket.FullTicket;
     qr: string;
     showQr?: boolean;
     onClick?: () => void;

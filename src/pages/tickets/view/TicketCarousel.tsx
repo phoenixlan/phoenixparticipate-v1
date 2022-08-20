@@ -15,6 +15,12 @@ const Container = styled.div`
     display: flex;
     flex-direction: row;
 `;
+const TicketContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    flex-wrap: wrap;
+`;
 
 const OuterContainer = styled.div``;
 
@@ -27,7 +33,7 @@ const Visibility = styled.div<{ visible: boolean }>`
 `;
 
 interface TicketCarouselProps {
-    tickets: Array<PhoenixTicket.BasicTicket>;
+    tickets: Array<PhoenixTicket.FullTicket>;
     used?: boolean;
 }
 
@@ -79,8 +85,8 @@ export const TicketCarousel: React.FC<TicketCarouselProps> = ({ tickets, used })
 
     return (
         <Container {...handlers}>
-            <SnapList direction={'horizontal'} ref={snapList}>
-                {tickets.map((ticket: PhoenixTicket.BasicTicket, index: number) => {
+            <TicketContainer>
+                {tickets.map((ticket: PhoenixTicket.FullTicket, index: number) => {
                     return (
                         <SnapItem key={ticket.ticket_id} margin={{ left: '15px', right: '15px' }} snapAlign="center">
                             {index > tickets.length - 1 ? (
@@ -88,18 +94,16 @@ export const TicketCarousel: React.FC<TicketCarouselProps> = ({ tickets, used })
                                     <Ticket ticket={ticket} qr={'placeholder'} />
                                 </Hidden>
                             ) : (
-                                <Visibility visible={visible === index}>
-                                    <Ticket
-                                        ticket={ticket}
-                                        onClick={() => showTicket(index)}
-                                        qr={`PHOENIX_TICKET_${ticket.ticket_id}`}
-                                    />
-                                </Visibility>
+                                <Ticket
+                                    ticket={ticket}
+                                    onClick={() => showTicket(index)}
+                                    qr={`PHOENIX_TICKET_${ticket.ticket_id}`}
+                                />
                             )}
                         </SnapItem>
                     );
                 })}
-            </SnapList>
+            </TicketContainer>
         </Container>
     );
 };

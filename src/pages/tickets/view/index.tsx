@@ -16,6 +16,7 @@ import { useCurrentEvent } from '../../../hooks';
 
 import { Ticket } from '@phoenixlan/phoenix.js';
 import { Skeleton } from '../../../sharedComponents/Skeleton';
+import { useOwnedTickets } from '../../../hooks/api/useOwnedTickets';
 
 const BuyTicketPrompt = styled.div`
     text-align: center;
@@ -25,17 +26,17 @@ export const Tickets: React.FC = () => {
     const history = useHistory();
     const { client } = useAuth();
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
+    const { data: ownedTickets } = useOwnedTickets();
 
     const buyTickets = () => {
         history.push('/buy');
     };
 
-    const ownedTickets = client.user?.owned_tickets ?? [];
-    const currentTickets = ownedTickets.filter(
-        (ticket: Ticket.BasicTicket) => ticket.event_uuid === (currentEvent?.uuid ?? false),
+    const currentTickets = (ownedTickets ?? []).filter(
+        (ticket: Ticket.FullTicket) => ticket.event_uuid === (currentEvent?.uuid ?? false),
     );
-    const oldTickets = ownedTickets.filter(
-        (ticket: Ticket.BasicTicket) => ticket.event_uuid !== (currentEvent?.uuid ?? false),
+    const oldTickets = (ownedTickets ?? []).filter(
+        (ticket: Ticket.FullTicket) => ticket.event_uuid !== (currentEvent?.uuid ?? false),
     );
     console.log(currentTickets);
     console.log(oldTickets);

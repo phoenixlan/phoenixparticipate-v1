@@ -88,7 +88,7 @@ export const Form: React.FC = () => {
 
                 switch (chosenPaymentOption) {
                     case PaymentMethodType.vipps: {
-                        const fallbackUrl = `${process.env.HOST}/tickets/buy?uuid=${_paymentInfo.uuid}`;
+                        const fallbackUrl = `${process.env.HOST}/buy?uuid=${_paymentInfo.uuid}`;
                         const _payment = await initiateVippsPayment(_paymentInfo.uuid, fallbackUrl);
                         setPayment(_payment);
                         break;
