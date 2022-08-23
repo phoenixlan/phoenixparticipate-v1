@@ -151,6 +151,10 @@ export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, e
                         <SubTitle>Name</SubTitle>
                         <span>PHOENIX_{ticket.ticket_id}</span>
                     </Row>
+                    <Row>
+                        <SubTitle>Type</SubTitle>
+                        <span>{ticket.ticket_type.name}</span>
+                    </Row>
                     {ticket.seat ? (
                         <Seat>
                             <SeatRow>

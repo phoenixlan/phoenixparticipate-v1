@@ -177,6 +177,9 @@ export const Template: React.FC = ({ children }) => {
                                                 <ActiveLink to="/" onClick={onClick}>
                                                     Mine billetter
                                                 </ActiveLink>
+                                                <ActiveLink to="/seating" onClick={onClick}>
+                                                    Seating
+                                                </ActiveLink>
                                                 <ActiveLink to="/buy" onClick={onClick}>
                                                     Kjøp billetter
                                                 </ActiveLink>

@@ -20,6 +20,7 @@ import { Crew } from '../pages/crew';
 import { Avatar } from '../pages/avatar';
 import { MyCrew } from '../pages/myCrews';
 import { TicketPurchase } from '../pages/tickets/purchase';
+import { TicketSeating } from '../pages/tickets/seat';
 
 export const Router: React.FC = () => {
     const { initialized } = useAuth();
@@ -43,6 +44,9 @@ export const Router: React.FC = () => {
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/">
                                 <Tickets />
+                            </AuthRoute>
+                            <AuthRoute {...props} exact path="/seating">
+                                <TicketSeating />
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/buy">
                                 <TicketPurchase />
