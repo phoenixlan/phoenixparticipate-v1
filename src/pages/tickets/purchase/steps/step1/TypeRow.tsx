@@ -47,16 +47,21 @@ interface Props {
     uuid: string;
     description?: string;
     max: number;
+    enabled: boolean;
 }
 
-export const TypeRow: React.FC<Props> = ({ amount, price, name, uuid, description, max }) => {
+export const TypeRow: React.FC<Props> = ({ amount, price, name, uuid, description, max, enabled }) => {
     return (
         <Container>
             <Name>{name}</Name>
             <Description>{description}</Description>
             <Price>{`${price},-`}</Price>
-            <NumberInput name={uuid} max={max} />
-            <FullPrice>{`${amount * price},-`}</FullPrice>
+            {enabled ? (
+                <>
+                    <NumberInput name={uuid} max={max} />
+                    <FullPrice>{`${amount * price},-`}</FullPrice>
+                </>
+            ) : null}
         </Container>
     );
 };

@@ -26,6 +26,7 @@ export const TicketPurchase: React.FC = () => {
     const dob = client.user?.birthdate ?? '';
     const age = dateOfBirthToAge(dob);
     const ageLimit = currentEvent?.age_limit_inclusive ?? -1;
+
     return (
         <Skeleton loading={isLoading}>
             <CenterBox>
@@ -36,7 +37,7 @@ export const TicketPurchase: React.FC = () => {
                             Aldersgrensen for neste arrangement er til og med {ageLimit} år(Du er {age} år i våre
                             systemer). Du er eldre enn dette, og kan derfor ikke delta. Du har enda muligheten til å
                             kjøpe og overføre billetter til andre, da vi ofte ser at foreldre kjøper på vegne av
-                            vennegjenger o.l. Spørsmål? Kontakt info@phoenixlan.no
+                            vennegjenger o.l. Du kan ikke bruke billetten selv. Spørsmål? Kontakt info@phoenixlan.no
                         </p>
                     </WarningBox>
                 ) : null}

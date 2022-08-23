@@ -13,6 +13,8 @@ import { TicketType } from '@phoenixlan/phoenix.js';
 import { PositiveButton } from '../../../../../sharedComponents/forms/Button';
 import { ChosenTicketType } from '../../utils/types';
 import { ErrorMessage } from '../../../../../sharedComponents/forms/ErrorMessage';
+import { useCurrentEvent } from '../../../../../hooks/api/useCurrentEvent';
+import { Header2 } from '../../../../../sharedComponents/Header2';
 
 const Form = styled.form`
     display: flex;
@@ -27,6 +29,10 @@ interface Props {
 }
 
 export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
+    const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
+
+    const bookingTime = currentEvent?.booking_time ?? 0;
+
     type validationSchemaType = { [index: string]: yup.AnySchema };
     const validationSchemaObject: validationSchemaType = {};
     for (const ticketType of ticketTypes) {
@@ -87,6 +93,8 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
         return amount;
     };
 
+    const ticketSaleOpen = new Date().getTime() > bookingTime * 1000;
+
     return (
         <FormProvider {...formMethods}>
             <Form onSubmit={handleSubmit}>
@@ -101,10 +109,21 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
                         description={ticketType.description ?? undefined}
                         amount={formMethods.watch(ticketType.uuid)}
                         price={ticketType.price}
+                        enabled={ticketSaleOpen}
                         max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                     />
                 ))}
-                <PositiveButton fluid={true} disabled={getAmount() === 0}>{`Betal ${getAmount()},-`}</PositiveButton>
+                {ticketSaleOpen ? (
+                    <PositiveButton
+                        fluid={true}
+                        disabled={getAmount() === 0}
+                    >{`Betal ${getAmount()},-`}</PositiveButton>
+                ) : (
+                    <>
+                        <Header2>Billettsalget har ikke åpnet</Header2>
+                        <p>Billettsalget åpner {new Date(bookingTime * 1000).toLocaleString()}</p>
+                    </>
+                )}
             </Form>
         </FormProvider>
     );
