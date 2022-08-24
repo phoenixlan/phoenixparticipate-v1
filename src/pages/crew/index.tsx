@@ -17,6 +17,9 @@ import { Skeleton } from '../../sharedComponents/Skeleton';
 import { dateOfBirthToAge } from '../../utils/age';
 import { useAuth } from '../../authentication/useAuth';
 import { WarningBox } from '../../sharedComponents/WarningBox';
+import { Link, useHistory } from 'react-router-dom';
+import { BaseButton } from '../../sharedComponents/forms/Button/BaseButton';
+import { PositiveButton } from '../../sharedComponents/forms/Button';
 
 const Container = styled.div`
     box-shadow: ${({ theme }) => theme.shadow.default};
@@ -27,6 +30,13 @@ const Container = styled.div`
     &:first-child {
         margin-top: ${({ theme }) => theme.spacing.xxxl};
     }
+`;
+
+const Center = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;
 
 export const Crew: React.FC = () => {
@@ -41,6 +51,8 @@ export const Crew: React.FC = () => {
         isLoadingError: isLoadingCurrentEventError,
     } = useCurrentEvent();
     const { client } = useAuth();
+
+    const history = useHistory();
 
     const isLoading = isLoadingApplications || isLoadingCurrentEvent;
     const isLoadingError = isLoadingApplicationsError || isLoadingCurrentEventError;
@@ -74,7 +86,25 @@ export const Crew: React.FC = () => {
             </Container>
             <Container>
                 <Header2>Ny søknad</Header2>
-                <ApplicationForm />
+                {client.user?.avatar_uuid ? (
+                    <ApplicationForm />
+                ) : (
+                    <>
+                        <p>
+                            Du må laste opp en avatar før du søker, slik at det er lettere for chief å kjenne deg igjen.
+                            Avatarer blir også brukt for crewkort.
+                        </p>
+                        <Center>
+                            <PositiveButton
+                                onClick={() => {
+                                    history.push('/avatar');
+                                }}
+                            >
+                                Last opp avatar
+                            </PositiveButton>
+                        </Center>
+                    </>
+                )}
             </Container>
             <Container>
                 <Header2>Crew</Header2>

@@ -16,6 +16,7 @@ import { Crew } from '@phoenixlan/phoenix.js';
 import { useMutation, useQueryClient } from 'react-query';
 import { userApplicationDefaultQueryKey } from '../../hooks/api/useUserApplications';
 import { InlineSpinner, LoadingSpinner } from '../../sharedComponents/LoadingSpinner';
+import { toast } from 'react-toastify';
 
 const Form = styled.form`
     display: flex;
@@ -60,7 +61,7 @@ export const ApplicationForm: React.FC = () => {
                 console.log('success');
             },
             onError: (e) => {
-                console.log('error');
+                toast.error('Kunne ikke send søknad');
             },
             onSettled: () => {
                 console.log('settled');

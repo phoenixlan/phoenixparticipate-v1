@@ -12,6 +12,7 @@ const Message = styled.div``;
 
 interface WarningBoxProps {
     title: string;
+    children?: React.ReactNode;
 }
 
 export const WarningBox: React.FC<WarningBoxProps> = ({ title, children }) => {

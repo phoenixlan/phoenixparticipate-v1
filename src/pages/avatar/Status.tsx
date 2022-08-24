@@ -40,7 +40,7 @@ export const Status: React.FC<StatusProps> = ({ avatar }) => {
                 status += 'Avvist';
                 break;
             case 'AvatarState.uploaded':
-                status += 'Venter på godkjenning';
+                status += 'Venter på godkjenning(Du kan enda søke crew)';
                 break;
         }
         return status;
