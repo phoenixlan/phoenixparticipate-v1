@@ -42,6 +42,13 @@ const ContainerOuter = styled.div`
     justify-content: center;
 `;
 
+const NoSeatmap = styled.div`
+    min-width: 30em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`;
+
 interface RowProps {
     x: number;
     y: number;
@@ -86,10 +93,10 @@ export const SeatmapRenderer: React.FC = () => {
 
     if (!seatmap) {
         return (
-            <>
+            <NoSeatmap>
                 <Header2>Ingen seatmap</Header2>
                 <p>Vi har ikke sluppet seatmap enda. Vennligst vent!</p>
-            </>
+            </NoSeatmap>
         );
     }
 
