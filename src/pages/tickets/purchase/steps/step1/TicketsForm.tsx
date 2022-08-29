@@ -5,16 +5,17 @@
  */
 import { TypeRow } from './TypeRow';
 import { FormProvider, useForm } from 'react-hook-form';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import styled from 'styled-components';
-import { TicketType } from '@phoenixlan/phoenix.js';
+import { TicketType, User } from '@phoenixlan/phoenix.js';
 import { PositiveButton } from '../../../../../sharedComponents/forms/Button';
 import { ChosenTicketType } from '../../utils/types';
 import { ErrorMessage } from '../../../../../sharedComponents/forms/ErrorMessage';
 import { useCurrentEvent } from '../../../../../hooks/api/useCurrentEvent';
 import { Header2 } from '../../../../../sharedComponents/Header2';
+import { useAuth } from '../../../../../authentication/useAuth';
 
 const Form = styled.form`
     display: flex;
@@ -30,6 +31,20 @@ interface Props {
 
 export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
+    const [canBypassTicketSaleRestriction, setCanBypassTicketSaleRestriction] = useState(false);
+    const auth = useAuth();
+    // Decode and extract the JWT token so we can see if the user has special permissions
+    useEffect(() => {
+        const inner = async () => {
+            const token = (await Promise.resolve(
+                auth.client.parsedToken ? auth.client.parsedToken() : { placeholder: true },
+            )) as User.Oauth.JWTPayload;
+            if (token.roles.indexOf('ticket_bypass_ticketsale_start_restriction') !== -1) {
+                setCanBypassTicketSaleRestriction(true);
+            }
+        };
+        inner();
+    }, []);
 
     const bookingTime = currentEvent?.booking_time ?? 0;
 
@@ -109,15 +124,26 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
                         description={ticketType.description ?? undefined}
                         amount={formMethods.watch(ticketType.uuid)}
                         price={ticketType.price}
-                        enabled={ticketSaleOpen}
+                        enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                         max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                     />
                 ))}
-                {ticketSaleOpen ? (
-                    <PositiveButton
-                        fluid={true}
-                        disabled={getAmount() === 0}
-                    >{`Betal ${getAmount()},-`}</PositiveButton>
+                {ticketSaleOpen || canBypassTicketSaleRestriction ? (
+                    <>
+                        {canBypassTicketSaleRestriction ? (
+                            <>
+                                <Header2>Du har spesielle tillatelser</Header2>
+                                <p>
+                                    Billettsalget åpner {new Date(bookingTime * 1000).toLocaleString()}, men du kan
+                                    kjøpe billetter allerede da du har spesialtillatelse
+                                </p>
+                            </>
+                        ) : null}
+                        <PositiveButton
+                            fluid={true}
+                            disabled={getAmount() === 0}
+                        >{`Betal ${getAmount()},-`}</PositiveButton>
+                    </>
                 ) : (
                     <>
                         <Header2>Billettsalget har ikke åpnet</Header2>
