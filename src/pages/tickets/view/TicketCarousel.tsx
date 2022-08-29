@@ -91,7 +91,7 @@ export const TicketCarousel: React.FC<TicketCarouselProps> = ({ tickets, used })
                         <SnapItem key={ticket.ticket_id} margin={{ left: '15px', right: '15px' }} snapAlign="center">
                             {index > tickets.length - 1 ? (
                                 <Hidden>
-                                    <Ticket ticket={ticket} qr={'placeholder'} />
+                                    <Ticket ticket={ticket} qr={`PHOENIX-${ticket.ticket_id}`} />
                                 </Hidden>
                             ) : (
                                 <Ticket

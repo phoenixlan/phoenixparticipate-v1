@@ -38,6 +38,8 @@ const TicketComponent = styled.div<TicketComponentProps>`
 
 interface TicketSelectorProps {
     tickets: Array<Ticket.FullTicket>;
+    activeTicket: number | null;
+    onTicketSelected: (ticket_id: number) => void;
 }
 
 const TicketData = styled.div`
@@ -45,13 +47,11 @@ const TicketData = styled.div`
 `;
 const TicketOwner = styled.div``;
 
-export const TicketSelector: React.FC<TicketSelectorProps> = ({ tickets }) => {
-    const [activeTicket, setActiveTicket] = useState<null | number>(null);
-
+export const TicketSelector: React.FC<TicketSelectorProps> = ({ tickets, activeTicket, onTicketSelected }) => {
     // When the ticket list is first loaded, set a default.
     useEffect(() => {
         if (tickets.length != 0) {
-            setActiveTicket(tickets[0].ticket_id);
+            onTicketSelected(tickets[0].ticket_id);
         }
     }, [tickets.length]);
     return (
@@ -62,11 +62,12 @@ export const TicketSelector: React.FC<TicketSelectorProps> = ({ tickets }) => {
                     key={ticket.ticket_id}
                     selected={activeTicket == ticket.ticket_id}
                     onClick={() => {
-                        setActiveTicket(ticket.ticket_id);
+                        onTicketSelected(ticket.ticket_id);
                     }}
                 >
                     <TicketData>
-                        #{ticket.ticket_id} {ticket.seat ?? 'Ikke seatet'}
+                        #{ticket.ticket_id}{' '}
+                        {ticket.seat ? `Rad ${ticket.seat?.row.row_number} Sete ${ticket.seat?.number}` : 'Ikke seatet'}
                     </TicketData>
                     <TicketOwner>
                         Eier: {ticket.owner.firstname} {ticket.owner.lastname}

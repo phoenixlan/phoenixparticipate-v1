@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Ticket } from '@phoenixlan/phoenix.js';
 import { useSeatableTickets } from '../../../hooks/api/useSeatableTickets';
 import { CenterBox } from '../../../sharedComponents/boxes/CenterBox';
 import { Header1 } from '../../../sharedComponents/Header1';
@@ -83,9 +84,22 @@ const Seat = styled.div<SeatProps>`
     background-color: ${(props) => props.color};
 `;
 
-export const SeatmapRenderer: React.FC = () => {
-    const { data: seatmap, isLoading: isLoadingSeatmap } = useCurrentSeatmap();
+interface SeatmapRendererProps {
+    activeTicket: number | null;
+    onSeatedTicket: (ticket_id: number) => void;
+}
+
+export const SeatmapRenderer: React.FC<SeatmapRendererProps> = ({ activeTicket, onSeatedTicket }) => {
+    const { data: seatmap, isLoading: isLoadingSeatmap, refetch: refetchSeatmap } = useCurrentSeatmap();
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
+
+    const onSeatSelected = async (seatUuid: string) => {
+        if (activeTicket !== null) {
+            await Ticket.seatTicket(activeTicket, seatUuid);
+            refetchSeatmap();
+            onSeatedTicket(activeTicket);
+        }
+    };
 
     if (isLoadingSeatmap || isLoadingCurrentEvent) {
         return <InlineSpinner />;
@@ -108,7 +122,19 @@ export const SeatmapRenderer: React.FC = () => {
                 {seatmap.rows.map((row) => (
                     <Row key={row.uuid} x={row.x} y={row.y}>
                         {row.seats.map((seat) => (
-                            <Seat key={seat.uuid} color={seat.taken ? 'red' : seat.is_reserved ? 'blue' : 'green'}>
+                            <Seat
+                                key={seat.uuid}
+                                onClick={() => onSeatSelected(seat.uuid)}
+                                color={
+                                    seat.ticket_id !== null && seat.ticket_id == activeTicket
+                                        ? 'gray'
+                                        : seat.taken
+                                        ? 'red'
+                                        : seat.is_reserved
+                                        ? 'blue'
+                                        : 'green'
+                                }
+                            >
                                 <span>R{row.row_number}</span>
                                 <br />
                                 <span>S{seat.number}</span>

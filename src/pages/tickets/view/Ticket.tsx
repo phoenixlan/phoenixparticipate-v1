@@ -148,8 +148,8 @@ export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, e
                         <Title enlarge={enlarge}>Phoenix Lan</Title>
                     </Row>
                     <Row>
-                        <SubTitle>Name</SubTitle>
-                        <span>PHOENIX_{ticket.ticket_id}</span>
+                        <SubTitle>Billett-ID</SubTitle>
+                        <span>#{ticket.ticket_id}</span>
                     </Row>
                     <Row>
                         <SubTitle>Type</SubTitle>
@@ -158,12 +158,12 @@ export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, e
                     {ticket.seat ? (
                         <Seat>
                             <SeatRow>
-                                <SubTitle>Row</SubTitle>
-                                <span>todo</span>
+                                <SubTitle>Rad</SubTitle>
+                                <span>{ticket.seat.row.row_number}</span>
                             </SeatRow>
                             <SeatRow>
-                                <SubTitle>Seat</SubTitle>
-                                <span>ticket.seat.number</span>
+                                <SubTitle>Sete</SubTitle>
+                                <span>{ticket.seat.number}</span>
                             </SeatRow>
                         </Seat>
                     ) : ticket.ticket_type.seatable ? (
