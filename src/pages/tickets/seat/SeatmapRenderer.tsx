@@ -10,6 +10,7 @@ import { useCurrentSeatmap } from '../../../hooks/api/useCurrentSeatmap';
 import { InlineSpinner } from '../../../sharedComponents/LoadingSpinner';
 import { Header2 } from '../../../sharedComponents/Header2';
 import { useCurrentEvent } from '../../../hooks';
+import { toast } from 'react-toastify';
 
 interface SeatmapContainerProps {
     width: number;
@@ -95,7 +96,11 @@ export const SeatmapRenderer: React.FC<SeatmapRendererProps> = ({ activeTicket, 
 
     const onSeatSelected = async (seatUuid: string) => {
         if (activeTicket !== null) {
-            await Ticket.seatTicket(activeTicket, seatUuid);
+            try {
+                await Ticket.seatTicket(activeTicket, seatUuid);
+            } catch (e) {
+                toast.error(e.toString());
+            }
             refetchSeatmap();
             onSeatedTicket(activeTicket);
         }
