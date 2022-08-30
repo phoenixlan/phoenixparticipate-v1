@@ -17,9 +17,15 @@ import { useCurrentEvent } from '../../../hooks';
 import { Ticket } from '@phoenixlan/phoenix.js';
 import { Skeleton } from '../../../sharedComponents/Skeleton';
 import { useOwnedTickets } from '../../../hooks/api/useOwnedTickets';
+import { Header2 } from '../../../sharedComponents/Header2';
+import { ShadowBox } from '../../../sharedComponents/boxes/ShadowBox';
 
 const BuyTicketPrompt = styled.div`
     text-align: center;
+`;
+
+const TutorialContainer = styled(ShadowBox)`
+    padding: ${({ theme }) => theme.spacing.m};
 `;
 
 export const Tickets: React.FC = () => {
@@ -32,16 +38,12 @@ export const Tickets: React.FC = () => {
         history.push('/buy');
     };
 
-    const currentTickets = (ownedTickets ?? []).filter(
-        (ticket: Ticket.FullTicket) => ticket.event_uuid === (currentEvent?.uuid ?? false),
-    );
-    const oldTickets = (ownedTickets ?? []).filter(
-        (ticket: Ticket.FullTicket) => ticket.event_uuid !== (currentEvent?.uuid ?? false),
-    );
-    console.log(currentTickets);
-    console.log(oldTickets);
-    console.log(currentEvent);
-    console.log(isLoadingCurrentEvent);
+    const currentTickets = (ownedTickets ?? [])
+        .filter((ticket: Ticket.FullTicket) => ticket.event_uuid === (currentEvent?.uuid ?? false))
+        .sort((a, b) => a.ticket_id - b.ticket_id);
+    const oldTickets = (ownedTickets ?? [])
+        .filter((ticket: Ticket.FullTicket) => ticket.event_uuid !== (currentEvent?.uuid ?? false))
+        .sort((a, b) => a.ticket_id - b.ticket_id);
 
     return (
         <Skeleton loading={isLoadingCurrentEvent}>
@@ -60,6 +62,23 @@ export const Tickets: React.FC = () => {
                         <TicketCarousel used={true} tickets={oldTickets} />
                     </>
                 ) : null}
+                <TutorialContainer>
+                    <Header2>Hva er en seater? Hva gjør vi om vi er en gruppe?</Header2>
+                    <p>
+                        Du kan gi en annen person rettigheter til å plassere billetten din for deg, slik at en person
+                        kan seate vennegjengen deres samlet. Trykk på en billett for å gjøre dette.
+                    </p>
+                    <p>
+                        Dere kan også kjøpe billettene samlet og overføre til riktig eier senere. Det vil være mulighet
+                        for å overføre billetter i løpet av uken.
+                    </p>
+                    <p>
+                        <b>
+                            Billetten MÅ være overført til riktig bruker innen LANet starter - ellers slipper du ikke
+                            inn!
+                        </b>
+                    </p>
+                </TutorialContainer>
             </CenterBox>
         </Skeleton>
     );

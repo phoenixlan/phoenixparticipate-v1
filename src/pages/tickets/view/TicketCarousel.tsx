@@ -10,6 +10,7 @@ import { SnapList, SnapItem, useVisibleElements, useScroll } from 'react-snaplis
 import { Ticket } from './Ticket';
 import { useSwipeable } from 'react-swipeable';
 import { useModal } from '../../../sharedComponents/modal/useModal';
+import { TicketSettings } from './TicketSettings';
 
 const Container = styled.div`
     display: flex;
@@ -80,7 +81,7 @@ export const TicketCarousel: React.FC<TicketCarouselProps> = ({ tickets, used })
     });
 
     const showTicket = (index: number) => {
-        show(<Ticket ticket={tickets[index]} qr={'placeholder'} showQr={true} enlarge={true} />);
+        show(<TicketSettings ticket={tickets[index]} />);
     };
 
     return (
@@ -91,14 +92,10 @@ export const TicketCarousel: React.FC<TicketCarouselProps> = ({ tickets, used })
                         <SnapItem key={ticket.ticket_id} margin={{ left: '15px', right: '15px' }} snapAlign="center">
                             {index > tickets.length - 1 ? (
                                 <Hidden>
-                                    <Ticket ticket={ticket} qr={`PHOENIX-${ticket.ticket_id}`} />
+                                    <Ticket ticket={ticket} />
                                 </Hidden>
                             ) : (
-                                <Ticket
-                                    ticket={ticket}
-                                    onClick={() => showTicket(index)}
-                                    qr={`PHOENIX_TICKET_${ticket.ticket_id}`}
-                                />
+                                <Ticket ticket={ticket} onClick={() => showTicket(index)} />
                             )}
                         </SnapItem>
                     );

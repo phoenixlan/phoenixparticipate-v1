@@ -8,6 +8,7 @@ import styled, { keyframes } from 'styled-components';
 import { HandIndexFill } from '@styled-icons/bootstrap/HandIndexFill';
 import { Ticket as PhoenixTicket } from '@phoenixlan/phoenix.js';
 import QRCode from 'qrcode.react';
+import { useAuth } from '../../../authentication/useAuth';
 
 const Container = styled.div`
     cursor: pointer;
@@ -131,13 +132,14 @@ const SeatRow = styled.div`
 
 interface Props {
     ticket: PhoenixTicket.FullTicket;
-    qr: string;
     showQr?: boolean;
     onClick?: () => void;
     enlarge?: boolean;
 }
 
-export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, enlarge = false }) => {
+export const Ticket: React.FC<Props> = ({ ticket, showQr = false, onClick, enlarge = false }) => {
+    const qr = `PHOENIX_TICKET_${ticket.ticket_id}`;
+
     return (
         <Container onClick={onClick}>
             <Top enlarge={enlarge}>
@@ -154,6 +156,10 @@ export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, e
                     <Row>
                         <SubTitle>Type</SubTitle>
                         <span>{ticket.ticket_type.name}</span>
+                    </Row>
+                    <Row>
+                        <SubTitle>Seater</SubTitle>
+                        <span>{ticket.seater ? `${ticket.seater.firstname} ${ticket.seater.lastname}` : 'Deg'}</span>
                     </Row>
                     {ticket.seat ? (
                         <Seat>
