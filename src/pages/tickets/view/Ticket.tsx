@@ -8,30 +8,12 @@ import styled, { keyframes } from 'styled-components';
 import { HandIndexFill } from '@styled-icons/bootstrap/HandIndexFill';
 import { Ticket as PhoenixTicket } from '@phoenixlan/phoenix.js';
 import QRCode from 'qrcode.react';
-import { useAuth } from '../../../authentication/useAuth';
+
+import { SeatRow, Seat, Row, SubTitle, Title, Corner } from './ticketConponents';
 
 const Container = styled.div`
     cursor: pointer;
     user-select: none;
-`;
-
-const Corner = styled.div<{ left: boolean; top: boolean }>`
-    position: absolute;
-    ${({ top }) => (top ? 'top' : 'bottom')}: 0px;
-    ${({ left }) => (left ? 'left' : 'right')}: 0px;
-
-    &:before {
-        content: '';
-        position: absolute;
-        top: -19px;
-        ${({ left }) => (left ? 'left' : 'right')}: -19px;
-        height: 30px;
-        width: 30px;
-        z-index: 1;
-        border: 1px solid gray;
-        border-radius: 100%;
-        background: white;
-    }
 `;
 
 const Inner = styled.div<{ enlarge: boolean }>`
@@ -101,33 +83,6 @@ const Tap = styled.div`
 const TapIcon = styled(HandIndexFill)`
     min-width: 1em;
     color: slategray;
-`;
-
-const Title = styled.span<{ enlarge: boolean }>`
-    color: ${({ theme }) => theme.colors.DarkGray};
-    font-size: ${({ theme, enlarge }) => (enlarge ? theme.fontSize.l : theme.fontSize.m)};
-`;
-
-const SubTitle = styled.span`
-    color: ${({ theme }) => theme.colors.DarkGray};
-`;
-
-const Row = styled.div`
-    width: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-`;
-
-const Seat = styled(Row)`
-    justify-content: space-around;
-    display: flex;
-    flex-direction: row;
-`;
-
-const SeatRow = styled.div`
-    display: flex;
-    flex-direction: column;
 `;
 
 interface Props {
