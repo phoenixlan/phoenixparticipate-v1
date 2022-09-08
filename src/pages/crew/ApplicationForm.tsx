@@ -88,6 +88,10 @@ export const ApplicationForm: React.FC = () => {
                     CV-en, og møte mange nye og spennende mennesker. Dersom det er første gang du skal søke crew på
                     Phoenix, anbefaler vi at du leser igjennom beskrivelsene av våre crew.
                 </Info>
+                <Info>
+                    Usikker på hva du skal skrive? Skriv litt om deg selv - hva du gjør på fritiden og hvorfor du valgte
+                    å søke Phoenix. Legg gjerne ved discord-brukeren din om du har en, så vi kan lett nå deg.
+                </Info>
                 <CrewSelect onlyApplyable={true} />
                 <TextArea name="applicationText" />
                 {addApplicationMutation.isLoading ? <InlineSpinner /> : <PositiveButton>Søk</PositiveButton>}
