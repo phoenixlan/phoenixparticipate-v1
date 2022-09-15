@@ -16,6 +16,12 @@ const shineLines = keyframes`
     }
 `;
 
+const Link = styled.a`
+    color: blue;
+    :visited {
+        color: purple;
+    }
+`;
 const Container = styled.div<{ skeleton: boolean }>`
     padding: ${({ theme }) => theme.spacing.m};
 
@@ -95,6 +101,9 @@ export const NextLanInformation: React.FC = () => {
                     <p>
                         Seating for resten starter{' '}
                         {event?.booking_time && toDateString((event.booking_time + event.seating_time_delta) * 1000)}
+                    </p>
+                    <p>
+                        <Link href={process.env.REACT_APP_MAIN_SITE}>Les mer om LANet her</Link>
                     </p>
                 </>
             )}

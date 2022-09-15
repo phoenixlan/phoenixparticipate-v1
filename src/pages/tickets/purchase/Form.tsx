@@ -42,7 +42,8 @@ const Container = styled.div`
 export const Form: React.FC = () => {
     const uuid = useQuery('uuid');
 
-    const { data: ticketTypes, isLoading, isLoadingError } = useCurrentEventTicketTypes();
+    const { data: ticketTypesUnsorted, isLoading, isLoadingError } = useCurrentEventTicketTypes();
+    const ticketTypes = (ticketTypesUnsorted ?? []).sort((a, b) => a.price - b.price);
 
     const [currentStep, setCurrentStep] = useState<Step>(Step.TicketSelection);
     const [chosenPaymentOption, setChosenPaymentOption] = useState<PaymentMethodType>(PaymentMethodType.None);
