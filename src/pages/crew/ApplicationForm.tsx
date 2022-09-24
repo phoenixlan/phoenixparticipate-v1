@@ -89,6 +89,15 @@ export const ApplicationForm: React.FC = () => {
                     Phoenix, anbefaler vi at du leser igjennom beskrivelsene av våre crew.
                 </Info>
                 <Info>
+                    Som crew får du:
+                    <ul>
+                        <li>Sitteplass(I eget crewomeråde)</li>
+                        <li>Noe å skrive på CVen</li>
+                        <li>Opplevelser for livet</li>
+                    </ul>
+                    Dersom du melder deg inn i Radar Event får du også mat for hele helgen og merch.
+                </Info>
+                <Info>
                     Usikker på hva du skal skrive? Skriv litt om deg selv - hva du gjør på fritiden og hvorfor du valgte
                     å søke Phoenix. Legg gjerne ved discord-brukeren din om du har en, så vi kan lett nå deg.
                 </Info>

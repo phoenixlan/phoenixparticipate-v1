@@ -105,28 +105,32 @@ export const Ticket: React.FC<Props> = ({ ticket, showQr = false, onClick, enlar
                         <Title enlarge={enlarge}>Phoenix Lan</Title>
                     </Row>
                     <Row>
-                        <SubTitle>Billett-ID</SubTitle>
+                        <SubTitle>{ticket.ticket_type.seatable ? 'Billett-ID' : 'Kjøp-ID'}</SubTitle>
                         <span>#{ticket.ticket_id}</span>
                     </Row>
                     <Row>
                         <SubTitle>Type</SubTitle>
                         <span>{ticket.ticket_type.name}</span>
                     </Row>
-                    <Row>
-                        <SubTitle>Seater</SubTitle>
-                        <span>{ticket.seater ? `${ticket.seater.firstname} ${ticket.seater.lastname}` : 'Deg'}</span>
-                    </Row>
                     {ticket.seat ? (
-                        <Seat>
-                            <SeatRow>
-                                <SubTitle>Rad</SubTitle>
-                                <span>{ticket.seat.row.row_number}</span>
-                            </SeatRow>
-                            <SeatRow>
-                                <SubTitle>Sete</SubTitle>
-                                <span>{ticket.seat.number}</span>
-                            </SeatRow>
-                        </Seat>
+                        <>
+                            <Row>
+                                <SubTitle>Seater</SubTitle>
+                                <span>
+                                    {ticket.seater ? `${ticket.seater.firstname} ${ticket.seater.lastname}` : 'Deg'}
+                                </span>
+                            </Row>
+                            <Seat>
+                                <SeatRow>
+                                    <SubTitle>Rad</SubTitle>
+                                    <span>{ticket.seat.row.row_number}</span>
+                                </SeatRow>
+                                <SeatRow>
+                                    <SubTitle>Sete</SubTitle>
+                                    <span>{ticket.seat.number}</span>
+                                </SeatRow>
+                            </Seat>
+                        </>
                     ) : ticket.ticket_type.seatable ? (
                         <span>
                             <b>Ikke seatet</b>

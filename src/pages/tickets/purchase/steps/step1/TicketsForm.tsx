@@ -17,6 +17,7 @@ import { useCurrentEvent } from '../../../../../hooks/api/useCurrentEvent';
 import { Header2 } from '../../../../../sharedComponents/Header2';
 import { useAuth } from '../../../../../authentication/useAuth';
 import { ShadowBox } from '../../../../../sharedComponents/boxes/ShadowBox';
+import { RadarEventInfo } from '../../../RadarEventInfo';
 
 const Form = styled.form`
     display: flex;
@@ -109,6 +110,9 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
         return amount;
     };
 
+    const seatableTickets = ticketTypes.filter((type) => type.seatable);
+    const otherTickets = ticketTypes.filter((type) => !type.seatable);
+
     const ticketSaleOpen = new Date().getTime() > bookingTime * 1000;
 
     return (
@@ -117,7 +121,8 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
                 {formMethods.errors && ticketTypes && ticketTypes.length > 0 && (
                     <ErrorMessage name={ticketTypes[0].uuid} />
                 )}
-                {ticketTypes.map((ticketType) => (
+                <Header2>Billetter(Lar deg være med på LAN)</Header2>
+                {seatableTickets.map((ticketType) => (
                     <TypeRow
                         key={ticketType.name}
                         name={ticketType.name}
@@ -125,6 +130,23 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
                         description={ticketType.description ?? undefined}
                         amount={formMethods.watch(ticketType.uuid)}
                         price={ticketType.price}
+                        isSeatable={ticketType.seatable}
+                        grantsMembership={ticketType.grants_membership}
+                        enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
+                        max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                    />
+                ))}
+                <Header2>Annet</Header2>
+                {otherTickets.map((ticketType) => (
+                    <TypeRow
+                        key={ticketType.name}
+                        name={ticketType.name}
+                        uuid={ticketType.uuid}
+                        description={ticketType.description ?? undefined}
+                        amount={formMethods.watch(ticketType.uuid)}
+                        price={ticketType.price}
+                        isSeatable={ticketType.seatable}
+                        grantsMembership={ticketType.grants_membership}
                         enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                         max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                     />
@@ -152,31 +174,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
                     </>
                 )}
             </Form>
-            <div>
-                <Header2>Hva er &quot;Radar event medlemskap&quot;</Header2>
-                <p>
-                    LANet er eid av Radar Event. Radar Event er en organisasjon av ungdom for ungdom tilknyttet Radar på
-                    Asker Kulturhus, som er ansvarlig for arrangering av ungdoms-arrangement i Asker-omerådet. For at
-                    arrangementene skal være billige er vi avhengige av hodestøtte fra Hyperion(som får pengene fra
-                    staten).{' '}
-                </p>
-                <p>
-                    Vi selger derfor billetter med medlemskap inkludert i prisen, som da brukes for å finansiere
-                    arrangementet. Dette gjør billetten billigere enn den hadde vært dersom medlemskap ikke var med i
-                    bildet.{' '}
-                    <b>
-                        Billetten uten medlemskap i Radar Event koster mer fordi vi må kompansere for tap av hodestøtte.
-                        De fleste vil ikke trenge denne billetten.
-                    </b>
-                </p>
-                <p>
-                    Et medlemskap i Radar Event koster 50kr varer ut kalenderåret, og fornyes ikke automatisk. Disse 50
-                    kronene er inkludert i billettprisen dersom du kjøper billett med medlemskap inkludert. Den
-                    vanligste måten å bli medlem på er å kjøpe billett med medfølgende medlemskap til et av våre
-                    arrangementer. Fordelen med medlemskap er lavere priser på arrangement hos Radar Event ut
-                    kalenderåret.
-                </p>
-            </div>
+            <RadarEventInfo />
         </FormProvider>
     );
 };

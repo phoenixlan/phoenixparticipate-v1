@@ -55,6 +55,9 @@ export const Tickets: React.FC = () => {
         .filter((ticket: Ticket.FullTicket) => ticket.event_uuid !== (currentEvent?.uuid ?? false))
         .sort((a, b) => a.ticket_id - b.ticket_id);
 
+    const currentTicketsSeatable = currentTickets.filter((ticket) => ticket.ticket_type.seatable);
+    const currentTicketsNotSeatable = currentTickets.filter((ticket) => !ticket.ticket_type.seatable);
+
     return (
         <Skeleton loading={isLoadingCurrentEvent}>
             <CenterBox centerVertically={false}>
@@ -69,16 +72,22 @@ export const Tickets: React.FC = () => {
                     </>
                 ) : null}
                 <Header1>Billetter til {currentEvent?.name ?? '(laster)'}</Header1>
-                <TicketCarousel tickets={currentTickets} />
-                {currentTickets.length === 0 ? (
+                <TicketCarousel tickets={currentTicketsSeatable} />
+                {currentTicketsSeatable.length === 0 ? (
                     <BuyTicketPrompt>
                         <p>Du har ingen billetter.</p>
                         <PositiveButton onClick={buyTickets}>Kjøp billetter</PositiveButton>
                     </BuyTicketPrompt>
                 ) : null}
+                {currentTicketsNotSeatable.length > 0 ? (
+                    <>
+                        <Header1>Andre ting for {currentEvent?.name ?? '(laster)'}</Header1>
+                        <TicketCarousel used={true} tickets={currentTicketsNotSeatable} />
+                    </>
+                ) : null}
                 {oldTickets.length > 0 ? (
                     <>
-                        <Header1>Andre billetter</Header1>
+                        <Header1>Tidligere kjøp</Header1>
                         <TicketCarousel used={true} tickets={oldTickets} />
                     </>
                 ) : null}

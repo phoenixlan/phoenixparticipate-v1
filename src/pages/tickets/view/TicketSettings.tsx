@@ -85,34 +85,38 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
         remove();
     };
 
-    let TicketModifyer = (
-        <>
-            <PositiveButton onClick={showSeaterPrompt}>Sett seater</PositiveButton>
-            <PositiveButton onClick={resetSeaterPrompt}>Fjern seater</PositiveButton>
-            <NegativeButton onClick={transferTicketPrompt}>Overfør billett</NegativeButton>
-        </>
-    );
+    let TicketModifyer: React.ReactElement | undefined = undefined;
 
-    switch (state) {
-        case ModificationState.SET_SEATER:
-            TicketModifyer = (
-                <>
-                    <Header2>Skriv inn e-post</Header2>
-                    <EmailInput value={email} onChange={onEmailChange} />
-                    <PositiveButton onClick={setSeater}>Sett seater</PositiveButton>
-                </>
-            );
-            break;
-        case ModificationState.TRANSFER:
-            TicketModifyer = (
-                <>
-                    <Header2>Skriv inn e-post</Header2>
-                    <EmailInput value={email} onChange={onEmailChange} />
-                    <NegativeButton onClick={transferTicket}>Overfør</NegativeButton>
-                </>
-            );
-            break;
-        default:
+    if (ticket.ticket_type.seatable) {
+        switch (state) {
+            case ModificationState.SET_SEATER:
+                TicketModifyer = (
+                    <>
+                        <Header2>Skriv inn e-post</Header2>
+                        <EmailInput value={email} onChange={onEmailChange} />
+                        <PositiveButton onClick={setSeater}>Sett seater</PositiveButton>
+                    </>
+                );
+                break;
+            case ModificationState.TRANSFER:
+                TicketModifyer = (
+                    <>
+                        <Header2>Skriv inn e-post</Header2>
+                        <EmailInput value={email} onChange={onEmailChange} />
+                        <NegativeButton onClick={transferTicket}>Overfør</NegativeButton>
+                    </>
+                );
+                break;
+            default:
+                TicketModifyer = (
+                    <>
+                        <PositiveButton onClick={showSeaterPrompt}>Sett seater</PositiveButton>
+                        <PositiveButton onClick={resetSeaterPrompt}>Fjern seater</PositiveButton>
+                        <NegativeButton onClick={transferTicketPrompt}>Overfør billett</NegativeButton>
+                    </>
+                );
+                break;
+        }
     }
 
     return (

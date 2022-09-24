@@ -61,7 +61,7 @@ export const NextLanInformation: React.FC = () => {
         isLoadingError: isTicketTypesLoadingError,
     } = useCurrentEventTicketTypes();
 
-    const typesSorted = (ticketTypes ?? []).sort((a, b) => a.price - b.price);
+    const typesSorted = (ticketTypes ?? []).filter((type) => type.seatable).sort((a, b) => a.price - b.price);
     console.log(typesSorted);
 
     const cheapestPrice = typesSorted.length == 0 ? 0 : typesSorted[0].price;
