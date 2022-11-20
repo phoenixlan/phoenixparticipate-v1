@@ -27,10 +27,9 @@ interface Props {
 export const People: React.FC<Props> = ({ people }) => {
     return (
         <Grid>
-            {people.map((person) => {
-                console.log(person);
-                return <PersonCard key={person.uuid} user={person} />;
-            })}
+            {people.map((person) => (
+                <PersonCard key={person.uuid} user={person} />
+            ))}
         </Grid>
     );
 };
