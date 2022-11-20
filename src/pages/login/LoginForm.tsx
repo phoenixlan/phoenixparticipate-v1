@@ -28,7 +28,7 @@ export const LoginForm: React.FC = () => {
 
     return (
         <Container onSubmit={onSubmit}>
-            <PrimaryButton type="submit">Login</PrimaryButton>
+            <PrimaryButton type="submit">Logg inn / Registrer deg</PrimaryButton>
         </Container>
     );
 };
