@@ -4,20 +4,20 @@
  * @author andreasjj
  */
 
-import { User } from '@phoenixlan/phoenix.js';
-import { BasicPosition } from '@phoenixlan/phoenix.js/build/crew';
+import { Position } from '@phoenixlan/phoenix.js';
+import { BasicUserWithExpandedPositions, ExpandedPosition } from './types';
 
-export const getTitles = (user: User.BasicUserWithPositions): string => {
-    return user.positions.reduce((prev: string, cur: BasicPosition, i, arr) => {
+export const getTitles = (user: BasicUserWithExpandedPositions): string => {
+    return user.positions.reduce((prev: string, cur: ExpandedPosition, i, arr) => {
         let title = prev;
-        if (!cur.team && cur.chief) {
+        if (!cur.team_uuid && cur.chief) {
             title += `Leder`;
         } else if (cur.name) {
             title += `${cur.name}`;
-        } else if (cur.team && cur.chief) {
-            title += `Leder av ${cur.team}}`;
-        } else if (cur.team) {
-            title += `Medlem av ${cur.team}`;
+        } else if (cur.team_uuid && cur.chief) {
+            title += `Leder av ${cur.team ? cur.team.name : cur.team_uuid}}`;
+        } else if (cur.team_uuid) {
+            title += `Medlem av ${cur.team ? cur.team.name : cur.team_uuid}`;
         } else {
             title += `Medlem`;
         }

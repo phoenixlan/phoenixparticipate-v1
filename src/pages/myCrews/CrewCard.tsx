@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DownArrow } from '@styled-icons/boxicons-solid/DownArrow';
 import { UpArrow } from '@styled-icons/boxicons-solid/UpArrow';
-import { User } from '@phoenixlan/phoenix.js';
+import { User, Position } from '@phoenixlan/phoenix.js';
 
 import { ShadowBox } from '../../sharedComponents/boxes/ShadowBox';
 import { useCrew } from '../../hooks/api/useCrew';
@@ -16,6 +16,7 @@ import { PeoplePreview } from './PeoplePreview';
 import { People } from './People';
 import { useCrews } from '../../hooks/api/useCrews';
 import { Skeleton } from '../../sharedComponents/Skeleton';
+import { BasicUserWithExpandedPositions } from '../../utils/types';
 
 const StyledShadowBox = styled(ShadowBox)`
     margin-bottom: ${({ theme }) => theme.spacing.xxxl};
@@ -72,8 +73,8 @@ export const CrewCard: React.FC<Props> = ({ crewUuid, _expand = false }) => {
         position.users.forEach((user) => {
             const basicPosition = {
                 ...position,
-                crew: crews?.find((crew) => crew.uuid === position.crew)?.name,
-                team: crew.teams.find((team) => team.uuid === position.team)?.name,
+                crew: crews?.find((crew) => crew.uuid === position.crew_uuid)?.name,
+                team: crew.teams.find((team) => team.uuid === position.team_uuid)?.name,
                 users: position.users.map((user) => user.uuid),
             };
 
@@ -86,7 +87,22 @@ export const CrewCard: React.FC<Props> = ({ crewUuid, _expand = false }) => {
         });
     });
 
-    const users = Array.from(userMap.values());
+    // Re-add crew information for getTitles
+    const users = Array.from(userMap.values()).map((user: BasicUserWithExpandedPositions) => {
+        user.positions = user.positions.map((position) => {
+            if (position.crew_uuid == crew?.uuid) {
+                position.crew = crew;
+            }
+            if (position.team_uuid) {
+                const team = crew?.teams.filter((team) => team.uuid == position.team_uuid);
+                if (team) {
+                    position.team = team[0];
+                }
+            }
+            return position;
+        });
+        return user;
+    });
 
     const onPreviewClick = () => {
         setExpand(!expand);

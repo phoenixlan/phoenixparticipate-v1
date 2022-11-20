@@ -7,6 +7,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { PersonCard } from './PersonCard';
 import { User } from '@phoenixlan/phoenix.js';
+import { useCrews } from '../../hooks/api/useCrews';
+import { BasicUserWithExpandedPositions } from '../../utils/types';
 
 const Grid = styled.div`
     display: flex;
@@ -19,15 +21,16 @@ const Grid = styled.div`
 `;
 
 interface Props {
-    people: Array<User.BasicUserWithPositions>;
+    people: Array<BasicUserWithExpandedPositions>;
 }
 
 export const People: React.FC<Props> = ({ people }) => {
     return (
         <Grid>
-            {people.map((person) => (
-                <PersonCard key={person.uuid} {...person} />
-            ))}
+            {people.map((person) => {
+                console.log(person);
+                return <PersonCard key={person.uuid} user={person} />;
+            })}
         </Grid>
     );
 };

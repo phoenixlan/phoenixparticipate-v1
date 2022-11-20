@@ -5,8 +5,10 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import { User } from '@phoenixlan/phoenix.js';
+import { User, Crew } from '@phoenixlan/phoenix.js';
 import { getAvatar, getTitles } from '../../utils';
+import { useCrews } from '../../hooks/api/useCrews';
+import { BasicUserWithExpandedPositions } from '../../utils/types';
 
 const Card = styled.div`
     width: 200px;
@@ -57,16 +59,20 @@ const Title = styled.h4`
     font-size: ${({ theme }) => theme.fontSize.s};
 `;
 
-export const PersonCard: React.FC<User.BasicUserWithPositions> = (props) => {
+interface PersonCardProps {
+    user: BasicUserWithExpandedPositions;
+}
+
+export const PersonCard: React.FC<PersonCardProps> = ({ user }) => {
     return (
         <Card>
             <Top>
-                <CoverPicture src={getAvatar(props, 'hd')} />
-                <Picture src={getAvatar(props, 'hd')} />
+                <CoverPicture src={getAvatar(user, 'sd')} />
+                <Picture src={getAvatar(user, 'sd')} />
             </Top>
             <Bottom>
-                <Name>{`${props.firstname} ${props.lastname}`}</Name>
-                <Title>{getTitles(props)}</Title>
+                <Name>{`${user.firstname} ${user.lastname}`}</Name>
+                <Title>{getTitles(user)}</Title>
             </Bottom>
         </Card>
     );

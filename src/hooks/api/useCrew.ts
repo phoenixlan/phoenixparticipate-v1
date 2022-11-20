@@ -7,11 +7,10 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import { Crew, RefreshError } from '@phoenixlan/phoenix.js';
 import { useAuth } from '../../authentication/useAuth';
 import { AuthClient } from '../../authentication/client/AuthClient';
-import { FullCrew, FullPosition } from '@phoenixlan/phoenix.js/build/crew';
 
 export const crewDefaultQueryKey = 'getCrews';
 
-const _getCrew = (client: AuthClient, uuid: string): Promise<FullCrew> => {
+const _getCrew = (client: AuthClient, uuid: string): Promise<Crew.FullCrew> => {
     try {
         return Crew.getCrew(uuid);
     } catch (e) {
@@ -22,10 +21,10 @@ const _getCrew = (client: AuthClient, uuid: string): Promise<FullCrew> => {
     }
 };
 
-export const useCrew = (uuid: string): QueryObserverResult<FullCrew> => {
+export const useCrew = (uuid: string): QueryObserverResult<Crew.FullCrew> => {
     const { client } = useAuth();
 
-    return useQuery<FullCrew>({
+    return useQuery<Crew.FullCrew>({
         queryKey: [crewDefaultQueryKey, uuid],
         queryFn: () => _getCrew(client, uuid),
     });
