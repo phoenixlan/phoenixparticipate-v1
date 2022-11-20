@@ -9,28 +9,11 @@ import { HandIndexFill } from '@styled-icons/bootstrap/HandIndexFill';
 import { Ticket as PhoenixTicket } from '@phoenixlan/phoenix.js';
 import QRCode from 'qrcode.react';
 
+import { SeatRow, Seat, Row, SubTitle, Title, Corner } from './ticketConponents';
+
 const Container = styled.div`
     cursor: pointer;
     user-select: none;
-`;
-
-const Corner = styled.div<{ left: boolean; top: boolean }>`
-    position: absolute;
-    ${({ top }) => (top ? 'top' : 'bottom')}: 0px;
-    ${({ left }) => (left ? 'left' : 'right')}: 0px;
-
-    &:before {
-        content: '';
-        position: absolute;
-        top: -19px;
-        ${({ left }) => (left ? 'left' : 'right')}: -19px;
-        height: 30px;
-        width: 30px;
-        z-index: 1;
-        border: 1px solid gray;
-        border-radius: 100%;
-        background: white;
-    }
 `;
 
 const Inner = styled.div<{ enlarge: boolean }>`
@@ -102,42 +85,16 @@ const TapIcon = styled(HandIndexFill)`
     color: slategray;
 `;
 
-const Title = styled.span<{ enlarge: boolean }>`
-    color: ${({ theme }) => theme.colors.DarkGray};
-    font-size: ${({ theme, enlarge }) => (enlarge ? theme.fontSize.l : theme.fontSize.m)};
-`;
-
-const SubTitle = styled.span`
-    color: ${({ theme }) => theme.colors.DarkGray};
-`;
-
-const Row = styled.div`
-    width: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-`;
-
-const Seat = styled(Row)`
-    justify-content: space-around;
-    display: flex;
-    flex-direction: row;
-`;
-
-const SeatRow = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
 interface Props {
-    ticket: PhoenixTicket.BasicTicket;
-    qr: string;
+    ticket: PhoenixTicket.FullTicket;
     showQr?: boolean;
     onClick?: () => void;
     enlarge?: boolean;
 }
 
-export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, enlarge = false }) => {
+export const Ticket: React.FC<Props> = ({ ticket, showQr = false, onClick, enlarge = false }) => {
+    const qr = `PHOENIX_TICKET_${ticket.ticket_id}`;
+
     return (
         <Container onClick={onClick}>
             <Top enlarge={enlarge}>
@@ -148,20 +105,32 @@ export const Ticket: React.FC<Props> = ({ ticket, qr, showQr = false, onClick, e
                         <Title enlarge={enlarge}>Phoenix Lan</Title>
                     </Row>
                     <Row>
-                        <SubTitle>Name</SubTitle>
-                        <span>PHOENIX_{ticket.ticket_id}</span>
+                        <SubTitle>{ticket.ticket_type.seatable ? 'Billett-ID' : 'Kjøp-ID'}</SubTitle>
+                        <span>#{ticket.ticket_id}</span>
+                    </Row>
+                    <Row>
+                        <SubTitle>Type</SubTitle>
+                        <span>{ticket.ticket_type.name}</span>
                     </Row>
                     {ticket.seat ? (
-                        <Seat>
-                            <SeatRow>
-                                <SubTitle>Row</SubTitle>
-                                <span>todo</span>
-                            </SeatRow>
-                            <SeatRow>
-                                <SubTitle>Seat</SubTitle>
-                                <span>ticket.seat.number</span>
-                            </SeatRow>
-                        </Seat>
+                        <>
+                            <Row>
+                                <SubTitle>Seater</SubTitle>
+                                <span>
+                                    {ticket.seater ? `${ticket.seater.firstname} ${ticket.seater.lastname}` : 'Deg'}
+                                </span>
+                            </Row>
+                            <Seat>
+                                <SeatRow>
+                                    <SubTitle>Rad</SubTitle>
+                                    <span>{ticket.seat.row.row_number}</span>
+                                </SeatRow>
+                                <SeatRow>
+                                    <SubTitle>Sete</SubTitle>
+                                    <span>{ticket.seat.number}</span>
+                                </SeatRow>
+                            </Seat>
+                        </>
                     ) : ticket.ticket_type.seatable ? (
                         <span>
                             <b>Ikke seatet</b>

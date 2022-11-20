@@ -33,7 +33,7 @@ const Logo = styled(Link)`
     font-size: ${({ theme }) => theme.fontSize.l};
 `;
 
-const PhoenixImage = styled.img`
+const PhoenixLogo = styled(LogoImage)`
     object-fit: contain;
     width: auto;
     height: auto;
@@ -60,7 +60,7 @@ export const Header: React.FC<Props> = ({ onClick }) => {
             <StyledBars size="2rem" onClick={onClick} />
             <Nav>
                 <Logo to="/">
-                    <PhoenixImage src={LogoImage} />
+                    <PhoenixLogo />
                     Delta
                 </Logo>
                 <HeaderMenu />

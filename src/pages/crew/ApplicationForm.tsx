@@ -15,6 +15,8 @@ import { TextArea } from '../../sharedComponents/forms/TextArea';
 import { Crew } from '@phoenixlan/phoenix.js';
 import { useMutation, useQueryClient } from 'react-query';
 import { userApplicationDefaultQueryKey } from '../../hooks/api/useUserApplications';
+import { InlineSpinner, LoadingSpinner } from '../../sharedComponents/LoadingSpinner';
+import { toast } from 'react-toastify';
 
 const Form = styled.form`
     display: flex;
@@ -59,7 +61,7 @@ export const ApplicationForm: React.FC = () => {
                 console.log('success');
             },
             onError: (e) => {
-                console.log('error');
+                toast.error('Kunne ikke send søknad');
             },
             onSettled: () => {
                 console.log('settled');
@@ -86,9 +88,22 @@ export const ApplicationForm: React.FC = () => {
                     CV-en, og møte mange nye og spennende mennesker. Dersom det er første gang du skal søke crew på
                     Phoenix, anbefaler vi at du leser igjennom beskrivelsene av våre crew.
                 </Info>
+                <Info>
+                    Som crew får du:
+                    <ul>
+                        <li>Sitteplass(I eget crewomeråde)</li>
+                        <li>Noe å skrive på CVen</li>
+                        <li>Opplevelser for livet</li>
+                    </ul>
+                    Dersom du melder deg inn i Radar Event får du også mat for hele helgen og merch.
+                </Info>
+                <Info>
+                    Usikker på hva du skal skrive? Skriv litt om deg selv - hva du gjør på fritiden og hvorfor du valgte
+                    å søke Phoenix. Legg gjerne ved discord-brukeren din om du har en, så vi kan lett nå deg.
+                </Info>
                 <CrewSelect onlyApplyable={true} />
                 <TextArea name="applicationText" />
-                <PositiveButton>Søk</PositiveButton>
+                {addApplicationMutation.isLoading ? <InlineSpinner /> : <PositiveButton>Søk</PositiveButton>}
             </Form>
         </FormProvider>
     );

@@ -13,12 +13,15 @@ import { useAuth } from '../authentication/useAuth';
 // Pages / routes
 import { Login } from '../pages/login';
 import { Loading } from '../pages/loading';
-import { Tickets } from '../pages/tickets';
+import { Tickets } from '../pages/tickets/view';
 import { Template } from '../pages/template';
 import { Error404 } from '../pages/errors/Error404';
 import { Crew } from '../pages/crew';
 import { Avatar } from '../pages/avatar';
 import { MyCrew } from '../pages/myCrews';
+import { TicketPurchase } from '../pages/tickets/purchase';
+import { TicketSeating } from '../pages/tickets/seat';
+import { MembershipStatus } from '../pages/membership';
 
 export const Router: React.FC = () => {
     const { initialized } = useAuth();
@@ -42,6 +45,15 @@ export const Router: React.FC = () => {
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/">
                                 <Tickets />
+                            </AuthRoute>
+                            <AuthRoute {...props} exact path="/seating">
+                                <TicketSeating />
+                            </AuthRoute>
+                            <AuthRoute {...props} exact path="/membership">
+                                <MembershipStatus />
+                            </AuthRoute>
+                            <AuthRoute {...props} exact path="/buy">
+                                <TicketPurchase />
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/avatar">
                                 <Avatar />

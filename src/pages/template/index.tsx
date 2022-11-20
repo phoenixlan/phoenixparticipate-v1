@@ -175,7 +175,16 @@ export const Template: React.FC = ({ children }) => {
                                         {(state) => (
                                             <Links state={state}>
                                                 <ActiveLink to="/" onClick={onClick}>
-                                                    Billetter
+                                                    Mine billetter
+                                                </ActiveLink>
+                                                <ActiveLink to="/buy" onClick={onClick}>
+                                                    Kjøp billetter
+                                                </ActiveLink>
+                                                <ActiveLink to="/membership" onClick={onClick}>
+                                                    Medlemskap
+                                                </ActiveLink>
+                                                <ActiveLink to="/seating" onClick={onClick}>
+                                                    Seating
                                                 </ActiveLink>
                                                 <ActiveLink to="/crew" onClick={onClick}>
                                                     Søk crew

@@ -9,13 +9,21 @@ import { Ticket as PhoenixTicket } from '@phoenixlan/phoenix.js';
 import { SnapList, SnapItem, useVisibleElements, useScroll } from 'react-snaplist-carousel';
 import { Ticket } from './Ticket';
 import { useSwipeable } from 'react-swipeable';
-import { useModal } from '../../sharedComponents/modal/useModal';
-import { useAuth } from '../../authentication/useAuth';
+import { useModal } from '../../../sharedComponents/modal/useModal';
+import { TicketSettings } from './TicketSettings';
 
 const Container = styled.div`
     display: flex;
     flex-direction: row;
 `;
+const TicketContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    flex-wrap: wrap;
+`;
+
+const OuterContainer = styled.div``;
 
 const Hidden = styled.div`
     visibility: hidden;
@@ -25,23 +33,13 @@ const Visibility = styled.div<{ visible: boolean }>`
     ${({ visible }) => !visible && 'opacity: 0.4'};
 `;
 
-interface Props {
-    _tickets: Array<{
-        id: string;
-        name: string;
-        seat: number;
-        row: number;
-        date: Date;
-        qr: string;
-    }>;
+interface TicketCarouselProps {
+    tickets: Array<PhoenixTicket.FullTicket>;
+    used?: boolean;
 }
 
-export const TicketCarousel: React.FC<Props> = () => {
+export const TicketCarousel: React.FC<TicketCarouselProps> = ({ tickets, used }) => {
     const { show, remove } = useModal();
-    const { client } = useAuth();
-
-    const tickets = client.user?.owned_tickets ?? [];
-    console.log(tickets);
 
     const snapList = useRef<HTMLDivElement | null>(null);
     /*
@@ -83,28 +81,26 @@ export const TicketCarousel: React.FC<Props> = () => {
     });
 
     const showTicket = (index: number) => {
-        show(<Ticket ticket={tickets[index]} qr={'placeholder'} showQr={true} enlarge={true} />);
+        show(<TicketSettings ticket={tickets[index]} />);
     };
 
     return (
         <Container {...handlers}>
-            <SnapList direction={'horizontal'} ref={snapList}>
-                {tickets.map((ticket: PhoenixTicket.BasicTicket, index: number) => {
+            <TicketContainer>
+                {tickets.map((ticket: PhoenixTicket.FullTicket, index: number) => {
                     return (
                         <SnapItem key={ticket.ticket_id} margin={{ left: '15px', right: '15px' }} snapAlign="center">
                             {index > tickets.length - 1 ? (
                                 <Hidden>
-                                    <Ticket ticket={ticket} qr={'placeholder'} />
+                                    <Ticket ticket={ticket} />
                                 </Hidden>
                             ) : (
-                                <Visibility visible={visible === index}>
-                                    <Ticket ticket={ticket} onClick={() => showTicket(index)} qr={'placeholder'} />
-                                </Visibility>
+                                <Ticket ticket={ticket} onClick={() => showTicket(index)} />
                             )}
                         </SnapItem>
                     );
                 })}
-            </SnapList>
+            </TicketContainer>
         </Container>
     );
 };

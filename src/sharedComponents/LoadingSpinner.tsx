@@ -13,6 +13,26 @@ const spin = keyframes`
     }
 `;
 
+const InlineLoaderOuter = styled.div`
+    width: 100%;
+    min-height: 4em;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const InlineLoader = styled.div`
+    border: 0.25rem solid hsla(0, 0%, 0%, 0.5);
+    border-right-color: #000;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    animation: ${spin} 1s linear infinite;
+    transform: translate(-50%, -50%);
+`;
+
 const Loader = styled.div`
     border: 0.25rem solid hsla(0, 0%, 0%, 0.5);
     border-right-color: #000;
@@ -29,4 +49,12 @@ const Loader = styled.div`
 
 export const LoadingSpinner: React.FC = () => {
     return <Loader />;
+};
+
+export const InlineSpinner: React.FC = () => {
+    return (
+        <InlineLoaderOuter>
+            <InlineLoader />
+        </InlineLoaderOuter>
+    );
 };

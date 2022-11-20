@@ -33,6 +33,7 @@ interface StyledButtonProps {
 
 const Button = styled.button<StyledButtonProps>`
     position: relative;
+    cursor: pointer;
     border: none;
     font-weight: normal;
     font-size: ${({ theme }) => theme.fontSize.m};

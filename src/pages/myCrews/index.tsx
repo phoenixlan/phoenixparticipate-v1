@@ -13,6 +13,7 @@ import { CrewCard } from './CrewCard';
 import { Header2 } from '../../sharedComponents/Header2';
 import { notEmpty } from '../../utils';
 import { Header1 } from '../../sharedComponents/Header1';
+import { useCurrentUser } from '../../hooks/api/useCurrentUser';
 
 const Empty = styled.div`
     display: flex;
@@ -22,7 +23,9 @@ const Empty = styled.div`
 
 export const MyCrew: React.FC = () => {
     const { client } = useAuth();
-    const crews: Array<string> = client.user?.positions.map((position) => position.crew).filter(notEmpty) ?? [];
+    const { data: currentUser, isLoading } = useCurrentUser();
+
+    const crews: Array<string> = currentUser?.positions.map((position) => position.crew_uuid).filter(notEmpty) ?? [];
 
     return (
         <CenterBox size="large" centerVertically={false}>

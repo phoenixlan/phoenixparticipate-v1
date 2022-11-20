@@ -6,6 +6,7 @@
 import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { useCurrentEvent } from '../../hooks';
+import { useCurrentEventTicketTypes } from '../../hooks/api/useCurrentEventTicketTypes';
 
 const shineLines = keyframes`
     0% {
@@ -16,6 +17,12 @@ const shineLines = keyframes`
     }
 `;
 
+const Link = styled.a`
+    color: blue;
+    :visited {
+        color: purple;
+    }
+`;
 const Container = styled.div<{ skeleton: boolean }>`
     padding: ${({ theme }) => theme.spacing.m};
 
@@ -47,7 +54,20 @@ const Container = styled.div<{ skeleton: boolean }>`
 `;
 
 export const NextLanInformation: React.FC = () => {
-    const { data: event, isLoading, isLoadingError } = useCurrentEvent();
+    const { data: event, isLoading: isEventLoading, isLoadingError: isEventLoadingError } = useCurrentEvent();
+    const {
+        data: ticketTypes,
+        isLoading: isTicketTypesLoading,
+        isLoadingError: isTicketTypesLoadingError,
+    } = useCurrentEventTicketTypes();
+
+    const typesSorted = (ticketTypes ?? []).filter((type) => type.seatable).sort((a, b) => a.price - b.price);
+    console.log(typesSorted);
+
+    const cheapestPrice = typesSorted.length == 0 ? 0 : typesSorted[0].price;
+
+    const isLoading = isEventLoading || isTicketTypesLoading;
+    const isLoadingError = isEventLoadingError || isTicketTypesLoadingError;
 
     const toHourString = (date: number) => {
         const newDate = new Date(date);
@@ -85,7 +105,7 @@ export const NextLanInformation: React.FC = () => {
                             toDayRangeString(event.start_time * 1000, event.end_time * 1000)}{' '}
                         i Kulturhuset, dørene åpner kl. {event?.start_time && toHourString(event.start_time * 1000)}
                     </p>
-                    <p>Pris per billett: 350,- (Inkluderer medlemskap i Radar event)</p>
+                    <p>Pris per billett: fra {cheapestPrice},-</p>
                     <p>Billettsalget starter {event?.booking_time && toDateString(event.booking_time * 1000)}</p>
                     <p>
                         Gruppe-seating starter{' '}
@@ -95,6 +115,9 @@ export const NextLanInformation: React.FC = () => {
                     <p>
                         Seating for resten starter{' '}
                         {event?.booking_time && toDateString((event.booking_time + event.seating_time_delta) * 1000)}
+                    </p>
+                    <p>
+                        <Link href={process.env.REACT_APP_MAIN_SITE}>Les mer om LANet her</Link>
                     </p>
                 </>
             )}

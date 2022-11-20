@@ -10,6 +10,7 @@ import { CenterBox } from '../../sharedComponents/boxes/CenterBox';
 import { SplitBox } from '../../sharedComponents/boxes/SplitBox';
 import { NextLanInformation } from './NextLanInformation';
 import { LoginForm } from './LoginForm';
+import { LoginDisclaimer } from './Disclaimer';
 import { Header1 } from '../../sharedComponents/Header1';
 import Logo from '../../assets/logo.svg';
 
@@ -28,6 +29,7 @@ export const Login: React.FC = () => {
                 <StyledLogo />
             </StyledLogoContainer>
             <SplitBox left={<NextLanInformation />} right={<LoginForm />} />
+            <LoginDisclaimer />
         </CenterBox>
     );
 };
