@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { User, Crew } from '@phoenixlan/phoenix.js';
 import { getAvatar, getTitles } from '../../utils';
 import { useCrews } from '../../hooks/api/useCrews';
-import { BasicUserWithExpandedPositions } from '../../utils/types';
+import { BasicUserWithExpandedPositionMappings } from '../../utils/types';
 
 const Card = styled.div`
     width: 200px;
@@ -60,7 +60,7 @@ const Title = styled.h4`
 `;
 
 interface PersonCardProps {
-    user: BasicUserWithExpandedPositions;
+    user: BasicUserWithExpandedPositionMappings;
 }
 
 export const PersonCard: React.FC<PersonCardProps> = ({ user }) => {
