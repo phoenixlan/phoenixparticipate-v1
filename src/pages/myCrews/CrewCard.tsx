@@ -17,6 +17,7 @@ import { People } from './People';
 import { useCrews } from '../../hooks/api/useCrews';
 import { Skeleton } from '../../sharedComponents/Skeleton';
 import { BasicUserWithExpandedPositionMappings, ExpandedPosition } from '../../utils/types';
+import { useCurrentEvent } from '../../hooks';
 
 const StyledShadowBox = styled(ShadowBox)`
     margin-bottom: ${({ theme }) => theme.spacing.xxxl};
@@ -64,28 +65,39 @@ interface Props {
 export const CrewCard: React.FC<Props> = ({ crewUuid, _expand = false }) => {
     const { data: crew, isLoading: isLoadingCrew, isLoadingError: isLoadingErrorCrew } = useCrew(crewUuid);
     const { data: crews, isLoading: isLoadingCrews, isLoadingError: isLoadingErrorCrews } = useCrews();
-    const isLoading = isLoadingCrew || isLoadingCrews;
-    const isLoadingError = isLoadingErrorCrew || isLoadingErrorCrews;
+    const {
+        data: currentEvent,
+        isLoading: isLoadingCurrentEvent,
+        isLoadingError: isLoadingErrorEvent,
+    } = useCurrentEvent();
+    const isLoading = isLoadingCrew || isLoadingCrews || isLoadingCurrentEvent;
+    const isLoadingError = isLoadingErrorCrew || isLoadingErrorCrews || isLoadingErrorEvent;
     const [expand, setExpand] = useState(_expand);
     const userMap: Map<string, User.BasicUserWithPositionMappings> = new Map();
 
     crew?.positions.forEach((position) => {
-        position.position_mappings.forEach((positionMapping) => {
-            const positionMappingWithPosition = {
-                position,
-                uuid: positionMapping.uuid,
-                user_uuid: positionMapping.user.uuid,
-                event_uuid: positionMapping.event_uuid,
-                created: positionMapping.created,
-            };
-            const user = positionMapping.user as User.BasicUserWithPositionMappings;
-            if (userMap.has(user.uuid)) {
-                userMap.get(user.uuid)!.position_mappings.push(positionMappingWithPosition);
-            } else {
-                user.position_mappings = [positionMappingWithPosition];
-                userMap.set(user.uuid, user);
-            }
-        });
+        position.position_mappings
+            .filter(
+                (position_mapping) =>
+                    currentEvent &&
+                    (position_mapping.event_uuid == null || position_mapping.event_uuid == currentEvent.uuid),
+            )
+            .forEach((positionMapping) => {
+                const positionMappingWithPosition = {
+                    position,
+                    uuid: positionMapping.uuid,
+                    user_uuid: positionMapping.user.uuid,
+                    event_uuid: positionMapping.event_uuid,
+                    created: positionMapping.created,
+                };
+                const user = positionMapping.user as User.BasicUserWithPositionMappings;
+                if (userMap.has(user.uuid)) {
+                    userMap.get(user.uuid)!.position_mappings.push(positionMappingWithPosition);
+                } else {
+                    user.position_mappings = [positionMappingWithPosition];
+                    userMap.set(user.uuid, user);
+                }
+            });
     });
 
     // Re-add crew information for getTitles
