@@ -84,22 +84,29 @@ export const ApplicationForm: React.FC = () => {
         <FormProvider {...formMethods}>
             <Form onSubmit={onSubmit}>
                 <Info>
-                    Velkommen! Som crew vil du oppleve ting du aldri ville som deltaker, få erfaring du kan sette på
-                    CV-en, og møte mange nye og spennende mennesker. Dersom det er første gang du skal søke crew på
-                    Phoenix, anbefaler vi at du leser igjennom beskrivelsene av våre crew.
-                </Info>
-                <Info>
-                    Som crew får du:
+                    <p>
+                        Velkommen! Som gruppemedlem vil du oppleve ting du aldri ville som deltaker, få erfaring du kan
+                        sette på CV-en, og møte mange nye og spennende mennesker. Dersom det er første gang du søker
+                        anbefaler vi at du leser igjennom beskrivelsene av våre grupper.
+                    </p>
+                    <p>Som gruppemedlem får du:</p>
                     <ul>
-                        <li>Sitteplass(I eget crewomeråde)</li>
+                        <li>
+                            Sitteplass(I eget område - du må kjøpe deltakerbillett om du vil sitte med deltakere. Snakk
+                            med gruppelederen din først!)
+                        </li>
                         <li>Noe å skrive på CVen</li>
-                        <li>Opplevelser for livet</li>
+                        <li>Nye erfaringer og opplevelser for livet</li>
                     </ul>
-                    Dersom du melder deg inn i Radar Event får du også mat for hele helgen og merch.
-                </Info>
-                <Info>
-                    Usikker på hva du skal skrive? Skriv litt om deg selv - hva du gjør på fritiden og hvorfor du valgte
-                    å søke Phoenix. Legg gjerne ved discord-brukeren din om du har en, så vi kan lett nå deg.
+                    <p>
+                        Gruppemedlem holder også lengre på enn deltakere - vi pleier å starte et par dager før, og
+                        avslutter arbeidet vårt på ettermiddagen samme dag som arrangementet slutter.
+                    </p>
+                    <p>Dersom du melder deg inn i Radar Event får du også mat for hele helgen og merch.</p>
+                    <p>
+                        Usikker på hva du skal skrive? Skriv litt om deg selv - hva du gjør på fritiden og hvorfor du
+                        valgte å søke. Legg gjerne ved discord-brukeren din om du har en, så vi kan lett nå deg.
+                    </p>
                 </Info>
                 <CrewSelect onlyApplyable={true} />
                 <TextArea name="applicationText" />

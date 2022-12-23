@@ -129,7 +129,7 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                 <ApplicationView>
                     <ExitIcon size="1.5rem" onClick={hideSelectedApplicationView} />
                     <ApplicationVewCrew>
-                        <strong>Crew: </strong>
+                        <strong>Gruppe: </strong>
                         {selectedApplication.crew.name}
                     </ApplicationVewCrew>
                     <ApplicationVewContent>
@@ -142,7 +142,7 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                     <Thead>
                         <tr>
                             <Th>
-                                <span>Crew</span>
+                                <span>Gruppe</span>
                             </Th>
                             <Th>
                                 <span>Dato</span>
@@ -156,7 +156,7 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                         {applications.length === 0 && (
                             <tr>
                                 <Td colSpan={3}>
-                                    <strong>No applications found</strong>
+                                    <strong>Ingen søknader funnet</strong>
                                 </Td>
                             </tr>
                         )}

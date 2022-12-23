@@ -14,17 +14,19 @@ export const CrewList: React.FC = () => {
     const { data: crews } = useCrews();
     return (
         <>
-            {crews?.map((crew) => (
-                <CrewEntry marginColor={crew.hex_color} key={crew.uuid}>
-                    <h2>{crew.name}</h2>
-                    <p>{crew.description}</p>
-                    {!crew.is_applyable ? (
-                        <p>
-                            <b>Kan ikke søkes til - du må ofte ha erfaring med LANet for å bli utnevnt hit.</b>
-                        </p>
-                    ) : null}
-                </CrewEntry>
-            ))}
+            {crews
+                ?.filter((crew) => crew.active)
+                .map((crew) => (
+                    <CrewEntry marginColor={crew.hex_color} key={crew.uuid}>
+                        <h2>{crew.name}</h2>
+                        <p>{crew.description}</p>
+                        {!crew.is_applyable ? (
+                            <p>
+                                <b>Kan ikke søkes til - du må ofte ha erfaring med LANet for å bli utnevnt hit.</b>
+                            </p>
+                        ) : null}
+                    </CrewEntry>
+                ))}
         </>
     );
 };

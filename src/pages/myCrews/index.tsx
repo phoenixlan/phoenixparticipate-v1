@@ -53,11 +53,11 @@ export const MyCrew: React.FC = () => {
     return (
         <Skeleton loading={isLoading}>
             <CenterBox size="large" centerVertically={false}>
-                <Header1>Mine crew</Header1>
+                <Header1>Mine verv</Header1>
                 {current_crews.length === 0 && (
                     <Empty>
-                        <Header2>No crews found - You are not part of a crew</Header2>
-                        <Link to="/crew">Apply here</Link>
+                        <Header2>Du har ingen verv/tilhørighet til en gruppe hos Phoenix LAN for øyeblikket.</Header2>
+                        <Link to="/crew">Søk her!</Link>
                     </Empty>
                 )}
                 {current_crews.map((crew, i) => (

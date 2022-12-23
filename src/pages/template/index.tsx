@@ -180,17 +180,17 @@ export const Template: React.FC = ({ children }) => {
                                                 <ActiveLink to="/buy" onClick={onClick}>
                                                     Kjøp billetter
                                                 </ActiveLink>
+                                                <ActiveLink to="/crew" onClick={onClick}>
+                                                    Bli med å arrangere
+                                                </ActiveLink>
                                                 <ActiveLink to="/membership" onClick={onClick}>
-                                                    Medlemskap
+                                                    RE-Medlemskap
                                                 </ActiveLink>
                                                 <ActiveLink to="/seating" onClick={onClick}>
-                                                    Seating
-                                                </ActiveLink>
-                                                <ActiveLink to="/crew" onClick={onClick}>
-                                                    Søk crew
+                                                    Plassreservering
                                                 </ActiveLink>
                                                 <ActiveLink to="/my-crew" onClick={onClick}>
-                                                    Mitt crew
+                                                    Mine verv
                                                 </ActiveLink>
                                                 <ActiveLink to="/friends" onClick={onClick}>
                                                     Venner

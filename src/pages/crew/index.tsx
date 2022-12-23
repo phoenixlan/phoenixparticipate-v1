@@ -107,7 +107,7 @@ export const Crew: React.FC = () => {
                 )}
             </Container>
             <Container>
-                <Header2>Crew</Header2>
+                <Header2>Grupper</Header2>
                 <CrewList />
             </Container>
         </CenterBox>

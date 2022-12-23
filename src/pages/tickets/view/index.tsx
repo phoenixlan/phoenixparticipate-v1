@@ -109,7 +109,13 @@ export const Tickets: React.FC = () => {
                         Du kan gi en annen person rettigheter til å plassere billetten din for deg, slik at en person
                         kan seate vennegjengen deres samlet. Trykk på en billett for å gjøre dette.
                     </p>
-                    <p>Dere kan også kjøpe billettene samlet og overføre til riktig eier senere.</p>
+                    <p>
+                        Dere kan også kjøpe billettene samlet og overføre til riktig eier senere. Husk i såfall å kjøpe
+                        riktig billett til riktig person - folk med eksisterende medlemskap i Radar Event trenger ikke å
+                        kjøpe et nytt medlemskap. Folk uten medlemskap i Radar Event er nødt til å ha en billett med
+                        medlemskap(Eller den mye dyrere billetten for ikke-medlemmer). Det går også an å kjøpe
+                        medlemskap separat senere.
+                    </p>
                     <p>
                         <b>
                             Billetten MÅ være overført til riktig bruker innen LANet starter - ellers slipper du ikke
