@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DownArrow } from '@styled-icons/boxicons-solid/DownArrow';
 import { UpArrow } from '@styled-icons/boxicons-solid/UpArrow';
-import { User, Position } from '@phoenixlan/phoenix.js';
+import { User, Position, PositionMapping } from '@phoenixlan/phoenix.js';
 
 import { ShadowBox } from '../../sharedComponents/boxes/ShadowBox';
 import { useCrew } from '../../hooks/api/useCrew';
@@ -16,7 +16,8 @@ import { PeoplePreview } from './PeoplePreview';
 import { People } from './People';
 import { useCrews } from '../../hooks/api/useCrews';
 import { Skeleton } from '../../sharedComponents/Skeleton';
-import { BasicUserWithExpandedPositions } from '../../utils/types';
+import { BasicUserWithExpandedPositionMappings, ExpandedPosition } from '../../utils/types';
+import { useCurrentEvent } from '../../hooks';
 
 const StyledShadowBox = styled(ShadowBox)`
     margin-bottom: ${({ theme }) => theme.spacing.xxxl};
@@ -64,32 +65,46 @@ interface Props {
 export const CrewCard: React.FC<Props> = ({ crewUuid, _expand = false }) => {
     const { data: crew, isLoading: isLoadingCrew, isLoadingError: isLoadingErrorCrew } = useCrew(crewUuid);
     const { data: crews, isLoading: isLoadingCrews, isLoadingError: isLoadingErrorCrews } = useCrews();
-    const isLoading = isLoadingCrew || isLoadingCrews;
-    const isLoadingError = isLoadingErrorCrew || isLoadingErrorCrews;
+    const {
+        data: currentEvent,
+        isLoading: isLoadingCurrentEvent,
+        isLoadingError: isLoadingErrorEvent,
+    } = useCurrentEvent();
+    const isLoading = isLoadingCrew || isLoadingCrews || isLoadingCurrentEvent;
+    const isLoadingError = isLoadingErrorCrew || isLoadingErrorCrews || isLoadingErrorEvent;
     const [expand, setExpand] = useState(_expand);
-    const userMap: Map<string, User.BasicUserWithPositions> = new Map();
+    const userMap: Map<string, User.BasicUserWithPositionMappings> = new Map();
 
     crew?.positions.forEach((position) => {
-        position.users.forEach((user) => {
-            const basicPosition = {
-                ...position,
-                crew: crews?.find((crew) => crew.uuid === position.crew_uuid)?.name,
-                team: crew.teams.find((team) => team.uuid === position.team_uuid)?.name,
-                users: position.users.map((user) => user.uuid),
-            };
-
-            if (userMap.has(user.uuid)) {
-                userMap.get(user.uuid)!.positions.push(basicPosition);
-            } else {
-                user.positions = [basicPosition];
-                userMap.set(user.uuid, user);
-            }
-        });
+        position.position_mappings
+            .filter(
+                (position_mapping) =>
+                    currentEvent &&
+                    (position_mapping.event_uuid == null || position_mapping.event_uuid == currentEvent.uuid),
+            )
+            .forEach((positionMapping) => {
+                const positionMappingWithPosition = {
+                    position,
+                    uuid: positionMapping.uuid,
+                    user_uuid: positionMapping.user.uuid,
+                    event_uuid: positionMapping.event_uuid,
+                    created: positionMapping.created,
+                };
+                const user = positionMapping.user as User.BasicUserWithPositionMappings;
+                if (userMap.has(user.uuid)) {
+                    userMap.get(user.uuid)!.position_mappings.push(positionMappingWithPosition);
+                } else {
+                    user.position_mappings = [positionMappingWithPosition];
+                    userMap.set(user.uuid, user);
+                }
+            });
     });
 
     // Re-add crew information for getTitles
-    const users = Array.from(userMap.values()).map((user: BasicUserWithExpandedPositions) => {
-        user.positions = user.positions.map((position) => {
+    const users = Array.from(userMap.values()).map((user: User.BasicUserWithPositionMappings) => {
+        const expandedUser = (user as unknown) as BasicUserWithExpandedPositionMappings;
+        expandedUser.position_mappings = user.position_mappings.map((position_mapping) => {
+            const position = position_mapping.position as ExpandedPosition;
             if (position.crew_uuid == crew?.uuid) {
                 position.crew = crew;
             }
@@ -99,9 +114,9 @@ export const CrewCard: React.FC<Props> = ({ crewUuid, _expand = false }) => {
                     position.team = team[0];
                 }
             }
-            return position;
+            return position_mapping;
         });
-        return user;
+        return user as BasicUserWithExpandedPositionMappings;
     });
 
     const onPreviewClick = () => {

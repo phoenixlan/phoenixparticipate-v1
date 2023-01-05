@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { PersonCard } from './PersonCard';
 import { User } from '@phoenixlan/phoenix.js';
 import { useCrews } from '../../hooks/api/useCrews';
-import { BasicUserWithExpandedPositions } from '../../utils/types';
+import { BasicUserWithExpandedPositionMappings } from '../../utils/types';
 
 const Grid = styled.div`
     display: flex;
@@ -21,7 +21,7 @@ const Grid = styled.div`
 `;
 
 interface Props {
-    people: Array<BasicUserWithExpandedPositions>;
+    people: Array<BasicUserWithExpandedPositionMappings>;
 }
 
 export const People: React.FC<Props> = ({ people }) => {
