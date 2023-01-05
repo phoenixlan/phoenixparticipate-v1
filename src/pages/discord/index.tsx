@@ -19,16 +19,42 @@ import { User } from '@phoenixlan/phoenix.js';
 import { useRevertTransferMutation } from '../../hooks/api/useRevertTransferMutation';
 import { useRevokeDiscordMappingMutation } from '../../hooks/api/useRevokeDiscordMappingMutation';
 
-const PaddedBox = styled(ShadowBox)`
-    padding: ${({ theme }) => theme.spacing.m};
-`;
+const S = {
+    PaddedBox: styled(ShadowBox)`
+        padding: ${({ theme }) => theme.spacing.m};
+    `,
+    Center: styled.div`
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    `,
+    DiscordCardOuter: styled.div`
+        width: 100%;
+        display: float;
+        justify-content: center;
+    `,
+    DiscordCard: styled.div`
+        width: 20em;
+        box-shadow: rgb(0 0 0 / 15%) 0px 2px 4px 0px;
+        border-radius: 0.25rem;
 
-const Center = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`;
+        display: flex;
+        align-items: center;
+    `,
+    DiscordAvatar: styled.img`
+        width: 4em;
+        margin: ${({ theme }) => theme.spacing.s};
+        border-radius: 50%;
+    `,
+    DiscordCardText: styled.div``,
+    DiscordUsername: styled.div`
+        font-weight: bold;
+    `,
+    DiscordId: styled.div`
+        font-size: 0.8em;
+    `,
+};
 
 export const DiscordMappingManagement = () => {
     const { client } = useAuth();
@@ -53,20 +79,28 @@ export const DiscordMappingManagement = () => {
         <Skeleton loading={isLoadingDiscordMapping}>
             <CenterBox centerVertically={false}>
                 <Header1>Eksterne tjenester</Header1>
-                <PaddedBox>
+                <S.PaddedBox>
                     {discordMapping ? (
                         <>
                             <Header2>Du har koblet til Discord</Header2>
-                            <p>
-                                Vi har registrert at du er koblet til Discord-kontoen <b>{discordMapping.username}</b> (
-                                <code>{discordMapping.discord_id}</code>)
-                            </p>
+                            <S.DiscordCardOuter>
+                                <S.DiscordCard>
+                                    <S.DiscordAvatar
+                                        src={`https://cdn.discordapp.com/avatars/${discordMapping.discord_id}/${discordMapping.avatar}.png`}
+                                    />
+                                    <S.DiscordCardText>
+                                        <S.DiscordUsername>{discordMapping.username}</S.DiscordUsername>
+                                        <S.DiscordId>{discordMapping.discord_id}</S.DiscordId>
+                                    </S.DiscordCardText>
+                                </S.DiscordCard>
+                            </S.DiscordCardOuter>
                             <p>
                                 Dette betyr at vi har lagret informasjon om Discord-brukeren din. Botten vår vil derfor
-                                kunne automatisk gi deg riktige roller.
+                                kunne automatisk gi deg riktige roller. Vi vil også bruke informasjonen for å kunne
+                                kontakte deg i forbindelse med din deltakelse på LANet.
                             </p>
                             <p>Vil du fjerne tilkoblingen?</p>
-                            <Center>
+                            <S.Center>
                                 <NegativeButton
                                     onClick={() => {
                                         disconnect();
@@ -74,7 +108,7 @@ export const DiscordMappingManagement = () => {
                                 >
                                     Fjern tilkobling
                                 </NegativeButton>
-                            </Center>
+                            </S.Center>
                         </>
                     ) : (
                         <>
@@ -92,7 +126,7 @@ export const DiscordMappingManagement = () => {
                                 tillatelse til å legge deg til i Discord-servere, slik at vi kan legge deg til i
                                 Phoenix-serveren om du ikke allerede er det.
                             </p>
-                            <Center>
+                            <S.Center>
                                 <PositiveButton
                                     onClick={() => {
                                         connect();
@@ -100,11 +134,11 @@ export const DiscordMappingManagement = () => {
                                 >
                                     Koble til Discord
                                 </PositiveButton>
-                            </Center>
+                            </S.Center>
                         </>
                     )}
-                </PaddedBox>
-                <PaddedBox>
+                </S.PaddedBox>
+                <S.PaddedBox>
                     <Header2>Discord? Tilkobling?</Header2>
                     <p>
                         Phoenix LAN har en Discord-server, mest aktiv under selve LANet. For å slippe at gruppeledere
@@ -139,7 +173,7 @@ export const DiscordMappingManagement = () => {
                             </b>
                         </p>
                     ) : null}
-                </PaddedBox>
+                </S.PaddedBox>
             </CenterBox>
         </Skeleton>
     );
