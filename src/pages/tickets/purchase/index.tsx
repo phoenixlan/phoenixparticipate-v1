@@ -13,7 +13,7 @@ import { Tutorial } from './Tutorial';
 import { useAuth } from '../../../authentication/useAuth';
 import { useCurrentEvent } from '../../../hooks';
 import { Skeleton } from '../../../sharedComponents/Skeleton';
-import { WarningBox } from '../../../sharedComponents/WarningBox';
+import { WarningBox } from '../../../sharedComponents/NoticeBox';
 import { dateOfBirthToAge } from '../../../utils/age';
 
 const StyledShadowBox = styled(ShadowBox)`

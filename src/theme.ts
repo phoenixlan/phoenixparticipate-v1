@@ -20,6 +20,8 @@ export enum Colors {
     PhoenixCyan = '#14C2D7',
     PhoenixDarkCyan = '#808CBE',
 
+    LightBlue = '#a2eef6',
+
     SnackbarRed = '#ec6c61',
     SnackbarGreen = '#68c957',
     SnackbarYellow = '#f5c152',
@@ -44,6 +46,7 @@ const theme = {
         accentDark: Colors.PhoenixDarkPink,
         accent2: Colors.PhoenixCyan,
         accent2Dark: Colors.PhoenixDarkCyan,
+        infoBlue: Colors.LightBlue,
         SnackbarRed: Colors.SnackbarRed,
         SnackbarGreen: Colors.SnackbarGreen,
         SnackbarYellow: Colors.SnackbarYellow,

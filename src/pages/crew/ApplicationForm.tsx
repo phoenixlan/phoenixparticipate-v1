@@ -29,6 +29,13 @@ const Info = styled.div`
     margin-bottom: ${({ theme }) => theme.spacing.m};
 `;
 
+const Center = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`;
+
 type FormData = {
     selectedCrew: string;
     applicationText: string;
@@ -95,6 +102,7 @@ export const ApplicationForm: React.FC = () => {
                             Sitteplass(I eget område - du må kjøpe deltakerbillett om du vil sitte med deltakere. Snakk
                             med gruppelederen din først!)
                         </li>
+                        <li>Invitasjon til egne crew-aktiviteter</li>
                         <li>Noe å skrive på CVen</li>
                         <li>Nye erfaringer og opplevelser for livet</li>
                     </ul>
@@ -110,7 +118,13 @@ export const ApplicationForm: React.FC = () => {
                 </Info>
                 <CrewSelect onlyApplyable={true} />
                 <TextArea name="applicationText" />
-                {addApplicationMutation.isLoading ? <InlineSpinner /> : <PositiveButton>Søk</PositiveButton>}
+                {addApplicationMutation.isLoading ? (
+                    <InlineSpinner />
+                ) : (
+                    <Center>
+                        <PositiveButton>Søk</PositiveButton>
+                    </Center>
+                )}
             </Form>
         </FormProvider>
     );
