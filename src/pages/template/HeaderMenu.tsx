@@ -17,6 +17,7 @@ import { Cog } from '@styled-icons/boxicons-solid/Cog';
 import { Avatar } from '@phoenixlan/phoenix.js';
 import { getAvatar } from '../../utils';
 import { toast } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
 
 const Icon = styled.div`
     display: flex;
@@ -54,6 +55,8 @@ const StyledCog = styled(Cog)`
 
 export const HeaderMenu: React.FC = () => {
     const { client } = useAuth();
+    const history = useHistory();
+
     const [showDropdown, setShowDropdown] = useState(false);
 
     const onShowDropdown = (e: React.MouseEvent) => {
@@ -86,13 +89,20 @@ export const HeaderMenu: React.FC = () => {
                                 icon: { left: <PersonSquare />, right: <RightArrow /> },
                                 subMenu: 'avatar',
                             },
+                            {
+                                name: 'Discord-tilkobling',
+                                icon: { left: <LogOut /> },
+                                onClick: () => {
+                                    history.push('/third_party_mapping');
+                                },
+                            },
                         ],
                     }}
                     secondaries={[
                         {
                             name: 'avatar',
                             items: [
-                                { name: 'back', subMenu: 'main', icon: { left: <LeftArrow /> } },
+                                { name: 'Tilbake', subMenu: 'main', icon: { left: <LeftArrow /> } },
                                 { name: 'Edit', icon: { left: <ImageAdd /> }, to: '/avatar' },
                                 {
                                     name: 'Remove',

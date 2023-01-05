@@ -22,6 +22,7 @@ import { MyCrew } from '../pages/myCrews';
 import { TicketPurchase } from '../pages/tickets/purchase';
 import { TicketSeating } from '../pages/tickets/seat';
 import { MembershipStatus } from '../pages/membership';
+import { DiscordMappingManagement } from '../pages/discord';
 
 export const Router: React.FC = () => {
     const { initialized } = useAuth();
@@ -51,6 +52,9 @@ export const Router: React.FC = () => {
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/membership">
                                 <MembershipStatus />
+                            </AuthRoute>
+                            <AuthRoute {...props} exact path="/third_party_mapping">
+                                <DiscordMappingManagement />
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/buy">
                                 <TicketPurchase />

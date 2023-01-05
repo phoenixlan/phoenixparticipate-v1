@@ -8,7 +8,7 @@ import { Crew, RefreshError } from '@phoenixlan/phoenix.js';
 import { useAuth } from '../../authentication/useAuth';
 import { AuthClient } from '../../authentication/client/AuthClient';
 
-export const crewDefaultQueryKey = 'getCrews';
+export const crewDefaultQueryKey = 'getCrew';
 
 const _getCrew = (client: AuthClient, uuid: string): Promise<Crew.FullCrew> => {
     try {
