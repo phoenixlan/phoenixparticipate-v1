@@ -93,9 +93,10 @@ const BodyRow = styled.tr`
 
 interface Props {
     applications: Array<Crew.Applications.Application>;
+    showEvent?: boolean;
 }
 
-export const Applications: React.FC<Props> = ({ applications }) => {
+export const Applications: React.FC<Props> = ({ applications, showEvent }) => {
     const [selectedApplication, setSelectedApplication] = useState<Crew.Applications.Application | null>(null);
 
     const hideSelectedApplicationView = () => {
@@ -129,8 +130,15 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                 <ApplicationView>
                     <ExitIcon size="1.5rem" onClick={hideSelectedApplicationView} />
                     <ApplicationVewCrew>
-                        <strong>Gruppe: </strong>
-                        {selectedApplication.crew.name}
+                        <strong>Crew: </strong>
+                        <ol>
+                            {selectedApplication.crews.map((application_crew_mapping) => (
+                                <li key={application_crew_mapping.crew.uuid}>
+                                    {application_crew_mapping.crew.name}{' '}
+                                    {application_crew_mapping.accepted ? <b>Godkjent!</b> : null}
+                                </li>
+                            ))}
+                        </ol>
                     </ApplicationVewCrew>
                     <ApplicationVewContent>
                         <strong>Søknadstekst: </strong>
@@ -142,11 +150,16 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                     <Thead>
                         <tr>
                             <Th>
-                                <span>Gruppe</span>
+                                <span>Crew</span>
                             </Th>
                             <Th>
                                 <span>Dato</span>
                             </Th>
+                            {showEvent ? (
+                                <Th>
+                                    <span>Arrangement</span>
+                                </Th>
+                            ) : null}
                             <Th>
                                 <span>Status</span>
                             </Th>
@@ -162,7 +175,7 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                         )}
                         {applications.map((application) => (
                             <BodyRow key={application.uuid} onClick={() => setSelectedApplication(application)}>
-                                <Td>{application.crew.name}</Td>
+                                <Td>{application.crews.map((crew_mapping) => crew_mapping.crew.name).join(', ')}</Td>
                                 <Td>
                                     {new Date(application.created * 1000).toLocaleDateString('no-NB', {
                                         year: 'numeric',
@@ -170,6 +183,7 @@ export const Applications: React.FC<Props> = ({ applications }) => {
                                         day: 'numeric',
                                     })}
                                 </Td>
+                                {showEvent ? <Td>{application.event.name}</Td> : null}
                                 <Td>
                                     <Span>{getState(application.state)}</Span>
                                 </Td>

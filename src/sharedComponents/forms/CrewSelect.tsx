@@ -28,9 +28,11 @@ const Select = styled.select`
 interface Props {
     onlyActive?: boolean;
     onlyApplyable?: boolean;
+    name: string;
+    required?: boolean;
 }
 
-export const CrewSelect: React.FC<Props> = ({ onlyActive, onlyApplyable }) => {
+export const CrewSelect: React.FC<Props> = ({ onlyActive, onlyApplyable, name, required }) => {
     const { data, isLoading, isLoadingError } = useCrews();
     const [selected, setSelected] = useState('');
     const crews = data
@@ -48,14 +50,16 @@ export const CrewSelect: React.FC<Props> = ({ onlyActive, onlyApplyable }) => {
     return (
         <Wrapper>
             <Select
-                name="selectedCrew"
+                name={name}
                 ref={register}
                 disabled={isLoading || isLoadingError}
                 value={selected}
                 onChange={onChange}
             >
-                <option value="" disabled>
-                    {(isLoading && 'Loading...') || (isLoadingError && 'Failed to load crew') || 'Select Crew'}
+                <option value="" disabled={!!required}>
+                    {(isLoading && 'Loading...') ||
+                        (isLoadingError && 'Failed to load crew') ||
+                        (required ? 'Velg et crew' : 'Ingen')}
                 </option>
                 {crews?.map((crew) => (
                     <option value={crew.uuid} key={crew.uuid}>
