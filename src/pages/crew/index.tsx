@@ -65,8 +65,8 @@ export const Crew: React.FC = () => {
 
     const isLoading = isLoadingApplications || isLoadingCurrentEvent || isLoadingDiscordMapping;
     const isLoadingError = isLoadingApplicationsError || isLoadingCurrentEventError || isLoadingDiscordMappingError;
-    const currentApplications = applications?.filter((application) => application.event_uuid === currentEvent?.uuid);
-    const oldApplications = applications?.filter((application) => application.event_uuid !== currentEvent?.uuid);
+    const currentApplications = applications?.filter((application) => application.event.uuid === currentEvent?.uuid);
+    const oldApplications = applications?.filter((application) => application.event.uuid !== currentEvent?.uuid);
 
     const dob = client.user?.birthdate ?? '';
     const age = dateOfBirthToAge(dob);
@@ -91,7 +91,7 @@ export const Crew: React.FC = () => {
                             <Applications applications={currentApplications ?? []} />
                         </Skeleton>
                         <Skeleton loading={isLoading}>
-                            <Applications applications={oldApplications ?? []} />
+                            <Applications applications={oldApplications ?? []} showEvent={true} />
                         </Skeleton>
                     </TabbedBox>
                 </Container>
