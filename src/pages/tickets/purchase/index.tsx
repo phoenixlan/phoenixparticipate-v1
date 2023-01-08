@@ -25,7 +25,8 @@ export const TicketPurchase: React.FC = () => {
     const { data: currentEvent, isLoading } = useCurrentEvent();
     const dob = client.user?.birthdate ?? '';
     const age = dateOfBirthToAge(dob);
-    const ageLimit = currentEvent?.age_limit_inclusive ?? -1;
+    const ageLimit = currentEvent?.participant_age_limit_inclusive ?? -1;
+    const crewAgeLimit = currentEvent?.crew_age_limit_inclusive ?? -1;
 
     return (
         <Skeleton loading={isLoading}>
@@ -34,10 +35,15 @@ export const TicketPurchase: React.FC = () => {
                 {ageLimit !== -1 && age > ageLimit ? (
                     <WarningBox title="Du er for gammel">
                         <p>
-                            Aldersgrensen for neste arrangement er til og med {ageLimit} år(Du er {age} år i våre
-                            systemer). Du er eldre enn dette, og kan derfor ikke delta. Du har enda muligheten til å
+                            Aldersgrensen for å delta på neste arrangement er til og med {ageLimit} år. Du er eldre enn
+                            dette({age} år i våre systemer), og kan derfor ikke delta. Du har enda muligheten til å
                             kjøpe og overføre billetter til andre, da vi ofte ser at foreldre kjøper på vegne av
-                            vennegjenger o.l. Du kan ikke bruke billetten selv. Spørsmål? Kontakt info@phoenixlan.no
+                            vennegjenger o.l. Du kan ikke bruke billetten selv.
+                            {crewAgeLimit != -1
+                                ? ` Aldersgrensen for å søke crew er ${crewAgeLimit}. `
+                                : ' Det er ikke en aldersgrense på å søke crew - prøve det i stedet? '}
+                            <br />
+                            Spørsmål? Kontakt info@phoenixlan.no
                         </p>
                     </WarningBox>
                 ) : null}

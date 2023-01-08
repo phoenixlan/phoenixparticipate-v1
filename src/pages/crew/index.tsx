@@ -70,7 +70,7 @@ export const Crew: React.FC = () => {
 
     const dob = client.user?.birthdate ?? '';
     const age = dateOfBirthToAge(dob);
-    const ageLimit = currentEvent?.age_limit_inclusive ?? -1;
+    const ageLimit = currentEvent?.crew_age_limit_inclusive ?? -1;
 
     return (
         <Skeleton loading={isLoadingDiscordMapping}>
@@ -78,9 +78,11 @@ export const Crew: React.FC = () => {
                 {ageLimit > 0 && age > ageLimit ? (
                     <WarningBox title="Du er for gammel">
                         <p>
-                            Aldersgrensen for neste arrangement er til og med {ageLimit} år(Du er {age} år i våre
-                            systemer). Du kan søke, men du vil mest sannsynlig bli avslått. Spørsmål? Kontakt
-                            info@phoenixlan.no
+                            Aldersgrensen for å delta som crew på neste arrangement er til og med {ageLimit} år (Du er{' '}
+                            {age} år i våre systemer). Det gjøres noen ganger unntak for særegne situasjoner der
+                            spesiell kompetanse trengs. Du kan søke, men du vil mest sannsynlig bli avslått.
+                            <br />
+                            Spørsmål? Kontakt info@phoenixlan.no
                         </p>
                     </WarningBox>
                 ) : null}
