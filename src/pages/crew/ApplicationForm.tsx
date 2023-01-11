@@ -73,8 +73,8 @@ export const ApplicationForm: React.FC = () => {
             onSuccess: (application) => {
                 console.log('success');
             },
-            onError: (e) => {
-                toast.error('Kunne ikke send søknad');
+            onError: (e: Error) => {
+                toast.error(e.toString());
             },
             onSettled: () => {
                 console.log('settled');
