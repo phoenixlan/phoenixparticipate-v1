@@ -18,6 +18,7 @@ import { Header2 } from '../../../../../sharedComponents/Header2';
 import { useAuth } from '../../../../../authentication/useAuth';
 import { ShadowBox } from '../../../../../sharedComponents/boxes/ShadowBox';
 import { RadarEventInfo } from '../../../RadarEventInfo';
+import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatus';
 
 const Form = styled.form`
     display: flex;
@@ -34,6 +35,7 @@ interface Props {
 export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
     const [canBypassTicketSaleRestriction, setCanBypassTicketSaleRestriction] = useState(false);
+
     const auth = useAuth();
     // Decode and extract the JWT token so we can see if the user has special permissions
     useEffect(() => {
@@ -110,7 +112,12 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
         return amount;
     };
 
-    const seatableTickets = ticketTypes.filter((type) => type.seatable);
+    const seatableTickets = ticketTypes.filter(
+        (type) => type.seatable && (type.requires_membership || type.grants_membership),
+    );
+    const noMembershipTickets = ticketTypes.filter(
+        (type) => type.seatable && !(type.requires_membership || type.grants_membership),
+    );
     const otherTickets = ticketTypes.filter((type) => !type.seatable);
 
     const ticketSaleOpen = new Date().getTime() > bookingTime * 1000;
@@ -123,6 +130,21 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
                 )}
                 <Header2>Billetter(Lar deg være med på LAN)</Header2>
                 {seatableTickets.map((ticketType) => (
+                    <TypeRow
+                        key={ticketType.name}
+                        name={ticketType.name}
+                        uuid={ticketType.uuid}
+                        description={ticketType.description ?? undefined}
+                        amount={formMethods.watch(ticketType.uuid)}
+                        price={ticketType.price}
+                        isSeatable={ticketType.seatable}
+                        grantsMembership={ticketType.grants_membership}
+                        enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
+                        max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                    />
+                ))}
+                <Header2>Spesielle billetter</Header2>
+                {noMembershipTickets.map((ticketType) => (
                     <TypeRow
                         key={ticketType.name}
                         name={ticketType.name}
@@ -162,10 +184,8 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
                                 </p>
                             </>
                         ) : null}
-                        <PositiveButton
-                            fluid={true}
-                            disabled={getAmount() === 0}
-                        >{`Betal ${getAmount()},-`}</PositiveButton>
+                        <Header2>Totalsum: {getAmount()},-</Header2>
+                        <PositiveButton fluid={true} disabled={getAmount() === 0}>{`Betal`}</PositiveButton>
                     </>
                 ) : (
                     <>

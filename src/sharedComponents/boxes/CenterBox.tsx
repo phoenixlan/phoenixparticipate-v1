@@ -35,7 +35,8 @@ const Box = styled.div<{ centerVertically: boolean }>`
 
 const Content = styled.div<{ fluid: boolean; size: size }>`
     max-height: -webkit-fill-available;
-    height: auto;
+    max-height: -moz-available;
+    height: 100%;
     overflow: auto;
     display: inline-block;
     padding: ${({ theme }) => theme.spacing.s};

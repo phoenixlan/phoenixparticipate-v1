@@ -17,28 +17,42 @@ const Container = styled.div`
 
 const Steps = styled.div`
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    @media only screen and (min-width: 50em) {
+        flex-direction: row;
+        align-items: center;
+    }
     justify-content: space-between;
 `;
 
 const Step = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    @media only screen and (min-width: 50em) {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    @media only screen and (max-width: 50em) {
+        padding: ${({ theme }) => theme.spacing.xs} 0 ${({ theme }) => theme.spacing.xs} 0;
+    }
 `;
 
 const StepTextWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+
+    @media only screen and (max-width: 50em) {
+        margin-left: ${({ theme }) => theme.spacing.s};
+    }
 `;
 
-const StepCounter = styled.span`
+const StepCounter = styled.div`
     margin-right: ${({ theme }) => theme.spacing.xxs};
 `;
 
-const StepText = styled.span`
+const StepText = styled.div`
     margin-bottom: ${({ theme }) => theme.spacing.m};
     text-align: center;
 `;
@@ -89,32 +103,32 @@ export const Tutorial: React.FC = () => {
             <Header2>Slik kjøper du billett</Header2>
             <Steps>
                 <Step1>
+                    <StyledTicket />
                     <StepTextWrapper>
                         <StepCounter>1.</StepCounter>
                         <StepText>Velg antall</StepText>
                     </StepTextWrapper>
-                    <StyledTicket />
                 </Step1>
                 <Step2>
+                    <StyledCheckList />
                     <StepTextWrapper>
                         <StepCounter>2.</StepCounter>
                         <StepText>Godkjenn regler og rettningslinjer</StepText>
                     </StepTextWrapper>
-                    <StyledCheckList />
                 </Step2>
                 <Step3>
+                    <StyledPayments />
                     <StepTextWrapper>
                         <StepCounter>3.</StepCounter>
                         <StepText>Velg betalingsmetode</StepText>
                     </StepTextWrapper>
-                    <StyledPayments />
                 </Step3>
                 <Step4>
+                    <StyledCheckAll />
                     <StepTextWrapper>
                         <StepCounter>4.</StepCounter>
                         <StepText>Bekreft / Betal</StepText>
                     </StepTextWrapper>
-                    <StyledCheckAll />
                 </Step4>
             </Steps>
             <p>
