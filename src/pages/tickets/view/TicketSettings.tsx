@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Ticket as PhoenixTicket } from '@phoenixlan/phoenix.js';
 
-import { Ticket } from './Ticket';
 import { PositiveButton } from '../../../sharedComponents/forms/Button/PositiveButton';
 import { NegativeButton } from '../../../sharedComponents/forms/Button';
 import { Header2 } from '../../../sharedComponents/Header2';
 import { InlineSpinner } from '../../../sharedComponents/LoadingSpinner';
-import { useModal } from '../../../sharedComponents/modal/useModal';
 import { useTransferTicketMutation } from '../../../hooks/api/useTransferTicketMutation';
-import { Remote } from 'styled-icons/fluentui-system-filled';
 import { useHistory } from 'react-router-dom';
 
 const Container = styled.div`

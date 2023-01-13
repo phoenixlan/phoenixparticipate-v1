@@ -9,7 +9,6 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { CenterBox } from '../../../sharedComponents/boxes/CenterBox';
 import { Header1 } from '../../../sharedComponents/Header1';
-import { TicketCarousel } from './TicketCarousel';
 import { PositiveButton } from '../../../sharedComponents/forms/Button';
 
 import { useAuth } from '../../../authentication/useAuth';

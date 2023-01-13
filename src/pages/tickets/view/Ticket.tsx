@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Ticket as PhoenixApiTicket } from '@phoenixlan/phoenix.js';
 import { HandIndexFill } from '@styled-icons/bootstrap/HandIndexFill';
-import { SeatRow, Seat, Row, SubTitle, Title, Corner } from '../list/ticketConponents';
+import { SeatRow, Seat, Row, SubTitle, Title, Corner } from './ticketConponents';
 import QRCode from 'qrcode.react';
 
 const Container = styled.div`

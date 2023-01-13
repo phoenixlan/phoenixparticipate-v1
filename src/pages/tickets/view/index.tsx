@@ -8,7 +8,7 @@ import { Ticket } from './Ticket';
 import { ShadowBox } from '../../../sharedComponents/boxes/ShadowBox';
 import { Header2 } from '../../../sharedComponents/Header2';
 import { CenterBox } from '../../../sharedComponents/boxes/CenterBox';
-import { TicketSettings } from '../list/TicketSettings';
+import { TicketSettings } from './TicketSettings';
 import { Ticket as PhoenixJsTicket } from '@phoenixlan/phoenix.js';
 
 const S = {

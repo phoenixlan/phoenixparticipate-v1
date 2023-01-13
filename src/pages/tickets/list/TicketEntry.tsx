@@ -68,11 +68,19 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
                     <S.TicketSeater>
                         {ticket.ticket_type.seatable ? (
                             ticket.seater && ticket.seater.uuid !== client.user!.uuid ? (
-                                <b>
-                                    Seatet av {ticket.seater.firstname} {ticket.seater.lastname}
-                                </b>
+                                <span>
+                                    Seatet av:
+                                    <br />
+                                    <b>
+                                        {ticket.seater.firstname} {ticket.seater.lastname}
+                                    </b>
+                                </span>
                             ) : (
-                                <>Seatet av deg</>
+                                <span>
+                                    Seatet av:
+                                    <br />
+                                    <b>deg</b>
+                                </span>
                             )
                         ) : (
                             <b>Ikke sittebillett</b>

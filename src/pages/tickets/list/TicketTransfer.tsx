@@ -1,39 +1,46 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Ticket } from '@phoenixlan/phoenix.js';
-import { Corner, Row, SubTitle, Title } from './ticketConponents';
 import { useAuth } from '../../../authentication/useAuth';
 import { NegativeButton } from '../../../sharedComponents/forms/Button';
 import { useRevertTransferMutation } from '../../../hooks/api/useRevertTransferMutation';
 import { InlineSpinner } from '../../../sharedComponents/LoadingSpinner';
 
-const Outer = styled.div``;
+const S = {
+    Container: styled.div`
+        display: flex;
+        justify-content: space-between;
 
-const TicketOuter = styled.div`
-    height: 200px;
-    width: 150px;
-
-    position: relative;
-    overflow: hidden;
-
-    margin-bottom: ${({ theme }) => theme.spacing.m};
-`;
-
-const Container = styled.div`
-    border: 1px solid gray;
-    border-bottom: 1px dashed gray;
-    border-radius: 0.5rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    flex-direction: column;
-
-    font-size: ${({ theme }) => theme.fontSize.s};
-
-    width: 100%;
-    height: 100%;
-`;
+        padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s} ${({ theme }) => theme.spacing.m}
+            ${({ theme }) => theme.spacing.s};
+    `,
+    TicketId: styled.span``,
+    TicketType: styled.span`
+        @media only screen and (max-width: 40em) {
+            display: none;
+        }
+    `,
+    TicketSeater: styled.span``,
+    TicketGiver: styled.div``,
+    TicketReceiver: styled.div``,
+    TicketRevertNotice: styled.div``,
+    SeatContainer: styled.span`
+        @media only screen and (max-width: 40em) {
+            display: none;
+        }
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    `,
+    Row: styled.span``,
+    Seat: styled.span``,
+    TicketStatus: styled.span``,
+    ContainerLinkOuter: styled.div`
+        width: 100%;
+        border-top: 1px solid ${({ theme }) => theme.colors.Gray};
+        border-bottom: 1px solid ${({ theme }) => theme.colors.Gray};
+    `,
+};
 
 interface TicketTransferProps {
     transfer: Ticket.FullTicketTransfer;
@@ -75,60 +82,61 @@ export const TicketTransfer: React.FC<TicketTransferProps> = ({ transfer }) => {
     };
 
     return (
-        <Outer>
-            <TicketOuter>
-                <Corner left={true} top={false} />
-                <Corner left={false} top={false} />
-                <Container>
-                    <Row>
-                        <Title>Phoenix Lan</Title>
-                    </Row>
-                    <Row>
-                        <SubTitle>Billett-ID</SubTitle>
-                        <span>#{transfer.ticket.ticket_id}</span>
-                    </Row>
-                    <Row>
-                        <SubTitle>Til</SubTitle>
-                        <span>
-                            {transfer.to_user.uuid == user_uuid ? (
-                                <b>Deg</b>
-                            ) : (
-                                `${transfer.to_user.firstname} ${transfer.to_user.lastname}`
-                            )}
-                        </span>
-                    </Row>
-                    <Row>
-                        <SubTitle>Fra</SubTitle>
-                        <span>
-                            {transfer.from_user.uuid == user_uuid ? (
-                                <b>Deg</b>
-                            ) : (
-                                `${transfer.from_user.firstname} ${transfer.from_user.lastname}`
-                            )}
-                        </span>
-                    </Row>
-                    {transfer.reverted ? (
-                        <Row>
-                            <SubTitle>Angrefrist</SubTitle>
-                            <span>
-                                <b>Overføring er angret</b>
-                            </span>
-                        </Row>
-                    ) : (
-                        <Row>
-                            <SubTitle>Angrefrist</SubTitle>
-                            <span>{timeLeftLabel}</span>
-                        </Row>
-                    )}
-                </Container>
-            </TicketOuter>
-            {transfer.from_user.uuid === user_uuid && !transfer.expired && !transfer.reverted ? (
-                reverting ? (
-                    <InlineSpinner />
+        <S.ContainerLinkOuter>
+            <S.Container>
+                <S.TicketId>
+                    {transfer.ticket.ticket_type.seatable ? 'Billett ' : 'Kjøp '}&#x23;{transfer.ticket.ticket_id}
+                </S.TicketId>
+                <S.TicketType>{transfer.ticket.ticket_type.name}</S.TicketType>
+                {transfer.ticket.seat ? (
+                    <S.SeatContainer>
+                        <S.Row>Rad {transfer.ticket.seat.row.row_number}</S.Row>
+                        <S.Seat>Sete {transfer.ticket.seat.number}</S.Seat>
+                    </S.SeatContainer>
                 ) : (
-                    <NegativeButton onClick={revert}>Angre</NegativeButton>
-                )
-            ) : null}
-        </Outer>
+                    <b>Ikke seatet</b>
+                )}
+                <S.TicketReceiver>
+                    <span>
+                        Til:
+                        <br />
+                        {transfer.to_user.uuid == user_uuid ? (
+                            <b>Deg</b>
+                        ) : (
+                            `${transfer.to_user.firstname} ${transfer.to_user.lastname}`
+                        )}
+                    </span>
+                </S.TicketReceiver>
+                <S.TicketGiver>
+                    <span>
+                        Fra:
+                        <br />
+                        {transfer.from_user.uuid == user_uuid ? (
+                            <b>Deg</b>
+                        ) : (
+                            `${transfer.from_user.firstname} ${transfer.from_user.lastname}`
+                        )}
+                    </span>
+                </S.TicketGiver>
+                <S.TicketRevertNotice>
+                    {transfer.reverted ? (
+                        <b>Overføring er angret</b>
+                    ) : (
+                        <span>
+                            Angrefrist:
+                            <br />
+                            {timeLeftLabel}
+                        </span>
+                    )}
+                </S.TicketRevertNotice>
+                {transfer.from_user.uuid === user_uuid && !transfer.expired && !transfer.reverted ? (
+                    reverting ? (
+                        <InlineSpinner />
+                    ) : (
+                        <NegativeButton onClick={revert}>Angre</NegativeButton>
+                    )
+                ) : null}
+            </S.Container>
+        </S.ContainerLinkOuter>
     );
 };
