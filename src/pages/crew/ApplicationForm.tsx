@@ -19,6 +19,7 @@ import { InlineSpinner, LoadingSpinner } from '../../sharedComponents/LoadingSpi
 import { toast } from 'react-toastify';
 import { Header2 } from '../../sharedComponents/Header2';
 import { FormLabel } from '../../sharedComponents/forms/FormLabel';
+import { ErrorMessage } from '../../sharedComponents/forms/ErrorMessage';
 
 const Form = styled.form`
     display: flex;
@@ -45,14 +46,29 @@ type FormData = {
     applicationText: string;
 };
 
-const validationSchema = yup.object().shape({
-    crew1: yup.string().min(1, 'Vennligst velg et crew').required('Vennligst velg et crew'),
-    applicationText: yup
-        .string()
-        .min(1, 'Du kan ikke sende en tom søknad')
-        .max(10000, 'En søknad kan maks være 10000 tegn')
-        .required('Vennligst skriv en søknad'),
-});
+const validationSchema = yup
+    .object()
+    .shape({
+        crew1: yup.string().min(1, 'Vennligst velg et crew').required('Vennligst velg et crew'),
+        applicationText: yup
+            .string()
+            .min(1, 'Du kan ikke sende en tom søknad')
+            .max(10000, 'En søknad kan maks være 10000 tegn')
+            .required('Vennligst skriv en søknad'),
+        crew2: yup.string(),
+        crew3: yup.string(),
+    })
+    .test(
+        'no-dupes',
+        'Du kan ikke velge samme crew mer enn en gang - velg "ingen" om du ikke vil søke flere crew',
+        (value) => {
+            return !(
+                value.crew1 == value.crew2 ||
+                value.crew1 == value.crew3 ||
+                (value.crew2 == value.crew3 && value.crew2 !== '')
+            );
+        },
+    );
 
 export const ApplicationForm: React.FC = () => {
     const formMethods = useForm<FormData>({
@@ -72,6 +88,7 @@ export const ApplicationForm: React.FC = () => {
         {
             onSuccess: (application) => {
                 console.log('success');
+                toast.success('Søknaden er mottatt');
             },
             onError: (e: Error) => {
                 toast.error(e.toString());
@@ -100,6 +117,7 @@ export const ApplicationForm: React.FC = () => {
         addApplicationMutation.mutate(newApplication);
         e?.target.reset();
     });
+    console.log(formMethods);
 
     return (
         <FormProvider {...formMethods}>
@@ -142,6 +160,7 @@ export const ApplicationForm: React.FC = () => {
                 <CrewSelect name="crew3" onlyApplyable={true} />
                 <FormLabel>Søknad</FormLabel>
                 <TextArea name="applicationText" />
+                <ErrorMessage name="no-dupes" />
                 {addApplicationMutation.isLoading ? (
                     <InlineSpinner />
                 ) : (

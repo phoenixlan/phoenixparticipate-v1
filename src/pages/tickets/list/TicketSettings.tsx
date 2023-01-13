@@ -10,6 +10,7 @@ import { InlineSpinner } from '../../../sharedComponents/LoadingSpinner';
 import { useModal } from '../../../sharedComponents/modal/useModal';
 import { useTransferTicketMutation } from '../../../hooks/api/useTransferTicketMutation';
 import { Remote } from 'styled-icons/fluentui-system-filled';
+import { useHistory } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -44,11 +45,10 @@ enum ModificationState {
 
 export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
     const [email, setEmail] = useState('');
+    const history = useHistory();
     const [loading, setLoading] = useState(false);
 
     const [state, setState] = useState<ModificationState>(ModificationState.NONE);
-
-    const { show, remove } = useModal();
 
     const transferTicketMutation = useTransferTicketMutation();
 
@@ -82,7 +82,7 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
         setLoading(true);
         await transferTicketMutation.mutateAsync({ ticket_id: ticket.ticket_id, email });
         setLoading(false);
-        remove();
+        history.push('/');
     };
 
     let TicketModifyer: React.ReactElement | undefined = undefined;
@@ -119,10 +119,5 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
         }
     }
 
-    return (
-        <Container>
-            <Ticket ticket={ticket} showQr={true} enlarge={true} />
-            {loading ? <InlineSpinner /> : TicketModifyer}
-        </Container>
-    );
+    return <Container>{loading ? <InlineSpinner /> : TicketModifyer}</Container>;
 };

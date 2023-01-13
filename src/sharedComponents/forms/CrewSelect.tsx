@@ -79,7 +79,7 @@ export const CrewSelect: React.FC<Props> = ({ onlyActive, onlyApplyable, name, r
                     </p>
                 </>
             ) : null}
-            <ErrorMessage name="selectedCrew" />
+            <ErrorMessage name={name} />
         </Wrapper>
     );
 };

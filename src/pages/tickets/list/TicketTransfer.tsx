@@ -81,7 +81,7 @@ export const TicketTransfer: React.FC<TicketTransferProps> = ({ transfer }) => {
                 <Corner left={false} top={false} />
                 <Container>
                     <Row>
-                        <Title enlarge={false}>Phoenix Lan</Title>
+                        <Title>Phoenix Lan</Title>
                     </Row>
                     <Row>
                         <SubTitle>Billett-ID</SubTitle>

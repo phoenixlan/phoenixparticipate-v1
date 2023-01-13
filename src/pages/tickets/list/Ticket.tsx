@@ -1,19 +1,22 @@
-import React from 'react';
+/*
+ * @created 27/03/2021 - 20:11
+ * @project phoenixparticipate-v1
+ * @author andreasjj
+ */
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Ticket as PhoenixApiTicket } from '@phoenixlan/phoenix.js';
 import { HandIndexFill } from '@styled-icons/bootstrap/HandIndexFill';
-import { SeatRow, Seat, Row, SubTitle, Title, Corner } from '../list/ticketConponents';
+import { Ticket as PhoenixTicket } from '@phoenixlan/phoenix.js';
 import QRCode from 'qrcode.react';
+
+import { SeatRow, Seat, Row, SubTitle, Title, Corner } from './ticketConponents';
 
 const Container = styled.div`
     cursor: pointer;
     user-select: none;
-    display: flex;
-    flex-direction: row;
-    padding: ${({ theme }) => theme.spacing.m} 0 ${({ theme }) => theme.spacing.m} 0;
 `;
 
-const Inner = styled.div`
+const Inner = styled.div<{ enlarge: boolean }>`
     width: 100%;
     height: 100%;
     border: 1px solid gray;
@@ -26,32 +29,30 @@ const Inner = styled.div`
     justify-content: center;
 `;
 
-const InnerLeft = styled(Inner)`
-    border-right: 1px dashed gray;
+const InnerTop = styled(Inner)`
+    border-bottom: 1px dashed gray;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    font-size: ${({ theme }) => theme.fontSize.s};
+    font-size: ${({ theme, enlarge }) => (enlarge ? theme.fontSize.m : theme.fontSize.s)};
 `;
 
-const InnerRight = styled(Inner)`
-    border-left: 1px dashed gray;
+const InnerBottom = styled(Inner)`
+    border-top: 1px dashed gray;
 `;
 
-const Left = styled.div`
-    height: 8em;
-    width: 10em;
+const Top = styled.div<{ enlarge: boolean }>`
+    height: ${({ enlarge }) => (enlarge ? '300px' : '200px')};
+    width: ${({ enlarge }) => (enlarge ? '225px' : '150px')};
     position: relative;
     overflow: hidden;
 `;
 
-const Right = styled.div<{ checked_in: boolean }>`
-    height: 8em;
-    width: 5em;
+const Bottom = styled.div<{ enlarge: boolean }>`
+    height: ${({ enlarge }) => (enlarge ? '150px' : '100px')};
+    width: ${({ enlarge }) => (enlarge ? '225px' : '150px')};
     position: relative;
     overflow: hidden;
-    ${({ checked_in }) =>
-        checked_in ? 'transform: translateY(2em) rotate(45deg) translateY(-2em) translateX(1em);' : ''}
 `;
 
 const ripple = (color: string) => keyframes`
@@ -84,21 +85,24 @@ const TapIcon = styled(HandIndexFill)`
     color: slategray;
 `;
 
-interface TicketProps {
-    ticket?: PhoenixApiTicket.FullTicket;
+interface Props {
+    ticket: PhoenixTicket.FullTicket;
+    showQr?: boolean;
+    onClick?: () => void;
+    enlarge?: boolean;
 }
-export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
-    if (!ticket) {
-        return <b>Laster</b>;
-    }
+
+export const Ticket: React.FC<Props> = ({ ticket, showQr = false, onClick, enlarge = false }) => {
+    const qr = `PHOENIX_TICKET_${ticket.ticket_id}`;
+
     return (
-        <Container>
-            <Left>
-                <Corner left={false} top={true} />
+        <Container onClick={onClick}>
+            <Top enlarge={enlarge}>
+                <Corner left={true} top={false} />
                 <Corner left={false} top={false} />
-                <InnerLeft>
+                <InnerTop enlarge={enlarge}>
                     <Row>
-                        <Title>{ticket.event.name}</Title>
+                        <Title>Phoenix Lan</Title>
                     </Row>
                     <Row>
                         <SubTitle>{ticket.ticket_type.seatable ? 'Billett-ID' : 'Kjøp-ID'}</SubTitle>
@@ -134,23 +138,15 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                     ) : (
                         <span>Ikke sittebillett</span>
                     )}
-                </InnerLeft>
-            </Left>
-            <Right checked_in={!!ticket.checked_in}>
+                </InnerTop>
+            </Top>
+            <Bottom enlarge={enlarge}>
                 <Corner left={true} top={true} />
-                <Corner left={true} top={false} />
-                <InnerRight>
-                    {ticket.checked_in ? (
-                        <b>
-                            Sjekket
-                            <br />
-                            inn
-                        </b>
-                    ) : (
-                        <QRCode value={`test`} size={60} />
-                    )}
-                </InnerRight>
-            </Right>
+                <Corner left={false} top={true} />
+                <InnerBottom enlarge={enlarge}>
+                    {showQr ? <QRCode value={qr} size={enlarge ? 90 : 60} /> : <Tap>QR</Tap>}
+                </InnerBottom>
+            </Bottom>
         </Container>
     );
 };
