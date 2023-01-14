@@ -168,7 +168,7 @@ export const Applications: React.FC<Props> = ({ applications, showEvent }) => {
                     <tbody>
                         {applications.length === 0 && (
                             <tr>
-                                <Td colSpan={3}>
+                                <Td colSpan={showEvent ? 4 : 3}>
                                     <strong>Ingen søknader funnet</strong>
                                 </Td>
                             </tr>

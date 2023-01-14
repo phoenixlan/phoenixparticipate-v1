@@ -12,6 +12,9 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+
+    border-top: 1px solid ${({ theme }) => theme.colors.Gray};
+    border-bottom: 1px solid ${({ theme }) => theme.colors.Gray};
 `;
 
 const Center = styled.div`
@@ -19,12 +22,16 @@ const Center = styled.div`
 `;
 
 const Name = styled.div`
-    flex: 2;
-    text-align: left;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: ${({ theme }) => theme.spacing.xxs};
 `;
 
-const Description = styled(Center)`
-    flex: 3;
+const Description = styled.div``;
+
+const TicketPresentation = styled.div`
+    flex: 5;
+    padding: ${({ theme }) => theme.spacing.xxs};
 `;
 
 const Price = styled(Center)`
@@ -41,6 +48,8 @@ const Row = styled.div`
     align-items: center;
     justify-content: space-between;
     width: 100%;
+
+    padding: ${({ theme }) => theme.spacing.m} 0 ${({ theme }) => theme.spacing.m} 0;
 `;
 
 const WarningSymbol = styled.span`
@@ -77,14 +86,17 @@ export const TypeRow: React.FC<Props> = ({
     return (
         <Container>
             <Row>
-                {membershipStatus && grantsMembership ? <WarningSymbol>⚠</WarningSymbol> : null}
-                <Name>{name}</Name>
-                <Description>{description}</Description>
+                <TicketPresentation>
+                    <Name>
+                        {membershipStatus && grantsMembership ? <WarningSymbol>⚠</WarningSymbol> : null}
+                        {name}
+                    </Name>
+                    <Description>{description}</Description>
+                </TicketPresentation>
                 <Price>{`${price},-`}</Price>
                 {enabled ? (
                     <>
                         <NumberInput name={uuid} max={max} />
-                        <FullPrice>{`${amount * price},-`}</FullPrice>
                     </>
                 ) : null}
             </Row>
@@ -93,7 +105,9 @@ export const TypeRow: React.FC<Props> = ({
                     {isSeatable ? (
                         <b>
                             Du har allerede et Radar Event medlemskap for dette året ifølge våre systemer, så du kan
-                            kjøpe den billigere billetten i stedet.
+                            kjøpe den billigere billetten i stedet. Kjøp bare denne billetten om du skal kjøpe for
+                            venner som ikke har medlemskap Kjøp bare denne billetten om du skal kjøpe for venner som
+                            ikke har medlemskap.
                         </b>
                     ) : (
                         <b>Du har allerede et Radar Event medlemskap for dette året ifølge våre systemer</b>

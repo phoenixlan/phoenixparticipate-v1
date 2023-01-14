@@ -1,20 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const Title = styled.span<{ enlarge: boolean }>`
-    color: ${({ theme }) => theme.colors.DarkGray};
-    font-size: ${({ theme, enlarge }) => (enlarge ? theme.fontSize.l : theme.fontSize.m)};
+export const Title = styled.span`
+    color: ${({ theme }) => theme.colors.Black};
+    font-size: ${({ theme }) => theme.fontSize.m};
 `;
 
 export const SubTitle = styled.span`
     color: ${({ theme }) => theme.colors.DarkGray};
+    padding-right: ${({ theme }) => theme.spacing.s};
 `;
 
 export const Row = styled.div`
     width: 100%;
-    text-align: center;
     display: flex;
-    flex-direction: column;
+    flex-direction: Row;
 `;
 
 export const Seat = styled(Row)`

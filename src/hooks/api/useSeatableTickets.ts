@@ -10,7 +10,7 @@ import { AuthClient } from '../../authentication/client/AuthClient';
 
 export const seatableTicketsDefaultQueryKey = 'getSeatableTickets';
 
-const _getSeatableTickets = (client: AuthClient): Promise<Array<Ticket.FullTicket>> => {
+const _getSeatableTickets = (client: AuthClient, event_uuid: string | undefined): Promise<Array<Ticket.FullTicket>> => {
     try {
         const user = client.user;
 
@@ -19,7 +19,7 @@ const _getSeatableTickets = (client: AuthClient): Promise<Array<Ticket.FullTicke
                 res([]);
             });
         }
-        return User.getSeatableTickets(user.uuid);
+        return User.getSeatableTickets(user.uuid, event_uuid);
     } catch (e) {
         if (e instanceof RefreshError) {
             client.onAuthRefreshError && client.onAuthRefreshError();
@@ -28,11 +28,14 @@ const _getSeatableTickets = (client: AuthClient): Promise<Array<Ticket.FullTicke
     }
 };
 
-export const useSeatableTickets = (): QueryObserverResult<Array<Ticket.FullTicket>> => {
+export const useSeatableTickets = (
+    event_uuid: string | undefined | null,
+): QueryObserverResult<Array<Ticket.FullTicket>> => {
     const { client } = useAuth();
 
     return useQuery<Array<Ticket.FullTicket>>({
         queryKey: [seatableTicketsDefaultQueryKey],
-        queryFn: () => _getSeatableTickets(client),
+        queryFn: () => _getSeatableTickets(client, event_uuid as string | undefined), // enabled filters away null
+        enabled: event_uuid !== null, // null means not available yet
     });
 };
