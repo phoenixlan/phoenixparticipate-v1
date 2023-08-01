@@ -68,7 +68,7 @@
   "dependencies": {
     "@hookform/error-message": "^0.0.5",
     "@hookform/resolvers": "^2.0.0-rc.1",
-    "@phoenixlan/phoenix.js": "^2.26.0",
+    "@phoenixlan/phoenix.js": "^2.29.0",
     "@sentry/react": "^7.32.1",
     "@stripe/react-stripe-js": "^1.10.0",
     "@stripe/stripe-js": "^1.35.0",
