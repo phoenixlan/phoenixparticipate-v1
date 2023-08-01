@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import styled from 'styled-components';
-import { TicketType, User } from '@phoenixlan/phoenix.js';
+import { TicketType, TicketVoucher, User } from '@phoenixlan/phoenix.js';
 import { PositiveButton } from '../../../../../sharedComponents/forms/Button';
 import { ChosenTicketType } from '../../utils/types';
 import { ErrorMessage } from '../../../../../sharedComponents/forms/ErrorMessage';
@@ -19,6 +19,7 @@ import { useAuth } from '../../../../../authentication/useAuth';
 import { ShadowBox } from '../../../../../sharedComponents/boxes/ShadowBox';
 import { RadarEventInfo } from '../../../RadarEventInfo';
 import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatus';
+import { InfoBox } from '../../../../../sharedComponents/NoticeBox';
 
 const Form = styled.form`
     display: flex;
@@ -29,10 +30,11 @@ const Form = styled.form`
 
 interface Props {
     ticketTypes: Array<TicketType.TicketType>;
+    ticketVouchers: Array<TicketVoucher.BasicTicketVoucher>;
     onSubmit: (chosenTickets: ChosenTicketType) => void;
 }
 
-export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
+export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSubmit }) => {
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
     const [canBypassTicketSaleRestriction, setCanBypassTicketSaleRestriction] = useState(false);
 
@@ -123,78 +125,90 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, onSubmit }) => {
     const ticketSaleOpen = new Date().getTime() > bookingTime * 1000;
 
     return (
-        <FormProvider {...formMethods}>
-            <Form onSubmit={handleSubmit}>
-                {formMethods.errors && ticketTypes && ticketTypes.length > 0 && (
-                    <ErrorMessage name={ticketTypes[0].uuid} />
-                )}
-                <Header2>Billetter(Lar deg være med på LAN)</Header2>
-                {seatableTickets.map((ticketType) => (
-                    <TypeRow
-                        key={ticketType.name}
-                        name={ticketType.name}
-                        uuid={ticketType.uuid}
-                        description={ticketType.description ?? undefined}
-                        amount={formMethods.watch(ticketType.uuid)}
-                        price={ticketType.price}
-                        isSeatable={ticketType.seatable}
-                        grantsMembership={ticketType.grants_membership}
-                        enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
-                        max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
-                    />
-                ))}
-                <Header2>Spesielle billetter</Header2>
-                {noMembershipTickets.map((ticketType) => (
-                    <TypeRow
-                        key={ticketType.name}
-                        name={ticketType.name}
-                        uuid={ticketType.uuid}
-                        description={ticketType.description ?? undefined}
-                        amount={formMethods.watch(ticketType.uuid)}
-                        price={ticketType.price}
-                        isSeatable={ticketType.seatable}
-                        grantsMembership={ticketType.grants_membership}
-                        enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
-                        max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
-                    />
-                ))}
-                <Header2>Annet</Header2>
-                {otherTickets.map((ticketType) => (
-                    <TypeRow
-                        key={ticketType.name}
-                        name={ticketType.name}
-                        uuid={ticketType.uuid}
-                        description={ticketType.description ?? undefined}
-                        amount={formMethods.watch(ticketType.uuid)}
-                        price={ticketType.price}
-                        isSeatable={ticketType.seatable}
-                        grantsMembership={ticketType.grants_membership}
-                        enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
-                        max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
-                    />
-                ))}
-                {ticketSaleOpen || canBypassTicketSaleRestriction ? (
-                    <>
-                        {canBypassTicketSaleRestriction ? (
-                            <>
-                                <Header2>Du har spesielle tillatelser</Header2>
-                                <p>
-                                    Billettsalget åpner {new Date(bookingTime * 1000).toLocaleString()}, men du kan
-                                    kjøpe billetter allerede da du har spesialtillatelse
-                                </p>
-                            </>
-                        ) : null}
-                        <Header2>Totalsum: {getAmount()},-</Header2>
-                        <PositiveButton fluid={true} disabled={getAmount() === 0}>{`Betal`}</PositiveButton>
-                    </>
-                ) : (
-                    <>
-                        <Header2>Billettsalget har ikke åpnet</Header2>
-                        <p>Billettsalget åpner {new Date(bookingTime * 1000).toLocaleString()}</p>
-                    </>
-                )}
-            </Form>
-            <RadarEventInfo />
-        </FormProvider>
+        <>
+            {ticketVouchers.filter(
+                (voucher: TicketVoucher.BasicTicketVoucher) => !voucher.is_used && !voucher.is_expired,
+            ).length > 0 ? (
+                <InfoBox title="Du har ubrukte billett-gavekort">
+                    <p>
+                        Du har ubrukte billett-gavekort - du trenger ikke nødvendigvis å kjøpe en billett. Du kan bruke
+                        billett-gavekortet ditt ved å gå hit.
+                    </p>
+                </InfoBox>
+            ) : null}
+            <FormProvider {...formMethods}>
+                <Form onSubmit={handleSubmit}>
+                    {formMethods.errors && ticketTypes && ticketTypes.length > 0 && (
+                        <ErrorMessage name={ticketTypes[0].uuid} />
+                    )}
+                    <Header2>Billetter(Lar deg være med på LAN)</Header2>
+                    {seatableTickets.map((ticketType) => (
+                        <TypeRow
+                            key={ticketType.name}
+                            name={ticketType.name}
+                            uuid={ticketType.uuid}
+                            description={ticketType.description ?? undefined}
+                            amount={formMethods.watch(ticketType.uuid)}
+                            price={ticketType.price}
+                            isSeatable={ticketType.seatable}
+                            grantsMembership={ticketType.grants_membership}
+                            enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
+                            max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                        />
+                    ))}
+                    <Header2>Spesielle billetter</Header2>
+                    {noMembershipTickets.map((ticketType) => (
+                        <TypeRow
+                            key={ticketType.name}
+                            name={ticketType.name}
+                            uuid={ticketType.uuid}
+                            description={ticketType.description ?? undefined}
+                            amount={formMethods.watch(ticketType.uuid)}
+                            price={ticketType.price}
+                            isSeatable={ticketType.seatable}
+                            grantsMembership={ticketType.grants_membership}
+                            enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
+                            max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                        />
+                    ))}
+                    <Header2>Annet</Header2>
+                    {otherTickets.map((ticketType) => (
+                        <TypeRow
+                            key={ticketType.name}
+                            name={ticketType.name}
+                            uuid={ticketType.uuid}
+                            description={ticketType.description ?? undefined}
+                            amount={formMethods.watch(ticketType.uuid)}
+                            price={ticketType.price}
+                            isSeatable={ticketType.seatable}
+                            grantsMembership={ticketType.grants_membership}
+                            enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
+                            max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                        />
+                    ))}
+                    {ticketSaleOpen || canBypassTicketSaleRestriction ? (
+                        <>
+                            {canBypassTicketSaleRestriction ? (
+                                <>
+                                    <Header2>Du har spesielle tillatelser</Header2>
+                                    <p>
+                                        Billettsalget åpner {new Date(bookingTime * 1000).toLocaleString()}, men du kan
+                                        kjøpe billetter allerede da du har spesialtillatelse
+                                    </p>
+                                </>
+                            ) : null}
+                            <Header2>Totalsum: {getAmount()},-</Header2>
+                            <PositiveButton fluid={true} disabled={getAmount() === 0}>{`Betal`}</PositiveButton>
+                        </>
+                    ) : (
+                        <>
+                            <Header2>Billettsalget har ikke åpnet</Header2>
+                            <p>Billettsalget åpner {new Date(bookingTime * 1000).toLocaleString()}</p>
+                        </>
+                    )}
+                </Form>
+                <RadarEventInfo />
+            </FormProvider>
+        </>
     );
 };

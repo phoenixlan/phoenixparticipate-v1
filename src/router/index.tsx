@@ -24,6 +24,7 @@ import { TicketSeating } from '../pages/tickets/seat';
 import { MembershipStatus } from '../pages/membership';
 import { DiscordMappingManagement } from '../pages/discord';
 import { TicketViewer } from '../pages/tickets/view';
+import { TicketVouchers } from '../pages/tickets/vouchers';
 
 export const Router: React.FC = () => {
     const { initialized } = useAuth();
@@ -68,6 +69,9 @@ export const Router: React.FC = () => {
                             </AuthRoute>
                             <AuthRoute {...props} exact path="/my-crew">
                                 <MyCrew />
+                            </AuthRoute>
+                            <AuthRoute {...props} exact path="/ticket-vouchers">
+                                <TicketVouchers />
                             </AuthRoute>
                             <AuthRoute {...props} path="*">
                                 <Error404 />

@@ -28,6 +28,7 @@ import { Stripe } from './vendors/stripe';
 import useDidMountEffect from '../../../hooks/useDidMountEffect';
 import { TicketMinting } from './steps/step6/TicketMinting';
 import { useCurrentEventTicketTypes } from '../../../hooks/api/useCurrentEventTicketTypes';
+import { useOwnedTicketVouchers } from '../../../hooks/api/useOwnedTicketVouchers';
 import { Vipps } from './vendors/vipps';
 import { toast } from 'react-toastify';
 import { ShadowBox } from '../../../sharedComponents/boxes/ShadowBox';
@@ -42,8 +43,11 @@ const Container = styled.div`
 export const Form: React.FC = () => {
     const uuid = useQuery('uuid');
 
-    const { data: ticketTypesUnsorted, isLoading, isLoadingError } = useCurrentEventTicketTypes();
+    const { data: ticketTypesUnsorted, isLoading: isTicketTypesLoading, isLoadingError } = useCurrentEventTicketTypes();
     const ticketTypes = (ticketTypesUnsorted ?? []).sort((a, b) => a.price - b.price);
+    const { data: ticketVouchers, isLoading: isTicketVouchersLoading } = useOwnedTicketVouchers();
+
+    const isLoading = isTicketTypesLoading || isTicketVouchersLoading;
 
     const [currentStep, setCurrentStep] = useState<Step>(Step.TicketSelection);
     const [chosenPaymentOption, setChosenPaymentOption] = useState<PaymentMethodType>(PaymentMethodType.None);
@@ -133,7 +137,13 @@ export const Form: React.FC = () => {
     const renderStep = (step: Step, ticketTypes: Array<TicketType.TicketType>) => {
         switch (step) {
             case Step.TicketSelection:
-                return <TicketsForm ticketTypes={ticketTypes} onSubmit={setTickets} />;
+                return (
+                    <TicketsForm
+                        ticketTypes={ticketTypes}
+                        ticketVouchers={ticketVouchers ?? []}
+                        onSubmit={setTickets}
+                    />
+                );
             case Step.TOSrules:
                 return <Tos onAccept={nextStep} showRules={true} />;
             case Step.TOSpayment:

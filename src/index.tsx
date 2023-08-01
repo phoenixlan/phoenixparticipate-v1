@@ -9,9 +9,17 @@ import App from './App';
 import { init } from '@phoenixlan/phoenix.js';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
+import * as Sentry from '@sentry/react';
+
 const initialize = () => {
     if (process.env.BASE_URL) {
         init(process.env.BASE_URL);
+        if (process.env.REACT_APP_SENTRY_DSN) {
+            console.log('Sentry initialized');
+            Sentry.init({
+                dsn: process.env.REACT_APP_SENTRY_DSN,
+            });
+        }
     } else {
         throw Error('BASE_URL is not defined');
     }

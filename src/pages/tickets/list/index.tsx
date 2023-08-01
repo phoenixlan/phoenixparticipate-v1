@@ -14,14 +14,16 @@ import { PositiveButton } from '../../../sharedComponents/forms/Button';
 import { useAuth } from '../../../authentication/useAuth';
 import { useCurrentEvent } from '../../../hooks';
 import { useOwnedTickets } from '../../../hooks/api/useOwnedTickets';
+import { useOwnedTicketVouchers } from '../../../hooks/api/useOwnedTicketVouchers';
 import { useTicketTransfers } from '../../../hooks/api/useTicketTransfers';
 
-import { Ticket } from '@phoenixlan/phoenix.js';
+import { Ticket, TicketVoucher } from '@phoenixlan/phoenix.js';
 import { Skeleton } from '../../../sharedComponents/Skeleton';
 import { Header2 } from '../../../sharedComponents/Header2';
 import { ShadowBox } from '../../../sharedComponents/boxes/ShadowBox';
 import { TicketTransfer } from './TicketTransfer';
 import { TicketEntry } from './TicketEntry';
+import { InfoBox } from '../../../sharedComponents/NoticeBox';
 
 const BuyTicketPrompt = styled.div`
     text-align: center;
@@ -44,9 +46,11 @@ export const Tickets: React.FC = () => {
     const { client } = useAuth();
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
     const { data: ownedTickets, isLoading: isLoadingOwnedTickets } = useOwnedTickets();
+    const { data: ticketVouchers, isLoading: isTicketVouchersLoading } = useOwnedTicketVouchers();
     const { data: ticketTransfers, isLoading: isLoadingTicketTransfers } = useTicketTransfers();
 
-    const isLoading = isLoadingCurrentEvent || isLoadingOwnedTickets || isLoadingTicketTransfers;
+    const isLoading =
+        isLoadingCurrentEvent || isLoadingOwnedTickets || isLoadingTicketTransfers || isTicketVouchersLoading;
 
     const buyTickets = () => {
         history.push('/buy');
@@ -65,6 +69,16 @@ export const Tickets: React.FC = () => {
     return (
         <Skeleton loading={isLoading}>
             <CenterBox centerVertically={false}>
+                {(ticketVouchers ?? []).filter(
+                    (voucher: TicketVoucher.BasicTicketVoucher) => !voucher.is_used && !voucher.is_expired,
+                ).length > 0 ? (
+                    <InfoBox title="Du har ubrukte billett-gavekort">
+                        <p>
+                            Du har ubrukte billett-gavekort - dersom du vil delta på arrangementet med de må du først
+                            konvertere dem til en billett. Det kan du gjøre her
+                        </p>
+                    </InfoBox>
+                ) : null}
                 {(ticketTransfers ?? []).length > 0 ? (
                     <>
                         <Header1>Billett-overføringer</Header1>

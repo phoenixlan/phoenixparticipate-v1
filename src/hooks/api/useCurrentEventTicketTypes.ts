@@ -29,10 +29,8 @@ export const useCurrentEventTicketTypes = (): QueryObserverResult<Array<TicketTy
     return useQuery<Array<TicketType.TicketType>>({
         queryKey: [currentEventTicketTypesDefaultQueryKey, event?.uuid],
         queryFn: () => {
-            if (!event) {
-                return Promise.reject('UUID not ready');
-            }
-            return _getCurrentEventTicketTypes(client, event?.uuid);
+            return _getCurrentEventTicketTypes(client, event?.uuid as string);
         },
+        enabled: !!event,
     });
 };
