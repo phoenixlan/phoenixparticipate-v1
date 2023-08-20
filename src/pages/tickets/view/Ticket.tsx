@@ -40,7 +40,7 @@ const InnerRight = styled(Inner)`
 
 const Left = styled.div`
     height: 8em;
-    width: 10em;
+    width: 14em;
     position: relative;
     overflow: hidden;
 `;
@@ -147,7 +147,7 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                             inn
                         </b>
                     ) : (
-                        <QRCode value={`test`} size={60} />
+                        <QRCode value={`phoenix-lan-ticket:${ticket.ticket_id}`} size={60} />
                     )}
                 </InnerRight>
             </Right>

@@ -9,6 +9,7 @@ import { Header } from './Header';
 import { Transition, TransitionStatus } from 'react-transition-group';
 import { ActiveLink } from './ActiveLink';
 import { useSwipeable } from 'react-swipeable';
+import { useOwnedTicketVouchers } from '../../hooks/api/useOwnedTicketVouchers';
 
 const Wrapper = styled.div`
     display: flex;
@@ -125,6 +126,8 @@ export const Template: React.FC = ({ children }) => {
     const [isSidebarVisible, setIsSidebarVisible] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
+    const { data: ticketVouchers, isLoading: isTicketVouchersLoading } = useOwnedTicketVouchers();
+
     // This is needed to disable iOS's swipe left/right geasture to navigate back and forth in the history
     // we do this to allow a swip to the right to open the sidebar
     useEffect(() => {
@@ -177,6 +180,11 @@ export const Template: React.FC = ({ children }) => {
                                                 <ActiveLink to="/" onClick={onClick}>
                                                     Mine billetter
                                                 </ActiveLink>
+                                                {(ticketVouchers ?? []).length > 0 ? (
+                                                    <ActiveLink to="/ticket-vouchers" onClick={onClick}>
+                                                        Mine gavekort
+                                                    </ActiveLink>
+                                                ) : null}
                                                 <ActiveLink to="/buy" onClick={onClick}>
                                                     Kjøp billetter
                                                 </ActiveLink>
@@ -191,9 +199,6 @@ export const Template: React.FC = ({ children }) => {
                                                 </ActiveLink>
                                                 <ActiveLink to="/my-crew" onClick={onClick}>
                                                     Mine verv
-                                                </ActiveLink>
-                                                <ActiveLink to="/friends" onClick={onClick}>
-                                                    Venner
                                                 </ActiveLink>
                                             </Links>
                                         )}
