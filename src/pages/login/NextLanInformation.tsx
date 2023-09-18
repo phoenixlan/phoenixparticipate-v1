@@ -37,7 +37,7 @@ const Container = styled.div<{ skeleton: boolean }>`
 
                 &:before {
                     animation: ${shineLines} 1.6s infinite linear;
-                    position: absolute;
+                    position: relative;
                     display: block;
                     width: 100px;
                     content: '';
