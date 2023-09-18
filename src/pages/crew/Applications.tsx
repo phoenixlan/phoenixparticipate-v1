@@ -92,12 +92,12 @@ const BodyRow = styled.tr`
 `;
 
 interface Props {
-    applications: Array<Crew.Applications.Application>;
+    applications: Array<Crew.Applications.BaseApplication>;
     showEvent?: boolean;
 }
 
 export const Applications: React.FC<Props> = ({ applications, showEvent }) => {
-    const [selectedApplication, setSelectedApplication] = useState<Crew.Applications.Application | null>(null);
+    const [selectedApplication, setSelectedApplication] = useState<Crew.Applications.BaseApplication | null>(null);
 
     const hideSelectedApplicationView = () => {
         setSelectedApplication(null);
