@@ -585,10 +585,17 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
+<<<<<<< HEAD
 "@phoenixlan/phoenix.js@^2.35.0":
   version "2.35.0"
   resolved "https://registry.yarnpkg.com/@phoenixlan/phoenix.js/-/phoenix.js-2.35.0.tgz#177cbb3ffa90ce221a331b50450b70aed285bd1c"
   integrity sha512-jOYRbuwi6mFkkGp5NJXML9g81/pzcUSI2PcfZ9at6Sw+9Vg08o85DRTZinWdawpCJXSI9iFODRDx92fde+u6Ow==
+=======
+"@phoenixlan/phoenix.js@^2.29.0":
+  version "2.36.0"
+  resolved "https://registry.yarnpkg.com/@phoenixlan/phoenix.js/-/phoenix.js-2.36.0.tgz#6f8bb6404b16370fc1b6dd35339c0ed399e32d29"
+  integrity sha512-UX66gMMz6fh+atoGN2sg/tOd8xavSUp6s2IKwebUZDl0CdYPmq+Xgjecb3PL730CztapSc3TV0stq65VBszFew==
+>>>>>>> 734bf7e (Fix phoenixJS changes)
   dependencies:
     jwt-decode "^3.1.2"
 

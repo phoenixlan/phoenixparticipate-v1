@@ -10,7 +10,7 @@ import { useAuth } from '../../authentication/useAuth';
 
 export const userApplicationDefaultQueryKey = 'getUserApplications';
 
-const _getUserApplications = (client: AuthClient): Promise<Array<Crew.Applications.BaseApplication>> => {
+const _getUserApplications = (client: AuthClient): Promise<Array<Crew.Applications.BasicApplication>> => {
     try {
         return Crew.Applications.getUserApplications();
     } catch (e) {
@@ -21,10 +21,10 @@ const _getUserApplications = (client: AuthClient): Promise<Array<Crew.Applicatio
     }
 };
 
-export const useUserApplications = (): QueryObserverResult<Array<Crew.Applications.BaseApplication>> => {
+export const useUserApplications = (): QueryObserverResult<Array<Crew.Applications.BasicApplication>> => {
     const { client } = useAuth();
 
-    return useQuery<Array<Crew.Applications.BaseApplication>>({
+    return useQuery<Array<Crew.Applications.BasicApplication>>({
         queryKey: [userApplicationDefaultQueryKey],
         queryFn: () => _getUserApplications(client),
     });
