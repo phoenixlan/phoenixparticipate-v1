@@ -6,6 +6,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Header2 } from '../../sharedComponents/Header2';
+import { useSiteConfig } from '../../hooks/api/useSiteConfig';
+import { TextSkeleton } from '../../sharedComponents/TextSkeleton';
 
 const Container = styled.div`
     padding: ${({ theme }) => theme.spacing.m};
@@ -16,6 +18,8 @@ const I = styled.i`
 `;
 
 export const Terms: React.FC = () => {
+    const { data: siteConfig } = useSiteConfig();
+    const name = siteConfig?.name;
     return (
         <Container>
             <Header2 center={false}>Krav og informasjon:</Header2>
@@ -34,7 +38,8 @@ export const Terms: React.FC = () => {
                 </li>
             </ul>
             <I>
-                Kontakt Phoenix på <a href="mailto:info@phoenixlan.no">info@phoenixlan.no</a> ved videre spørsmål
+                Kontakt {name ?? <TextSkeleton />} på <a href="mailto:info@phoenixlan.no">info@phoenixlan.no</a> ved
+                videre spørsmål
             </I>
         </Container>
     );

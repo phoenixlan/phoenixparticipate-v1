@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { DropdownMenu } from '../../sharedComponents/dropdownMenu';
 import { useAuth } from '../../authentication/useAuth';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { PersonSquare } from '@styled-icons/bootstrap/PersonSquare';
 import { LogOut } from '@styled-icons/boxicons-solid/LogOut';
 import { RightArrow } from '@styled-icons/boxicons-solid/RightArrow';
@@ -18,6 +18,7 @@ import { Avatar } from '@phoenixlan/phoenix.js';
 import { getAvatar } from '../../utils';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
+import { useSiteConfig } from '../../hooks/api/useSiteConfig';
 
 const Icon = styled.div`
     display: flex;
@@ -37,24 +38,16 @@ const ProfilePic = styled.img`
     cursor: pointer;
 `;
 
-const Blink = keyframes`
-    0% {
-        opacity: 0.8;
-    }
-    100% {
-        opacity: 0;
-    }
-`;
-
 const StyledCog = styled(Cog)`
     position: absolute;
     height: 1.5rem;
     cursor: pointer;
-    animation: ${Blink} 5000ms alternate infinite ease;
 `;
 
 export const HeaderMenu: React.FC = () => {
     const { client } = useAuth();
+    const { data: siteConfig } = useSiteConfig();
+    const features = siteConfig?.features ?? [];
     const history = useHistory();
 
     const [showDropdown, setShowDropdown] = useState(false);
@@ -69,7 +62,9 @@ export const HeaderMenu: React.FC = () => {
 
     return (
         <Icon>
-            <ProfilePic src={client.user && getAvatar(client.user, 'hd')} onClick={onShowDropdown} />
+            {features.includes('avatar') && (
+                <ProfilePic src={client.user && getAvatar(client.user, 'hd')} onClick={onShowDropdown} />
+            )}
             <StyledCog onClick={onShowDropdown} />
             {showDropdown && (
                 <DropdownMenu
@@ -84,18 +79,26 @@ export const HeaderMenu: React.FC = () => {
                                     client.logout();
                                 },
                             },
-                            {
-                                name: 'Avatar',
-                                icon: { left: <PersonSquare />, right: <RightArrow /> },
-                                subMenu: 'avatar',
-                            },
-                            {
-                                name: 'Discord-tilkobling',
-                                icon: { left: <LogOut /> },
-                                onClick: () => {
-                                    history.push('/third_party_mapping');
-                                },
-                            },
+                            ...(features.includes('avatar')
+                                ? [
+                                      {
+                                          name: 'Avatar',
+                                          icon: { left: <PersonSquare />, right: <RightArrow /> },
+                                          subMenu: 'avatar',
+                                      },
+                                  ]
+                                : []),
+                            ...(features.includes('discord')
+                                ? [
+                                      {
+                                          name: 'Discord-tilkobling',
+                                          icon: { left: <LogOut /> },
+                                          onClick: () => {
+                                              history.push('/third_party_mapping');
+                                          },
+                                      },
+                                  ]
+                                : []),
                         ],
                     }}
                     secondaries={[

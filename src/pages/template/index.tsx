@@ -10,6 +10,7 @@ import { Transition, TransitionStatus } from 'react-transition-group';
 import { ActiveLink } from './ActiveLink';
 import { useSwipeable } from 'react-swipeable';
 import { useOwnedTicketVouchers } from '../../hooks/api/useOwnedTicketVouchers';
+import { useSiteConfig } from '../../hooks/api/useSiteConfig';
 
 const Wrapper = styled.div`
     display: flex;
@@ -127,6 +128,8 @@ export const Template: React.FC = ({ children }) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     const { data: ticketVouchers, isLoading: isTicketVouchersLoading } = useOwnedTicketVouchers();
+    const { data: siteConfig } = useSiteConfig();
+    const features = siteConfig?.features ?? [];
 
     // This is needed to disable iOS's swipe left/right geasture to navigate back and forth in the history
     // we do this to allow a swip to the right to open the sidebar
@@ -188,18 +191,26 @@ export const Template: React.FC = ({ children }) => {
                                                 <ActiveLink to="/buy" onClick={onClick}>
                                                     Kjøp billetter
                                                 </ActiveLink>
-                                                <ActiveLink to="/crew" onClick={onClick}>
-                                                    Bli med å arrangere
-                                                </ActiveLink>
-                                                <ActiveLink to="/membership" onClick={onClick}>
-                                                    RE-Medlemskap
-                                                </ActiveLink>
-                                                <ActiveLink to="/seating" onClick={onClick}>
-                                                    Plassreservering
-                                                </ActiveLink>
-                                                <ActiveLink to="/my-crew" onClick={onClick}>
-                                                    Mine verv
-                                                </ActiveLink>
+                                                {features.includes('crew') && (
+                                                    <ActiveLink to="/crew" onClick={onClick}>
+                                                        Bli med å arrangere
+                                                    </ActiveLink>
+                                                )}
+                                                {features.includes('membership') && (
+                                                    <ActiveLink to="/membership" onClick={onClick}>
+                                                        RE-Medlemskap
+                                                    </ActiveLink>
+                                                )}
+                                                {features.includes('seatmap') && (
+                                                    <ActiveLink to="/seating" onClick={onClick}>
+                                                        Plassreservering
+                                                    </ActiveLink>
+                                                )}
+                                                {features.includes('crew') && (
+                                                    <ActiveLink to="/my-crew" onClick={onClick}>
+                                                        Mine verv
+                                                    </ActiveLink>
+                                                )}
                                             </Links>
                                         )}
                                     </Transition>

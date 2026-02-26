@@ -98,26 +98,31 @@ export const NextLanInformation: React.FC = () => {
                 </>
             ) : (
                 <>
-                    <h2>Neste Lan er:</h2>
+                    <h2>Neste arrangement er:</h2>
                     <p>
                         {event?.start_time &&
                             event?.end_time &&
-                            toDayRangeString(event.start_time * 1000, event.end_time * 1000)}{' '}
-                        i Kulturhuset, dørene åpner kl. {event?.start_time && toHourString(event.start_time * 1000)}
+                            toDayRangeString(event.start_time * 1000, event.end_time * 1000)}
+                        , dørene åpner kl. {event?.start_time && toHourString(event.start_time * 1000)}
                     </p>
                     <p>Pris per billett: fra {cheapestPrice},-</p>
                     <p>Billettsalget starter {event?.booking_time && toDateString(event.booking_time * 1000)}</p>
+                    {event?.seatmap_uuid ? (
+                        <>
+                            <p>
+                                Gruppe-seating starter{' '}
+                                {event?.booking_time &&
+                                    toDateString((event.booking_time + event.priority_seating_time_delta) * 1000)}
+                            </p>
+                            <p>
+                                Seating for resten starter{' '}
+                                {event?.booking_time &&
+                                    toDateString((event.booking_time + event.seating_time_delta) * 1000)}
+                            </p>
+                        </>
+                    ) : null}
                     <p>
-                        Gruppe-seating starter{' '}
-                        {event?.booking_time &&
-                            toDateString((event.booking_time + event.priority_seating_time_delta) * 1000)}
-                    </p>
-                    <p>
-                        Seating for resten starter{' '}
-                        {event?.booking_time && toDateString((event.booking_time + event.seating_time_delta) * 1000)}
-                    </p>
-                    <p>
-                        <Link href={process.env.REACT_APP_MAIN_SITE}>Les mer om LANet her</Link>
+                        <Link href={process.env.REACT_APP_MAIN_SITE}>Les mer om arrangementet her</Link>
                     </p>
                 </>
             )}

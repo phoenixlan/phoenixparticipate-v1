@@ -18,6 +18,8 @@ import { Header1 } from '../../sharedComponents/Header1';
 import { useCurrentUser } from '../../hooks/api/useCurrentUser';
 import { useCurrentEvent } from '../../hooks';
 import { Skeleton } from '../../sharedComponents/Skeleton';
+import { useSiteConfig } from '../../hooks/api/useSiteConfig';
+import { TextSkeleton } from '../../sharedComponents/TextSkeleton';
 
 const Empty = styled.div`
     display: flex;
@@ -36,6 +38,8 @@ const positionMappingsToCrewUuidList = (mappings: Array<PositionMapping.Position
 
 export const MyCrew: React.FC = () => {
     const { client } = useAuth();
+    const { data: siteConfig } = useSiteConfig();
+    const siteName = siteConfig?.name;
     const { data: currentUser, isLoading: isLoadingCurrentUser } = useCurrentUser();
     const { data: currentEvent, isLoading: isLoadingCurrentEvents } = useCurrentEvent();
 
@@ -56,7 +60,10 @@ export const MyCrew: React.FC = () => {
                 <Header1>Mine verv</Header1>
                 {current_crews.length === 0 && (
                     <Empty>
-                        <Header2>Du har ingen verv/tilhørighet til en gruppe hos Phoenix LAN for øyeblikket.</Header2>
+                        <Header2>
+                            Du har ingen verv/tilhørighet til en gruppe hos {siteName ?? <TextSkeleton />} for
+                            øyeblikket.
+                        </Header2>
                         <Link to="/crew">Søk her!</Link>
                     </Empty>
                 )}
