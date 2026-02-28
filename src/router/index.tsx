@@ -10,6 +10,7 @@ import { Switch, Route, BrowserRouter, Redirect } from 'react-router-dom';
 import { AuthRoute } from './AuthRoute';
 import { PublicRoute } from './PublicRoute';
 import { useAuth } from '../authentication/useAuth';
+import { useSiteConfig } from '../hooks/api/useSiteConfig';
 // Pages / routes
 import { Login } from '../pages/login';
 import { Loading } from '../pages/loading';
@@ -28,6 +29,8 @@ import { TicketVouchers } from '../pages/tickets/vouchers';
 
 export const Router: React.FC = () => {
     const { initialized } = useAuth();
+    const { data: siteConfig } = useSiteConfig();
+    const features = siteConfig?.features ?? [];
 
     if (!initialized) {
         return <Loading />;
@@ -43,9 +46,11 @@ export const Router: React.FC = () => {
                     path="/"
                     render={(props) => (
                         <Template>
-                            <AuthRoute {...props} exact path="/crew">
-                                <Crew />
-                            </AuthRoute>
+                            {features.includes('crew') && (
+                                <AuthRoute {...props} exact path="/crew">
+                                    <Crew />
+                                </AuthRoute>
+                            )}
                             <AuthRoute {...props} exact path="/">
                                 <Tickets />
                             </AuthRoute>
@@ -55,21 +60,29 @@ export const Router: React.FC = () => {
                             <AuthRoute {...props} exact path="/seating">
                                 <TicketSeating />
                             </AuthRoute>
-                            <AuthRoute {...props} exact path="/membership">
-                                <MembershipStatus />
-                            </AuthRoute>
-                            <AuthRoute {...props} exact path="/third_party_mapping">
-                                <DiscordMappingManagement />
-                            </AuthRoute>
+                            {features.includes('membership') && (
+                                <AuthRoute {...props} exact path="/membership">
+                                    <MembershipStatus />
+                                </AuthRoute>
+                            )}
+                            {features.includes('discord') && (
+                                <AuthRoute {...props} exact path="/third_party_mapping">
+                                    <DiscordMappingManagement />
+                                </AuthRoute>
+                            )}
                             <AuthRoute {...props} exact path="/buy">
                                 <TicketPurchase />
                             </AuthRoute>
-                            <AuthRoute {...props} exact path="/avatar">
-                                <Avatar />
-                            </AuthRoute>
-                            <AuthRoute {...props} exact path="/my-crew">
-                                <MyCrew />
-                            </AuthRoute>
+                            {features.includes('avatar') && (
+                                <AuthRoute {...props} exact path="/avatar">
+                                    <Avatar />
+                                </AuthRoute>
+                            )}
+                            {features.includes('crew') && (
+                                <AuthRoute {...props} exact path="/my-crew">
+                                    <MyCrew />
+                                </AuthRoute>
+                            )}
                             <AuthRoute {...props} exact path="/ticket-vouchers">
                                 <TicketVouchers />
                             </AuthRoute>

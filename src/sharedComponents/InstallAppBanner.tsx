@@ -7,6 +7,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { PlusSquareFill } from '@styled-icons/bootstrap/PlusSquareFill';
 import { IosShare } from '@styled-icons/material/IosShare';
+import { useSiteConfig } from '../hooks/api/useSiteConfig';
+import { TextSkeleton } from './TextSkeleton';
 
 const IosBanner = styled.div<{ isIpad: boolean }>`
     position: fixed;
@@ -110,6 +112,8 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export const InstallAppBanner: React.FC = () => {
+    const { data: siteConfig } = useSiteConfig();
+    const name = siteConfig?.name;
     const [show, setShow] = useState(false);
     const [showIosInstallMessage, setShowIosInstallMessage] = useState(false);
     const [installable, setInstallable] = useState(false);
@@ -188,8 +192,8 @@ export const InstallAppBanner: React.FC = () => {
                                 <Icon onClick={onHideBannerClick} />
                                 <PlusSquareFill size="1rem" />{' '}
                                 <span>
-                                    Installer Phoenix LAN-appen på iPhonen din: klikk <IosShare size="1rem" /> og
-                                    deretter &quot;Add to homescreen&quot;.
+                                    Installer {name ?? <TextSkeleton />}-appen på iPhonen din: klikk{' '}
+                                    <IosShare size="1rem" /> og deretter &quot;Add to homescreen&quot;.
                                 </span>
                             </Container>
                             {!isIpad() && <Arrow isPad={isIpad()} />}
@@ -199,7 +203,7 @@ export const InstallAppBanner: React.FC = () => {
                         <AndroidBanner>
                             <AndroidContainer>
                                 <Icon onClick={onHideBannerClick} />
-                                <span>Installer Phoenix LAN-appen: </span>
+                                <span>Installer {name ?? <TextSkeleton />}-appen: </span>
                                 <PlusSquareFill size="2rem" onClick={onInstallClick} />
                             </AndroidContainer>
                         </AndroidBanner>

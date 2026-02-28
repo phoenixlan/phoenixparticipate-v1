@@ -18,6 +18,8 @@ import { NegativeButton, PositiveButton } from '../../sharedComponents/forms/But
 import { User } from '@phoenixlan/phoenix.js';
 import { useRevertTransferMutation } from '../../hooks/api/useRevertTransferMutation';
 import { useRevokeDiscordMappingMutation } from '../../hooks/api/useRevokeDiscordMappingMutation';
+import { useSiteConfig } from '../../hooks/api/useSiteConfig';
+import { TextSkeleton } from '../../sharedComponents/TextSkeleton';
 
 const S = {
     PaddedBox: styled(ShadowBox)`
@@ -60,6 +62,8 @@ export const DiscordMappingManagement = () => {
     const { client } = useAuth();
     const { data: discordMapping, isLoading: isLoadingDiscordMapping } = useDiscordMapping(client.user!.uuid);
 
+    const { data: siteConfig } = useSiteConfig();
+    const name = siteConfig?.name;
     const revokeDiscordMappingMutation = useRevokeDiscordMappingMutation();
 
     const dob = client.user?.birthdate ?? '';
@@ -114,8 +118,9 @@ export const DiscordMappingManagement = () => {
                         <>
                             <Header2>Du har ikke koblet til Discord</Header2>
                             <p>
-                                Trykk på knappen under for å koble Discord-kontoen din til Phoenix. Les gjerne under om
-                                hva det innebærer å koble Discord-kontoen din til Phoenix først.
+                                Trykk på knappen under for å koble Discord-kontoen din til {name ?? <TextSkeleton />}.
+                                Les gjerne under om hva det innebærer å koble Discord-kontoen din til{' '}
+                                {name ?? <TextSkeleton />} først.
                             </p>
                             <p>
                                 Vi trenger kun tilgang til grunnleggende informasjon om kontoen. Vi lagrer bruker id-en
@@ -124,7 +129,7 @@ export const DiscordMappingManagement = () => {
                                 din(brukernavn) når det er nødvendig. Dette gjør at vi kan holde oss oppdatert selv om
                                 du endrer brukernavn. Vi får ikke tilgang til chatter eller lignende. Vi ber også om
                                 tillatelse til å legge deg til i Discord-servere, slik at vi kan legge deg til i
-                                Phoenix-serveren om du ikke allerede er det.
+                                {name ?? <TextSkeleton />}-serveren om du ikke allerede er det.
                             </p>
                             <S.Center>
                                 <PositiveButton
@@ -141,9 +146,9 @@ export const DiscordMappingManagement = () => {
                 <S.PaddedBox>
                     <Header2>Discord? Tilkobling?</Header2>
                     <p>
-                        Phoenix LAN har en Discord-server, mest aktiv under selve LANet. For å slippe at gruppeledere
-                        skal måtte finne og legge riktige rettigheter på alle som har blitt tatt opp, tilbyr vi en måte
-                        å automatisk få tilgang til gruppechatter når du blir tatt opp.{' '}
+                        {name ?? <TextSkeleton />} har en Discord-server, mest aktiv under selve LANet. For å slippe at
+                        gruppeledere skal måtte finne og legge riktige rettigheter på alle som har blitt tatt opp,
+                        tilbyr vi en måte å automatisk få tilgang til gruppechatter når du blir tatt opp.{' '}
                     </p>
                     <p>
                         En annen fordel er tilgjengelighet - vi ønsker noen ganger å snakke med søkere, og det er av
@@ -163,7 +168,7 @@ export const DiscordMappingManagement = () => {
                     <p>
                         Discord er svært populært blant folk som spiller dataspill, og de fleste vil ende opp med en
                         konto etterhvert som de blir kjent med folk som spiller. Det er likevel ikke nødvendig, ei
-                        trengs det for å delta på Phoenix LAN.
+                        trengs det for å delta på {name ?? <TextSkeleton />}.
                     </p>
                     {age <= 14 ? (
                         <p>

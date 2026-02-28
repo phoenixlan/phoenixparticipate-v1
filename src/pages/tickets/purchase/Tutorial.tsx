@@ -6,6 +6,8 @@
 import React from 'react';
 import { Header2 } from '../../../sharedComponents/Header2';
 import styled from 'styled-components';
+import { useSiteConfig } from '../../../hooks/api/useSiteConfig';
+import { TextSkeleton } from '../../../sharedComponents/TextSkeleton';
 import { Ticket } from '@styled-icons/entypo/Ticket';
 import { Checklist } from '@styled-icons/octicons/Checklist';
 import { Payments } from '@styled-icons/material-rounded/Payments';
@@ -98,6 +100,8 @@ const StyledCheckAll = styled(CheckAll)`
 `;
 
 export const Tutorial: React.FC = () => {
+    const { data: siteConfig } = useSiteConfig();
+    const name = siteConfig?.name;
     return (
         <Container>
             <Header2>Slik kjøper du billett</Header2>
@@ -133,8 +137,8 @@ export const Tutorial: React.FC = () => {
             </Steps>
             <p>
                 Når du har kjøpt billett får du den/de opp på siden &quot;Mine Billetter&quot;. Du velger plass etter at
-                du har kjøpt billetten på &quot;Plassreservering&quot;. Alle som skal på Phoenix LAN må ha en bruker med
-                en tilknyttet billett.
+                du har kjøpt billetten på &quot;Plassreservering&quot;. Alle som skal på {name ?? <TextSkeleton />} må
+                ha en bruker med en tilknyttet billett.
             </p>
             <p>
                 Det er mulig å kjøpe billetter på vegne av andre. Kjøp billetten(e) og overfør eierskap på siden
