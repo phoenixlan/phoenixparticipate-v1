@@ -12,9 +12,13 @@ import { NextLanInformation } from './NextLanInformation';
 import { LoginForm } from './LoginForm';
 import { LoginDisclaimer } from './Disclaimer';
 import { Header1 } from '../../sharedComponents/Header1';
+import { useSiteConfig } from '../../hooks/api/useSiteConfig';
 import Logo from '../../assets/logo.svg';
 
 const StyledLogo = styled(Logo)`
+    height: 20em;
+`;
+const StyledLogoImg = styled.img`
     height: 20em;
 `;
 const StyledLogoContainer = styled.div`
@@ -23,10 +27,13 @@ const StyledLogoContainer = styled.div`
 `;
 
 export const Login: React.FC = () => {
+    const { data: siteConfig } = useSiteConfig();
+    const logoUrl = siteConfig?.logo ? `${process.env.BASE_URL}/${siteConfig.logo}` : null;
+
     return (
         <CenterBox centerVertically={true}>
             <StyledLogoContainer>
-                <StyledLogo />
+                {logoUrl ? <StyledLogoImg src={logoUrl} /> : <StyledLogo />}
             </StyledLogoContainer>
             <SplitBox left={<NextLanInformation />} right={<LoginForm />} />
             <LoginDisclaimer />
