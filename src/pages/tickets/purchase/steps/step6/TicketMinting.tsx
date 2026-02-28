@@ -127,7 +127,9 @@ export const TicketMinting: React.FC<Props> = ({ uuid }) => {
             case Status.long:
                 return 'Det tar mer tid enn vanlig å gjennomføre betalingen - vi venter på tilbakemelding fra betalingstilbyder om at betalingen er gjennomført';
             case Status.failure:
-                return `Vi har enda ikke fått en oppdatering fra betalingstilbyderen våres - noe kan være galt på vår side. Kontakt ${siteConfig?.contact ?? ''}, så ordner vi det`;
+                return `Vi har enda ikke fått en oppdatering fra betalingstilbyderen våres - noe kan være galt på vår side. Kontakt ${
+                    siteConfig?.contact ?? ''
+                }, så ordner vi det`;
             case Status.success:
                 return 'Betalingen er gjennomført og kvittering er sendt til mailen din, vennligst sjekk mailen din. Du blir videresent til dine billetter om 5 sekunder...';
         }

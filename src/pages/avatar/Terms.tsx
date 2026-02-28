@@ -38,8 +38,9 @@ export const Terms: React.FC = () => {
                 </li>
             </ul>
             <I>
-                Kontakt {name ?? <TextSkeleton />} på <a href={`mailto:${siteConfig?.contact}`}>{siteConfig?.contact ?? <TextSkeleton />}</a> ved
-                videre spørsmål
+                Kontakt {name ?? <TextSkeleton />} på{' '}
+                <a href={`mailto:${siteConfig?.contact}`}>{siteConfig?.contact ?? <TextSkeleton />}</a> ved videre
+                spørsmål
             </I>
         </Container>
     );
