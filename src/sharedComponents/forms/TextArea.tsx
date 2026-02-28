@@ -24,7 +24,7 @@ const StyledTextArea = styled.textarea`
     font-size: ${({ theme }) => theme.fontSize.m};
     font-family: inherit;
     transition: border-color ${({ theme }) => theme.transition.default},
-                box-shadow ${({ theme }) => theme.transition.default};
+        box-shadow ${({ theme }) => theme.transition.default};
 
     &:focus {
         outline: none;
