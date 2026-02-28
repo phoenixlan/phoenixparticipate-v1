@@ -73,11 +73,17 @@ const theme = {
         xxl: '2.5rem',
     },
     shadow: {
-        default: 'rgb(0 0 0 / 15%) 0px 2px 4px 0px',
-        blueStrong: 'rgb(0 0 255 / 15%) 0px 4px 8px 0px',
-        lowKey: 'rgb(0 0 0 / 15%) 0px 1px 2px 0px',
-        levelEffect: 'rgb(0 0 0 / 15%) 0px 0px 4px 0px',
-        modal: 'rgb(0 0 0 / 15%) 0px 0px 5px 1px',
+        default: '0px 1px 3px rgb(0 0 0 / 8%), 0px 1px 2px rgb(0 0 0 / 6%)',
+        blueStrong: '0px 4px 12px rgb(0 0 255 / 10%)',
+        lowKey: '0px 1px 2px rgb(0 0 0 / 5%)',
+        levelEffect: '0px 0px 0px 1px rgb(0 0 0 / 5%), 0px 1px 3px rgb(0 0 0 / 8%)',
+        modal: '0px 8px 30px rgb(0 0 0 / 12%), 0px 0px 1px rgb(0 0 0 / 8%)',
+    },
+    borderRadius: {
+        s: '6px',
+        m: '8px',
+        l: '12px',
+        xl: '16px',
     },
     media: {
         phone: '320px',
@@ -90,6 +96,10 @@ const theme = {
     headerHeight: '50px',
     animation: {
         speed: 300,
+    },
+    transition: {
+        default: '150ms ease',
+        slow: '300ms ease',
     },
 } as const;
 

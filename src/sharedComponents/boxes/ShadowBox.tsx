@@ -9,7 +9,9 @@ import styled from 'styled-components';
 const Box = styled.div`
     margin: ${({ theme }) => theme.spacing.xs} 0 ${({ theme }) => theme.spacing.m} 0;
     box-shadow: ${({ theme }) => theme.shadow.default};
-    border-radius: ${({ theme }) => theme.spacing.xxs};
+    border-radius: ${({ theme }) => theme.borderRadius.l};
+    border: 1px solid ${({ theme }) => theme.colors.Gray};
+    background: ${({ theme }) => theme.colors.White};
 `;
 
 interface Props {

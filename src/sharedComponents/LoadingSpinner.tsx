@@ -23,24 +23,24 @@ const InlineLoaderOuter = styled.div`
 `;
 
 const InlineLoader = styled.div`
-    border: 0.25rem solid hsla(0, 0%, 0%, 0.5);
-    border-right-color: #000;
+    border: 0.2rem solid ${({ theme }) => theme.colors.Gray};
+    border-right-color: ${({ theme }) => theme.colors.primary};
     display: inline-block;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    animation: ${spin} 1s linear infinite;
+    animation: ${spin} 0.8s linear infinite;
     transform: translate(-50%, -50%);
 `;
 
 const Loader = styled.div`
-    border: 0.25rem solid hsla(0, 0%, 0%, 0.5);
-    border-right-color: #000;
+    border: 0.2rem solid ${({ theme }) => theme.colors.Gray};
+    border-right-color: ${({ theme }) => theme.colors.primary};
     display: inline-block;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    animation: ${spin} 1s linear infinite;
+    animation: ${spin} 0.8s linear infinite;
     position: absolute;
     left: 50%;
     top: 50%;

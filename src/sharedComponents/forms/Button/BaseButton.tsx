@@ -35,13 +35,30 @@ const Button = styled.button<StyledButtonProps>`
     position: relative;
     cursor: pointer;
     border: none;
-    font-weight: normal;
+    font-weight: 500;
     font-size: ${({ theme }) => theme.fontSize.m};
-    padding: ${({ theme }) => theme.spacing.nil} ${({ theme }) => theme.spacing.m};
-    border-radius: ${({ theme }) => theme.spacing.xxs};
+    padding: ${({ theme }) => theme.spacing.nil} ${({ theme }) => theme.spacing.l};
+    border-radius: ${({ theme }) => theme.borderRadius.m};
     ${(props) => BUTTON_SIZES[props.size]}
     ${(props) => props.fluid && 'width: 100%; flex-grow: 1;'}
-    
+    transition: background-color ${({ theme }) => theme.transition.default},
+                box-shadow ${({ theme }) => theme.transition.default},
+                transform ${({ theme }) => theme.transition.default};
+
+    &:hover:not(:disabled) {
+        filter: brightness(1.05);
+        box-shadow: ${({ theme }) => theme.shadow.default};
+    }
+
+    &:active:not(:disabled) {
+        transform: scale(0.98);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
     &:disabled span {
         opacity: 0.6;
     }

@@ -12,14 +12,14 @@ const InputContainer = styled.div<{ inFocus: boolean }>`
     flex-direction: row-reverse;
     align-items: center;
     width: fit-content;
-    ${({ inFocus }) =>
+    border: 1px solid ${({ theme }) => theme.colors.SemiDarkGray};
+    border-radius: ${({ theme }) => theme.borderRadius.m};
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+    ${({ inFocus, theme }) =>
         inFocus &&
         `
-        outline: solid 2px rgb(35, 97, 197);
-        outline-offset: 2px;
-        outline-style: auto;
-        outline-width: 5px;
-        border-radius: 4px;
+        border-color: ${theme.colors.primary};
+        box-shadow: 0 0 0 3px ${theme.colors.primary}22;
     `}
 `;
 
@@ -30,11 +30,11 @@ const Input = styled.input`
     max-width: 5rem;
     padding: 0.5rem;
     border: none;
-    border-width: 0 2px;
     font-size: ${({ theme }) => theme.fontSize.l};
     height: 3rem;
-    font-weight: bold;
+    font-weight: 600;
     text-align: center;
+    background: transparent;
 
     &::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -44,17 +44,21 @@ const Input = styled.input`
 const Button = styled.button`
     outline: none;
     -webkit-appearance: none;
-    background-color: transparent;
+    background-color: ${({ theme }) => theme.colors.LightGray};
     border: none;
     align-items: center;
     justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
     cursor: pointer;
-    margin: 0;
+    margin: ${({ theme }) => theme.spacing.xxs};
     position: relative;
-    border: 0.5px solid ${({ theme }) => theme.colors.SemiDarkGray};
-    border-radius: 50%;
+    border-radius: ${({ theme }) => theme.borderRadius.s};
+    transition: background-color 150ms ease;
+
+    &:hover {
+        background-color: ${({ theme }) => theme.colors.Gray};
+    }
 
     &:before {
         display: inline-block;

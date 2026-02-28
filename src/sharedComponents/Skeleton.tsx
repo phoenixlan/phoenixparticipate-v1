@@ -24,22 +24,23 @@ const SkeletonAnimation = styled.div`
         visibility: hidden;
     }
     & > * {
-        background-color: ${({ theme }) => theme.colors.LightGray};
+        background-color: ${({ theme }) => theme.colors.Gray};
         color: transparent !important;
         position: relative;
         overflow: hidden;
+        border-radius: ${({ theme }) => theme.borderRadius.s};
 
         &:before {
-            animation: ${shineLines} 1.6s infinite linear;
+            animation: ${shineLines} 1.6s infinite ease-in-out;
             position: absolute;
             display: block;
-            width: 100px;
+            width: 150px;
             content: '';
             background-image: linear-gradient(
                 90deg,
-                rgba(248, 248, 248, 1) 0%,
-                rgba(255, 255, 255, 1) 50%,
-                rgba(248, 248, 248, 1) 100%
+                rgba(233, 233, 233, 0) 0%,
+                rgba(255, 255, 255, 0.6) 50%,
+                rgba(233, 233, 233, 0) 100%
             );
             height: 100%;
         }

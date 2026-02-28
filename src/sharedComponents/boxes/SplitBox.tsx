@@ -18,9 +18,16 @@ const Container = styled.div`
 `;
 
 const Divider = styled.div`
-    border: 1px groove ${({ theme }) => theme.colors.Gray};
-    margin: ${({ theme }) => theme.spacing.xxs} ${({ theme }) => theme.spacing.xs};
+    border: none;
+    border-top: 1px solid ${({ theme }) => theme.colors.Gray};
+    margin: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.m};
     order: 2;
+
+    @media (min-width: ${({ theme }) => theme.media.tablet}) {
+        border-top: none;
+        border-left: 1px solid ${({ theme }) => theme.colors.Gray};
+        margin: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.xs};
+    }
 `;
 
 const Left = styled.div`

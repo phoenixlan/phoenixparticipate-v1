@@ -8,13 +8,16 @@ import styled from 'styled-components';
 
 const Header = styled.h1<{ center: boolean }>`
     font-size: ${({ theme }) => theme.fontSize.l};
-    line-height: 2.625rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
     margin: 0 0 ${({ theme }) => theme.spacing.m};
+    color: ${({ theme }) => theme.colors.Black};
     ${({ center }) => center && 'text-align: center;'};
 
     @media screen and (min-width: ${({ theme }) => theme.media.smallTablet}) {
         font-size: ${({ theme }) => theme.fontSize.xxl};
-        line-height: 3.75rem;
+        line-height: 1.2;
     }
 `;
 

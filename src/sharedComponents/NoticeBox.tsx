@@ -9,9 +9,10 @@ interface ContainerProps {
 }
 
 const Container = styled(ShadowBox)<ContainerProps>`
-    border: 0.25em solid ${({ color }) => color};
-    border-radius: 0.5rem;
-    padding: ${({ theme }) => theme.spacing.m};
+    border: 1px solid ${({ theme }) => theme.colors.Gray};
+    border-left: 4px solid ${({ color }) => color};
+    border-radius: ${({ theme }) => theme.borderRadius.m};
+    padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.l};
 `;
 
 const Message = styled.div``;

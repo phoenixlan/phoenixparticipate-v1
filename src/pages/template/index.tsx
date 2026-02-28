@@ -76,7 +76,7 @@ const Padding = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: ${({ theme }) => theme.spacing.m};
+    padding: ${({ theme }) => theme.spacing.s} ${({ theme }) => theme.spacing.s};
     width: 100%;
 `;
 

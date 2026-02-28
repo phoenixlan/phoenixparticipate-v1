@@ -13,7 +13,16 @@ const Container = styled.div<{ highlight: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: ${({ theme, highlight }) => (highlight ? theme.shadow.blueStrong : null)};
+    border: 2px dashed ${({ theme, highlight }) => (highlight ? theme.colors.primary : theme.colors.SemiDarkGray)};
+    border-radius: ${({ theme }) => theme.borderRadius.l};
+    background-color: ${({ theme, highlight }) => (highlight ? `${theme.colors.primary}08` : theme.colors.LightGray)};
+    cursor: pointer;
+    transition: border-color 150ms ease, background-color 150ms ease;
+
+    &:hover {
+        border-color: ${({ theme }) => theme.colors.primary};
+        background-color: ${({ theme }) => `${theme.colors.primary}08`};
+    }
 `;
 
 const Info = styled.div`
@@ -21,6 +30,7 @@ const Info = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: ${({ theme }) => theme.colors.DarkGray};
 `;
 
 const StyledUpload = styled(Upload)`

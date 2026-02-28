@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { PaymentMethodType } from './utils/types';
 import { getPaymentMethodLogo } from './utils/getPaymentMethodLogo';
 import { getPaymentMethodName } from './utils/getPaymentMethodName';
+import { useSiteConfig } from '../../../hooks/api/useSiteConfig';
 
 const Container = styled.div`
     padding: ${({ theme }) => theme.spacing.m};
@@ -40,18 +41,40 @@ const PaymentHeader = styled.div`
     font-weight: bold;
 `;
 
+const featureFlagByPaymentMethod: Record<string, string> = {
+    [PaymentMethodType.vipps]: 'vipps',
+    [PaymentMethodType.card]: 'stripe',
+};
+
 export const PaymentMethodsInfo: React.FC = () => {
+    const { data: siteConfig } = useSiteConfig();
+    const features = siteConfig?.features ?? [];
+
     const createPaymentMethodElement = (paymentMethod: PaymentMethodType) => {
+        const flag = featureFlagByPaymentMethod[paymentMethod];
+        if (!flag || !features.includes(flag)) {
+            return null;
+        }
         const logo = getPaymentMethodLogo(paymentMethod);
         if (logo) {
             return (
-                <PaymentMethod>
+                <PaymentMethod key={paymentMethod}>
                     {logo}
                     <PaymentMethodText>{getPaymentMethodName(paymentMethod)}</PaymentMethodText>
                 </PaymentMethod>
             );
         }
     };
+
+    const enabledMethods = Object.values(PaymentMethodType).filter((pm) => {
+        const flag = featureFlagByPaymentMethod[pm];
+        return flag && features.includes(flag);
+    });
+
+    if (enabledMethods.length === 0) {
+        return null;
+    }
+
     return (
         <Container>
             <PaymentHeader>Du kan betale med:</PaymentHeader>

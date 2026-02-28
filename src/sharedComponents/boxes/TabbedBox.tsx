@@ -12,8 +12,9 @@ const Tabs = styled.div`
     display: flex;
     align-items: center;
     height: 50px;
-    background-color: ${({ theme }) => theme.colors.Gray};
-    border-radius: 0.5rem 0.5rem 0 0;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.Gray};
+    gap: ${({ theme }) => theme.spacing.xxs};
+    padding: 0 ${({ theme }) => theme.spacing.xs};
 `;
 
 const Tab = styled.div<{ selected: boolean }>`
@@ -22,20 +23,19 @@ const Tab = styled.div<{ selected: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    ${({ theme, selected }) => selected && `background-color: ${theme.colors.DarkGray};`}
-    ${({ theme, selected }) => !selected && `border: 1px solid ${theme.colors.DarkGray};`}
-    
-    &:first-child {
-        border-radius: 0.5rem 0 0 0;
-    }
+    cursor: pointer;
+    font-weight: ${({ selected }) => (selected ? '600' : '400')};
+    color: ${({ theme, selected }) => (selected ? theme.colors.Black : theme.colors.DarkGray)};
+    border-bottom: 2px solid ${({ theme, selected }) => (selected ? theme.colors.primary : 'transparent')};
+    transition: color 150ms ease, border-color 150ms ease;
 
-    &:last-child {
-        border-radius: 0 0.5rem 0 0;
+    &:hover {
+        color: ${({ theme }) => theme.colors.Black};
     }
 `;
 
 const TabContent = styled.div`
-    border: 1px solid ${({ theme }) => theme.colors.DarkGray};
+    padding: ${({ theme }) => theme.spacing.xs};
 `;
 
 interface Props {

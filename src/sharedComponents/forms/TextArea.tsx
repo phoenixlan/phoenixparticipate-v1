@@ -18,6 +18,19 @@ const StyledTextArea = styled.textarea`
     resize: vertical;
     min-height: 100px;
     max-height: 400px;
+    padding: ${({ theme }) => theme.spacing.s};
+    border: 1px solid ${({ theme }) => theme.colors.SemiDarkGray};
+    border-radius: ${({ theme }) => theme.borderRadius.m};
+    font-size: ${({ theme }) => theme.fontSize.m};
+    font-family: inherit;
+    transition: border-color ${({ theme }) => theme.transition.default},
+                box-shadow ${({ theme }) => theme.transition.default};
+
+    &:focus {
+        outline: none;
+        border-color: ${({ theme }) => theme.colors.primary};
+        box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary}22;
+    }
 
     @media (max-width: ${({ theme }) => theme.media.smallTablet}) {
         font-size: ${({ theme }) => theme.fontSize.M};
