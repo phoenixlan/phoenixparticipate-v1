@@ -16,6 +16,7 @@ import { useDiscordMapping } from '../../hooks/api/useDiscordMapping';
 import { useSiteConfig } from '../../hooks/api/useSiteConfig';
 import { useCurrentEvent } from '../../hooks';
 import { Skeleton } from '../../sharedComponents/Skeleton';
+import { TextSkeleton } from '../../sharedComponents/TextSkeleton';
 import { dateOfBirthToAge } from '../../utils/age';
 import { useAuth } from '../../authentication/useAuth';
 import { WarningBox } from '../../sharedComponents/NoticeBox';
@@ -85,7 +86,7 @@ export const Crew: React.FC = () => {
                             {age} år i våre systemer). Det gjøres noen ganger unntak for særegne situasjoner der
                             spesiell kompetanse trengs. Du kan søke, men du vil mest sannsynlig bli avslått.
                             <br />
-                            Spørsmål? Kontakt info@phoenixlan.no
+                            Spørsmål? Kontakt {siteConfig?.contact ?? <TextSkeleton />}
                         </p>
                     </WarningBox>
                 ) : null}

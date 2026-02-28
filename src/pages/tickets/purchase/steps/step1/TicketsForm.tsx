@@ -141,7 +141,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                     {formMethods.errors && ticketTypes && ticketTypes.length > 0 && (
                         <ErrorMessage name={ticketTypes[0].uuid} />
                     )}
-                    <Header2>Billetter(Lar deg være med på LAN)</Header2>
+                    <Header2>Billetter(Lar deg være med på Arrangementet)</Header2>
                     {seatableTickets.map((ticketType) => (
                         <TypeRow
                             key={ticketType.name}

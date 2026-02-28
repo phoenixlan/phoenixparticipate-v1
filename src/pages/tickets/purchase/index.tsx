@@ -15,6 +15,8 @@ import { useCurrentEvent } from '../../../hooks';
 import { Skeleton } from '../../../sharedComponents/Skeleton';
 import { WarningBox } from '../../../sharedComponents/NoticeBox';
 import { dateOfBirthToAge } from '../../../utils/age';
+import { useSiteConfig } from '../../../hooks/api/useSiteConfig';
+import { TextSkeleton } from '../../../sharedComponents/TextSkeleton';
 
 const StyledShadowBox = styled(ShadowBox)`
     margin-bottom: ${({ theme }) => theme.spacing.xxl};
@@ -22,6 +24,7 @@ const StyledShadowBox = styled(ShadowBox)`
 
 export const TicketPurchase: React.FC = () => {
     const { client } = useAuth();
+    const { data: siteConfig } = useSiteConfig();
     const { data: currentEvent, isLoading } = useCurrentEvent();
     const dob = client.user?.birthdate ?? '';
     const age = dateOfBirthToAge(dob);
@@ -43,7 +46,7 @@ export const TicketPurchase: React.FC = () => {
                                 ? ` Aldersgrensen for å søke crew er ${crewAgeLimit}. `
                                 : ' Det er ikke en aldersgrense på å søke crew - prøve det i stedet? '}
                             <br />
-                            Spørsmål? Kontakt info@phoenixlan.no
+                            Spørsmål? Kontakt {siteConfig?.contact ?? <TextSkeleton />}
                         </p>
                     </WarningBox>
                 ) : null}

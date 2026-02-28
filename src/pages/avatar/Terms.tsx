@@ -38,7 +38,7 @@ export const Terms: React.FC = () => {
                 </li>
             </ul>
             <I>
-                Kontakt {name ?? <TextSkeleton />} på <a href="mailto:info@phoenixlan.no">info@phoenixlan.no</a> ved
+                Kontakt {name ?? <TextSkeleton />} på <a href={`mailto:${siteConfig?.contact}`}>{siteConfig?.contact ?? <TextSkeleton />}</a> ved
                 videre spørsmål
             </I>
         </Container>

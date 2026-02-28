@@ -8,6 +8,7 @@ import { poll } from '@phoenixlan/phoenix.js';
 import { LoadingSpinner } from '../../../../../sharedComponents/LoadingSpinner';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { useSiteConfig } from '../../../../../hooks/api/useSiteConfig';
 
 const Spinner = styled.div`
     position: relative;
@@ -46,6 +47,7 @@ enum ServerStatus {
 
 export const TicketMinting: React.FC<Props> = ({ uuid }) => {
     const history = useHistory();
+    const { data: siteConfig } = useSiteConfig();
 
     const POLLING_INTERVAL = 5;
     const NORMAL_WAIT_TIME_SECONDS = 60;
@@ -125,7 +127,7 @@ export const TicketMinting: React.FC<Props> = ({ uuid }) => {
             case Status.long:
                 return 'Det tar mer tid enn vanlig å gjennomføre betalingen - vi venter på tilbakemelding fra betalingstilbyder om at betalingen er gjennomført';
             case Status.failure:
-                return 'Vi har enda ikke fått en oppdatering fra betalingstilbyderen våres - noe kan være galt på vår side. Kontakt info@phoenixlan.no, så ordner vi det';
+                return `Vi har enda ikke fått en oppdatering fra betalingstilbyderen våres - noe kan være galt på vår side. Kontakt ${siteConfig?.contact ?? ''}, så ordner vi det`;
             case Status.success:
                 return 'Betalingen er gjennomført og kvittering er sendt til mailen din, vennligst sjekk mailen din. Du blir videresent til dine billetter om 5 sekunder...';
         }
