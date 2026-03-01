@@ -20,6 +20,7 @@ import { ShadowBox } from '../../../../../sharedComponents/boxes/ShadowBox';
 import { MembershipInfo } from '../../../MembershipInfo';
 import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatus';
 import { InfoBox } from '../../../../../sharedComponents/NoticeBox';
+import { useSiteConfig } from '../../../../../hooks/api/useSiteConfig';
 
 const Form = styled.form`
     display: flex;
@@ -37,6 +38,9 @@ interface Props {
 export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSubmit }) => {
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
     const [canBypassTicketSaleRestriction, setCanBypassTicketSaleRestriction] = useState(false);
+    const { data: siteConfig } = useSiteConfig();
+    const features = siteConfig?.features ?? [];
+    
 
     const auth = useAuth();
     // Decode and extract the JWT token so we can see if the user has special permissions
@@ -210,7 +214,9 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                         </>
                     )}
                 </Form>
-                <MembershipInfo />
+                { features.includes("membership") ? (
+                    <MembershipInfo />
+                ) : null}
             </FormProvider>
         </>
     );
