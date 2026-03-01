@@ -157,7 +157,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
-                    { noMembershipTickets.length > 0 ? (<Header2>Spesielle billetter</Header2>) : null }
+                    {noMembershipTickets.length > 0 ? <Header2>Spesielle billetter</Header2> : null}
                     {noMembershipTickets.map((ticketType) => (
                         <TypeRow
                             key={ticketType.name}
@@ -173,7 +173,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
-                    { otherTickets.length > 0 ? (<Header2>Annet</Header2>) : null }
+                    {otherTickets.length > 0 ? <Header2>Annet</Header2> : null}
                     {otherTickets.map((ticketType) => (
                         <TypeRow
                             key={ticketType.name}

@@ -137,8 +137,11 @@ export const Tutorial: React.FC = () => {
                 </Step4>
             </Steps>
             <p>
-                Når du har kjøpt billett får du den/de opp på siden &quot;Mine Billetter&quot;. { features.includes("seatmap") ? "Du velger plass etter at du har kjøpt billetten på \"Plassreservering\". " : null } Alle som skal på {name ?? <TextSkeleton />} må
-                ha en bruker med en tilknyttet billett.
+                Når du har kjøpt billett får du den/de opp på siden &quot;Mine Billetter&quot;.{' '}
+                {features.includes('seatmap')
+                    ? 'Du velger plass etter at du har kjøpt billetten på "Plassreservering". '
+                    : null}{' '}
+                Alle som skal på {name ?? <TextSkeleton />} må ha en bruker med en tilknyttet billett.
             </p>
             <p>
                 Det er mulig å kjøpe billetter på vegne av andre. Kjøp billetten(e) og overfør eierskap på siden

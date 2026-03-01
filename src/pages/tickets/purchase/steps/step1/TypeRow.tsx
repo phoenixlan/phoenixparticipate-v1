@@ -106,10 +106,10 @@ export const TypeRow: React.FC<Props> = ({
                 <Row>
                     {grantsAdmission ? (
                         <b>
-                            Du har allerede et medlemskap for dette året ifølge våre systemer, så du kan
-                            kjøpe den billigere billetten i stedet. Kjøp bare denne billetten om du skal kjøpe for
-                            venner som ikke har medlemskap. Kjøp bare denne billetten om du skal kjøpe for venner som
-                            ikke har medlemskap.
+                            Du har allerede et medlemskap for dette året ifølge våre systemer, så du kan kjøpe den
+                            billigere billetten i stedet. Kjøp bare denne billetten om du skal kjøpe for venner som ikke
+                            har medlemskap. Kjøp bare denne billetten om du skal kjøpe for venner som ikke har
+                            medlemskap.
                         </b>
                     ) : (
                         <b>Du har allerede et medlemskap for dette året ifølge våre systemer</b>
