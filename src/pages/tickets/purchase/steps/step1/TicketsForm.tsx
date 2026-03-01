@@ -40,7 +40,6 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
     const [canBypassTicketSaleRestriction, setCanBypassTicketSaleRestriction] = useState(false);
     const { data: siteConfig } = useSiteConfig();
     const features = siteConfig?.features ?? [];
-    
 
     const auth = useAuth();
     // Decode and extract the JWT token so we can see if the user has special permissions
@@ -214,9 +213,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                         </>
                     )}
                 </Form>
-                { features.includes("membership") ? (
-                    <MembershipInfo />
-                ) : null}
+                {features.includes('membership') ? <MembershipInfo /> : null}
             </FormProvider>
         </>
     );
