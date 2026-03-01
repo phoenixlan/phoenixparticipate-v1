@@ -17,7 +17,7 @@ import { useCurrentEvent } from '../../../../../hooks/api/useCurrentEvent';
 import { Header2 } from '../../../../../sharedComponents/Header2';
 import { useAuth } from '../../../../../authentication/useAuth';
 import { ShadowBox } from '../../../../../sharedComponents/boxes/ShadowBox';
-import { RadarEventInfo } from '../../../RadarEventInfo';
+import { MembershipInfo } from '../../../MembershipInfo';
 import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatus';
 import { InfoBox } from '../../../../../sharedComponents/NoticeBox';
 
@@ -114,11 +114,11 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
         return amount;
     };
 
-    const seatableTickets = ticketTypes.filter(
-        (type) => type.seatable && (type.requires_membership || type.grants_membership),
+    const admissionTickets = ticketTypes.filter(
+        (type) => type.grants_admission && (type.requires_membership || type.grants_membership),
     );
     const noMembershipTickets = ticketTypes.filter(
-        (type) => type.seatable && !(type.requires_membership || type.grants_membership),
+        (type) => type.grants_admission && !(type.requires_membership || type.grants_membership),
     );
     const otherTickets = ticketTypes.filter((type) => !type.seatable);
 
@@ -142,7 +142,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                         <ErrorMessage name={ticketTypes[0].uuid} />
                     )}
                     <Header2>Billetter(Lar deg være med på Arrangementet)</Header2>
-                    {seatableTickets.map((ticketType) => (
+                    {admissionTickets.map((ticketType) => (
                         <TypeRow
                             key={ticketType.name}
                             name={ticketType.name}
@@ -152,11 +152,12 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             price={ticketType.price}
                             isSeatable={ticketType.seatable}
                             grantsMembership={ticketType.grants_membership}
+                            grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                             max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
-                    <Header2>Spesielle billetter</Header2>
+                    { noMembershipTickets.length > 0 ? (<Header2>Spesielle billetter</Header2>) : null }
                     {noMembershipTickets.map((ticketType) => (
                         <TypeRow
                             key={ticketType.name}
@@ -167,11 +168,12 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             price={ticketType.price}
                             isSeatable={ticketType.seatable}
                             grantsMembership={ticketType.grants_membership}
+                            grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                             max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
-                    <Header2>Annet</Header2>
+                    { otherTickets.length > 0 ? (<Header2>Annet</Header2>) : null }
                     {otherTickets.map((ticketType) => (
                         <TypeRow
                             key={ticketType.name}
@@ -182,6 +184,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             price={ticketType.price}
                             isSeatable={ticketType.seatable}
                             grantsMembership={ticketType.grants_membership}
+                            grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                             max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
@@ -207,7 +210,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                         </>
                     )}
                 </Form>
-                <RadarEventInfo />
+                <MembershipInfo />
             </FormProvider>
         </>
     );

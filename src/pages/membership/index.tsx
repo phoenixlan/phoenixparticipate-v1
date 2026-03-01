@@ -8,11 +8,11 @@ import { Header1 } from '../../sharedComponents/Header1';
 import { Skeleton } from '../../sharedComponents/Skeleton';
 import { ShadowBox } from '../../sharedComponents/boxes/ShadowBox';
 
-import { RadarEventInfo } from '../tickets/RadarEventInfo';
+import { MembershipInfo } from '../tickets/MembershipInfo';
 import { Header2 } from '../../sharedComponents/Header2';
 import { useAuth } from '../../authentication/useAuth';
 
-const RadarEventInfoBox = styled(ShadowBox)`
+const MembershipInfoBox = styled(ShadowBox)`
     padding: ${({ theme }) => theme.spacing.m};
 `;
 
@@ -52,7 +52,7 @@ export const MembershipStatus = () => {
                 <Header1>Radar Event-medlemskap</Header1>
                 <Container>
                     {membershipStatus ? (
-                        <RadarEventInfoBox>
+                        <MembershipInfoBox>
                             <MembershipCard>
                                 <MembershipCheckmark>✓</MembershipCheckmark>
                                 <MembershipCardUserInfo>
@@ -65,16 +65,16 @@ export const MembershipStatus = () => {
                                     <p>{client.user?.postal_code}</p>
                                 </MembershipCardUserInfo>
                             </MembershipCard>
-                        </RadarEventInfoBox>
+                        </MembershipInfoBox>
                     ) : (
                         <NoMembershipContainer>
                             <p>Ingen medlemskap ble funnet</p>
                         </NoMembershipContainer>
                     )}
                 </Container>
-                <RadarEventInfoBox>
-                    <RadarEventInfo />
-                </RadarEventInfoBox>
+                <MembershipInfoBox>
+                    <MembershipInfo />
+                </MembershipInfoBox>
             </CenterBox>
         </Skeleton>
     );

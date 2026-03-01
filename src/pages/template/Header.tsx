@@ -6,9 +6,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Bars } from '@styled-icons/fa-solid/Bars';
-import LogoImage from '../../assets/logo.svg';
 import { Link } from 'react-router-dom';
 import { HeaderMenu } from './HeaderMenu';
+import { useSiteConfig } from '../../hooks/api/useSiteConfig';
 
 const Container = styled.div`
     display: flex;
@@ -33,7 +33,7 @@ const Logo = styled(Link)`
     font-size: ${({ theme }) => theme.fontSize.l};
 `;
 
-const PhoenixLogo = styled(LogoImage)`
+const LogoImg = styled.img`
     object-fit: contain;
     width: auto;
     height: auto;
@@ -54,14 +54,23 @@ interface Props {
     onClick: () => void;
 }
 
+const LogoSkeleton = styled.div`
+    width: 2rem;
+    height: 2rem;
+    background-color: ${({ theme }) => theme.colors.Gray};
+    border-radius: ${({ theme }) => theme.borderRadius.s};
+`;
+
 export const Header: React.FC<Props> = ({ onClick }) => {
+    const { data: siteConfig, isLoading } = useSiteConfig();
+    const logoUrl = siteConfig?.logo ? `${process.env.BASE_URL}/${siteConfig.logo}` : null;
+
     return (
         <Container>
             <StyledBars size="2rem" onClick={onClick} />
             <Nav>
                 <Logo to="/">
-                    <PhoenixLogo />
-                    Delta
+                    {isLoading ? <LogoSkeleton /> : logoUrl ? <LogoImg src={logoUrl} /> : <LogoSkeleton />}
                 </Logo>
                 <HeaderMenu />
             </Nav>

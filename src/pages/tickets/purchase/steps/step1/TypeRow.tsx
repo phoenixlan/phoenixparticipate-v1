@@ -64,6 +64,7 @@ interface Props {
     name: string;
     uuid: string;
     grantsMembership: boolean;
+    grantsAdmission: boolean;
     description?: string;
     max: number;
     enabled: boolean;
@@ -79,6 +80,7 @@ export const TypeRow: React.FC<Props> = ({
     max,
     enabled,
     grantsMembership,
+    grantsAdmission,
     isSeatable,
 }) => {
     const { data: membershipStatus, isLoading: isMembershipStatusLoading } = useMembershipStatus();
@@ -102,15 +104,15 @@ export const TypeRow: React.FC<Props> = ({
             </Row>
             {membershipStatus && grantsMembership ? (
                 <Row>
-                    {isSeatable ? (
+                    {grantsAdmission ? (
                         <b>
-                            Du har allerede et Radar Event medlemskap for dette året ifølge våre systemer, så du kan
+                            Du har allerede et medlemskap for dette året ifølge våre systemer, så du kan
                             kjøpe den billigere billetten i stedet. Kjøp bare denne billetten om du skal kjøpe for
-                            venner som ikke har medlemskap Kjøp bare denne billetten om du skal kjøpe for venner som
+                            venner som ikke har medlemskap. Kjøp bare denne billetten om du skal kjøpe for venner som
                             ikke har medlemskap.
                         </b>
                     ) : (
-                        <b>Du har allerede et Radar Event medlemskap for dette året ifølge våre systemer</b>
+                        <b>Du har allerede et medlemskap for dette året ifølge våre systemer</b>
                     )}
                 </Row>
             ) : null}

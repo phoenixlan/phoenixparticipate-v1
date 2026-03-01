@@ -8,7 +8,7 @@ import { Header1 } from '../../sharedComponents/Header1';
 import { Skeleton } from '../../sharedComponents/Skeleton';
 import { ShadowBox } from '../../sharedComponents/boxes/ShadowBox';
 
-import { RadarEventInfo } from '../tickets/RadarEventInfo';
+import { MembershipInfo } from '../tickets/MembershipInfo';
 import { Header2 } from '../../sharedComponents/Header2';
 import { useAuth } from '../../authentication/useAuth';
 import { useDiscordMapping } from '../../hooks/api/useDiscordMapping';

@@ -13,11 +13,7 @@ import { LoginForm } from './LoginForm';
 import { LoginDisclaimer } from './Disclaimer';
 import { Header1 } from '../../sharedComponents/Header1';
 import { useSiteConfig } from '../../hooks/api/useSiteConfig';
-import Logo from '../../assets/logo.svg';
 
-const StyledLogo = styled(Logo)`
-    height: 20em;
-`;
 const StyledLogoImg = styled.img`
     height: 20em;
 `;
@@ -32,9 +28,11 @@ export const Login: React.FC = () => {
 
     return (
         <CenterBox centerVertically={true}>
-            <StyledLogoContainer>
-                {logoUrl ? <StyledLogoImg src={logoUrl} /> : <StyledLogo />}
-            </StyledLogoContainer>
+            {logoUrl && (
+                <StyledLogoContainer>
+                    <StyledLogoImg src={logoUrl} />
+                </StyledLogoContainer>
+            )}
             <SplitBox left={<NextLanInformation />} right={<LoginForm />} />
             <LoginDisclaimer />
         </CenterBox>
