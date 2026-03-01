@@ -123,7 +123,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
     const noMembershipTickets = ticketTypes.filter(
         (type) => type.grants_admission && !(type.requires_membership || type.grants_membership),
     );
-    const otherTickets = ticketTypes.filter((type) => !type.seatable);
+    const otherTickets = ticketTypes.filter((type) => !type.grants_admission);
 
     const ticketSaleOpen = new Date().getTime() > bookingTime * 1000;
 
