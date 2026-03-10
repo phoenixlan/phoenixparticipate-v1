@@ -48,6 +48,7 @@ export const TicketViewer: React.FC = (props) => {
                 <CenterBox>
                     <S.Container>
                         <Ticket ticket={ticket} />
+                        <p><b>Merk:</b> Billetten er beskyttet mot forfalskning - et screenshot holder ikke</p>
                         <S.Spacing />
                         <S.ContentBox>
                             <Header2>Innstillinger</Header2>

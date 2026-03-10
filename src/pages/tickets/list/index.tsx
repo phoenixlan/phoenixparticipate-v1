@@ -67,8 +67,8 @@ export const Tickets: React.FC = () => {
         .filter((ticket: Ticket.FullTicket) => ticket.event.uuid !== (currentEvent?.uuid ?? false))
         .sort((a, b) => a.ticket_id - b.ticket_id);
 
-    const currentTicketsSeatable = currentTickets.filter((ticket) => ticket.ticket_type.seatable);
-    const currentTicketsNotSeatable = currentTickets.filter((ticket) => !ticket.ticket_type.seatable);
+    const currentTicketsAdmittable = currentTickets.filter((ticket) => ticket.ticket_type.grants_admission);
+    const currentTicketsNotAdmittable = currentTickets.filter((ticket) => !ticket.ticket_type.grants_admission);
 
     return (
         <Skeleton loading={isLoading}>
@@ -95,21 +95,21 @@ export const Tickets: React.FC = () => {
                 ) : null}
                 <Header1>Billetter til {currentEvent?.name ?? '(laster)'}</Header1>
                 <TicketEntryContainer>
-                    {currentTicketsSeatable.map((ticket) => (
+                    {currentTicketsAdmittable.map((ticket) => (
                         <TicketEntry key={ticket.ticket_id} ticket={ticket} />
                     ))}
                 </TicketEntryContainer>
-                {currentTicketsSeatable.length === 0 ? (
+                {currentTicketsAdmittable.length === 0 ? (
                     <BuyTicketPrompt>
                         <p>Du har ingen billetter.</p>
                         <PositiveButton onClick={buyTickets}>Kjøp billetter</PositiveButton>
                     </BuyTicketPrompt>
                 ) : null}
-                {currentTicketsNotSeatable.length > 0 ? (
+                {currentTicketsNotAdmittable.length > 0 ? (
                     <>
                         <Header1>Andre ting for {currentEvent?.name ?? '(laster)'}</Header1>
                         <TicketEntryContainer>
-                            {currentTicketsNotSeatable.map((ticket) => (
+                            {currentTicketsNotAdmittable.map((ticket) => (
                                 <TicketEntry key={ticket.ticket_id} ticket={ticket} />
                             ))}
                         </TicketEntryContainer>

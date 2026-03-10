@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Ticket } from '@phoenixlan/phoenix.js';
 import { useAuth } from '../../../authentication/useAuth';
+import { useSiteConfig } from '../../../hooks/api/useSiteConfig';
 import { ArrowRightSquare } from '@styled-icons/bootstrap/ArrowRightSquare';
 import { NavLink, NavLinkProps } from 'react-router-dom';
 
@@ -48,6 +49,9 @@ const S = {
 
 export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) => {
     const { client } = useAuth();
+    const { data: siteConfig } = useSiteConfig();
+    const features = siteConfig?.features ?? [];
+    const hasSeatmap = features.includes('seatmap');
 
     return (
         <S.ContainerLinkOuter>
@@ -57,35 +61,39 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
                         {ticket.ticket_type.grants_admission ? 'Billett ' : 'Kjøp '}&#x23;{ticket.ticket_id}
                     </S.TicketId>
                     <S.TicketType>{ticket.ticket_type.name}</S.TicketType>
-                    {ticket.seat ? (
-                        <S.SeatContainer>
-                            <S.Row>Rad {ticket.seat.row.row_number}</S.Row>
-                            <S.Seat>Sete {ticket.seat.number}</S.Seat>
-                        </S.SeatContainer>
-                    ) : (
-                        <b>Ikke seatet</b>
-                    )}
-                    <S.TicketSeater>
-                        {ticket.ticket_type.seatable ? (
-                            ticket.seater && ticket.seater.uuid !== client.user!.uuid ? (
-                                <span>
-                                    Seatet av:
-                                    <br />
-                                    <b>
-                                        {ticket.seater.firstname} {ticket.seater.lastname}
-                                    </b>
-                                </span>
-                            ) : (
-                                <span>
-                                    Seatet av:
-                                    <br />
-                                    <b>deg</b>
-                                </span>
-                            )
+                    {hasSeatmap && (
+                        ticket.seat ? (
+                            <S.SeatContainer>
+                                <S.Row>Rad {ticket.seat.row.row_number}</S.Row>
+                                <S.Seat>Sete {ticket.seat.number}</S.Seat>
+                            </S.SeatContainer>
                         ) : (
-                            <b>Ikke sittebillett</b>
-                        )}
-                    </S.TicketSeater>
+                            <b>Ikke seatet</b>
+                        )
+                    )}
+                    {hasSeatmap && (
+                        <S.TicketSeater>
+                            {ticket.ticket_type.seatable ? (
+                                ticket.seater && ticket.seater.uuid !== client.user!.uuid ? (
+                                    <span>
+                                        Seatet av:
+                                        <br />
+                                        <b>
+                                            {ticket.seater.firstname} {ticket.seater.lastname}
+                                        </b>
+                                    </span>
+                                ) : (
+                                    <span>
+                                        Seatet av:
+                                        <br />
+                                        <b>deg</b>
+                                    </span>
+                                )
+                            ) : (
+                                <b>Ingen sitteplass</b>
+                            )}
+                        </S.TicketSeater>
+                    )}
                     <S.ArrowRightSquare />
                 </S.Container>
             </S.ContainerLink>

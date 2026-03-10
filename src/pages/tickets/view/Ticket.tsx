@@ -156,7 +156,6 @@ interface TicketProps {
 }
 export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
     const totpQrValue = useTotpQrValue(ticket?.ticket_id ?? 0);
-
     if (!ticket) {
         return <b>Laster</b>;
     }
@@ -201,7 +200,7 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                             <b>Ikke seatet</b>
                         </span>
                     ) : (
-                        <span>Ikke sittebillett</span>
+                        <span>Ingen sitteplass</span>
                     )}
                 </InnerLeft>
             </Left>
