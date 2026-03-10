@@ -132,7 +132,7 @@ const useTotpQrValue = (ticket_id: number) => {
     const { data: totp_data } = useTicketTotp(ticket_id);
     const [qrValue, setQrValue] = useState<string>('');
 
-    const totp_key: string | undefined = totp_data?.totp
+    const totp_key: string | undefined = totp_data?.totp;
 
     useEffect(() => {
         if (!totp_key) return;
@@ -147,7 +147,7 @@ const useTotpQrValue = (ticket_id: number) => {
         return () => clearInterval(interval);
     }, [totp_key]);
 
-    console.log(`qr value: ${qrValue}`)
+    console.log(`qr value: ${qrValue}`);
     return qrValue;
 };
 
@@ -217,7 +217,7 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                         </b>
                     ) : (
                         <QrWrapper>
-                            <QRCode value={`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`} size={80} level={"M"}/>
+                            <QRCode value={`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`} size={80} level={'M'} />
                         </QrWrapper>
                     )}
                 </InnerRight>
