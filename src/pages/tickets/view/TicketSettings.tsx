@@ -89,7 +89,10 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
             TicketModifyer = (
                 <>
                     <Header2>Skriv inn e-post for seater</Header2>
-                        <p>Du må kunne e-post addressen til personen som skal seate billetten din. Denne personen må allerede ha en konto.</p>
+                    <p>
+                        Du må kunne e-post addressen til personen som skal seate billetten din. Denne personen må
+                        allerede ha en konto.
+                    </p>
                     <EmailInput value={email} onChange={onEmailChange} />
                     <PositiveButton onClick={setSeater}>Sett seater</PositiveButton>
                 </>
@@ -99,7 +102,10 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
             TicketModifyer = (
                 <>
                     <Header2>Skriv inn e-post for mottaker</Header2>
-                    <p>Merk at mottakeren <b>må være registrert</b>. Du kan angre overføringen i 24 timer, men dersom du angrer vil mottakeren få beskjed om dette. Det blir også loggført.</p>
+                    <p>
+                        Merk at mottakeren <b>må være registrert</b>. Du kan angre overføringen i 24 timer, men dersom
+                        du angrer vil mottakeren få beskjed om dette. Det blir også loggført.
+                    </p>
                     <EmailInput value={email} onChange={onEmailChange} />
                     <NegativeButton onClick={transferTicket}>Overfør</NegativeButton>
                 </>
@@ -108,12 +114,16 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
         default:
             TicketModifyer = (
                 <>
-                { ticket.ticket_type.seatable ? (<><PositiveButton onClick={showSeaterPrompt}>Sett seater</PositiveButton>
-                    <PositiveButton onClick={resetSeaterPrompt}>Fjern seater</PositiveButton></>) : null }
+                    {ticket.ticket_type.seatable ? (
+                        <>
+                            <PositiveButton onClick={showSeaterPrompt}>Sett seater</PositiveButton>
+                            <PositiveButton onClick={resetSeaterPrompt}>Fjern seater</PositiveButton>
+                        </>
+                    ) : null}
 
                     {ticket.ticket_type.grants_admission ? (
-                    <NegativeButton onClick={transferTicketPrompt}>Overfør billett</NegativeButton>
-                    ) : null }
+                        <NegativeButton onClick={transferTicketPrompt}>Overfør billett</NegativeButton>
+                    ) : null}
                 </>
             );
             break;

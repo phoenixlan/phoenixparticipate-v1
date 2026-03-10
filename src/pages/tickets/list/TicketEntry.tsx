@@ -61,16 +61,15 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
                         {ticket.ticket_type.grants_admission ? 'Billett ' : 'Kjøp '}&#x23;{ticket.ticket_id}
                     </S.TicketId>
                     <S.TicketType>{ticket.ticket_type.name}</S.TicketType>
-                    {hasSeatmap && (
-                        ticket.seat ? (
+                    {hasSeatmap &&
+                        (ticket.seat ? (
                             <S.SeatContainer>
                                 <S.Row>Rad {ticket.seat.row.row_number}</S.Row>
                                 <S.Seat>Sete {ticket.seat.number}</S.Seat>
                             </S.SeatContainer>
                         ) : (
                             <b>Ikke seatet</b>
-                        )
-                    )}
+                        ))}
                     {hasSeatmap && (
                         <S.TicketSeater>
                             {ticket.ticket_type.seatable ? (
