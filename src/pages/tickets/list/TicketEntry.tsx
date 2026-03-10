@@ -54,7 +54,7 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
             <S.ContainerLink to={`/ticket/${ticket.ticket_id}`}>
                 <S.Container>
                     <S.TicketId>
-                        {ticket.ticket_type.seatable ? 'Billett ' : 'Kjøp '}&#x23;{ticket.ticket_id}
+                        {ticket.ticket_type.grants_admission ? 'Billett ' : 'Kjøp '}&#x23;{ticket.ticket_id}
                     </S.TicketId>
                     <S.TicketType>{ticket.ticket_type.name}</S.TicketType>
                     {ticket.seat ? (

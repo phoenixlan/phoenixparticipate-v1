@@ -24,6 +24,7 @@ module.exports = merge(common, {
                 test: /\.js$/,
                 enforce: 'pre',
                 loader: 'source-map-loader',
+                exclude: /node_modules\/totp-generator/,
             },
             {
                 test: /\.ts(x?)$/,
@@ -31,6 +32,17 @@ module.exports = merge(common, {
                 exclude: /node_modules/,
                 options: {
                     getCustomTransformers: () => ({before: [styledComponentsTransformer]}),
+                },
+            },
+            {
+                test: /\.js$/,
+                include: /node_modules\/totp-generator/,
+                loader: 'ts-loader',
+                options: {
+                    transpileOnly: true,
+                    compilerOptions: {
+                        allowJs: true,
+                    },
                 },
             },
         ]

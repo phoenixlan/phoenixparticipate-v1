@@ -22,6 +22,17 @@ module.exports = merge(common, {
                 loader: 'ts-loader',
                 exclude: /node_modules/,
             },
+            {
+                test: /\.js$/,
+                include: /node_modules\/totp-generator/,
+                loader: 'ts-loader',
+                options: {
+                    transpileOnly: true,
+                    compilerOptions: {
+                        allowJs: true,
+                    },
+                },
+            },
         ]
     },
     plugins: [

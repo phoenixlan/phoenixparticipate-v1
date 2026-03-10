@@ -12,6 +12,9 @@ module.exports = {
     entry: path.resolve(__dirname, 'src', 'index.tsx'),
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        fallback: {
+            crypto: false,
+        },
     },
     module: {
         rules: [

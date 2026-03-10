@@ -51,6 +51,7 @@ export const Tickets: React.FC = () => {
     const { data: ticketTransfers, isLoading: isLoadingTicketTransfers } = useTicketTransfers();
     const { data: siteConfig } = useSiteConfig();
     const features = siteConfig?.features ?? [];
+    const siteName = siteConfig?.name;
 
     const isLoading =
         isLoadingCurrentEvent || isLoadingOwnedTickets || isLoadingTicketTransfers || isTicketVouchersLoading;
@@ -127,11 +128,13 @@ export const Tickets: React.FC = () => {
                 <TutorialContainer>
                     <Header2>Hvordan fungerer overførte billetter?</Header2>
                     <p>
-                        Du kan overføre billetter du har kjøpt til andre. Dette gjør du ved å trykke på billetten, velge
-                        &quot;overfør billett&quot;, og skrive inn e-post addressen til mottakeren.
+                        I stedet for at alle i vennegjengen må møte opp til starten av billettsalget, kan en kjøpe for hele gruppen. En konto kan kjøpe opp til 10 billetter om gangen, 
+                        som så kan overføres til andre. Dette gjør du ved å trykke på billetten, velge &quot;overfør billett&quot;, 
+                        og skrive inn e-post addressen til mottakeren. <b>Mottakeren må også ha konto hos {siteName}</b>. Du kan også overføre billetter dersom du f.eks finner ut at du ikke kunne komme, og selger den videre.
                     </p>
+                    <p><b>Kan en billettoverføring angres?</b></p>
                     <p>
-                        Du vil få 24 timer på å angre overføringen, skulle du ha sent billetten til feil person.
+                        Ja. Når du overfører en billett vil du kunne angre på overføringen i 24 timer, skulle du ha sent billetten til feil person.
                         Mottakeren er også informert om at overføringen kan angres i 24 timer. Alle overføringer er
                         loggført, og mottakeren vil bli informert dersom overføringen blir angret.
                     </p>

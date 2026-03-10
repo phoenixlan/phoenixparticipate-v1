@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Ticket as PhoenixApiTicket } from '@phoenixlan/phoenix.js';
 import { HandIndexFill } from '@styled-icons/bootstrap/HandIndexFill';
 import { SeatRow, Seat, Row, SubTitle, Title, Corner } from './ticketConponents';
 import QRCode from 'qrcode.react';
+import { TOTP } from 'totp-generator';
+import { useTicketTotp } from '../../../hooks/api/useTicketTotp';
 
 const Container = styled.div`
     cursor: pointer;
@@ -47,7 +49,7 @@ const Left = styled.div`
 
 const Right = styled.div<{ checked_in: boolean }>`
     height: 8em;
-    width: 5em;
+    width: 7em;
     position: relative;
     overflow: hidden;
     ${({ checked_in }) =>
@@ -84,10 +86,77 @@ const TapIcon = styled(HandIndexFill)`
     color: slategray;
 `;
 
+const spinBorder = keyframes`
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+`;
+
+const QrWrapper = styled.div`
+    position: relative;
+    padding: 0.15em;
+    overflow: hidden;
+    border-radius: 4px;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: ${({ theme }) => `conic-gradient(
+            ${theme.colors.primary} 0deg,
+            ${theme.colors.primary} 60deg,
+            transparent 120deg,
+            transparent 240deg,
+            ${theme.colors.primary} 300deg,
+            ${theme.colors.primary} 360deg
+        )`};
+        animation: ${spinBorder} 3s linear infinite;
+    }
+
+    & > * {
+        position: relative;
+        display: block;
+        background: white;
+        border-radius: 2px;
+        padding: 0.3em;
+    }
+`;
+
+const useTotpQrValue = (ticket_id: number) => {
+    const { data: totp_data } = useTicketTotp(ticket_id);
+    const [qrValue, setQrValue] = useState<string>('');
+
+    const totp_key: string | undefined = totp_data?.totp
+
+    useEffect(() => {
+        if (!totp_key) return;
+
+        const update = async () => {
+            const { otp } = await TOTP.generate(totp_key, { digits: 8 });
+            setQrValue(otp);
+        };
+
+        update();
+        const interval = setInterval(update, 5000);
+        return () => clearInterval(interval);
+    }, [totp_key]);
+
+    console.log(`qr value: ${qrValue}`)
+    return qrValue;
+};
+
 interface TicketProps {
     ticket?: PhoenixApiTicket.FullTicket;
 }
 export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
+    const totpQrValue = useTotpQrValue(ticket?.ticket_id ?? 0);
+
     if (!ticket) {
         return <b>Laster</b>;
     }
@@ -101,7 +170,7 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                         <Title>{ticket.event.name}</Title>
                     </Row>
                     <Row>
-                        <SubTitle>{ticket.ticket_type.seatable ? 'Billett-ID' : 'Kjøp-ID'}</SubTitle>
+                        <SubTitle>{ticket.ticket_type.grants_admission ? 'Billett-ID' : 'Kjøp-ID'}</SubTitle>
                         <span>#{ticket.ticket_id}</span>
                     </Row>
                     <Row>
@@ -147,7 +216,9 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                             inn
                         </b>
                     ) : (
-                        <QRCode value={`phoenix-lan-ticket:${ticket.ticket_id}`} size={60} />
+                        <QrWrapper>
+                            <QRCode value={`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`} size={80} level={"M"}/>
+                        </QrWrapper>
                     )}
                 </InnerRight>
             </Right>
