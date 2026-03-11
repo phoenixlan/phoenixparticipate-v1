@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { Ticket as PhoenixApiTicket } from '@phoenixlan/phoenix.js';
 import { HandIndexFill } from '@styled-icons/bootstrap/HandIndexFill';
 import { SeatRow, Seat, Row, SubTitle, Title, Corner } from './ticketConponents';
@@ -11,7 +11,7 @@ const Container = styled.div`
     cursor: pointer;
     user-select: none;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     padding: ${({ theme }) => theme.spacing.m} 0 ${({ theme }) => theme.spacing.m} 0;
 `;
 
@@ -28,32 +28,32 @@ const Inner = styled.div`
     justify-content: center;
 `;
 
-const InnerLeft = styled(Inner)`
-    border-right: 1px dashed gray;
+const InnerTop = styled(Inner)`
+    border-bottom: 1px dashed gray;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     font-size: ${({ theme }) => theme.fontSize.s};
 `;
 
-const InnerRight = styled(Inner)`
-    border-left: 1px dashed gray;
+const InnerBottom = styled(Inner)`
+    border-top: 1px dashed gray;
 `;
 
-const Left = styled.div`
-    height: 8em;
+const Top = styled.div`
     width: 14em;
+    height: 8em;
     position: relative;
     overflow: hidden;
 `;
 
-const Right = styled.div<{ checked_in: boolean }>`
-    height: 8em;
-    width: 7em;
+const Bottom = styled.div<{ checked_in: boolean }>`
+    width: 100%;
+    height: 10em;
     position: relative;
     overflow: hidden;
     ${({ checked_in }) =>
-        checked_in ? 'transform: translateY(2em) rotate(45deg) translateY(-2em) translateX(1em);' : ''}
+        checked_in ? 'transform-origin: center top; transform: rotate(5deg) translateY(0.5em);' : ''}
 `;
 
 const ripple = (color: string) => keyframes`
@@ -95,11 +95,12 @@ const spinBorder = keyframes`
     }
 `;
 
-const QrWrapper = styled.div`
+const QrWrapper = styled.div<{ checked_in?: boolean }>`
     position: relative;
-    padding: 0.15em;
+    padding: ${({ checked_in }) => checked_in ? '0' : '0.15em'};
     overflow: hidden;
     border-radius: 4px;
+    ${({ checked_in }) => checked_in ? 'filter: grayscale(100%) opacity(0.5);' : ''}
 
     &::before {
         content: '';
@@ -108,15 +109,17 @@ const QrWrapper = styled.div`
         left: -50%;
         width: 200%;
         height: 200%;
-        background: ${({ theme }) => `conic-gradient(
-            ${theme.colors.primary} 0deg,
-            ${theme.colors.primary} 60deg,
-            transparent 120deg,
-            transparent 240deg,
-            ${theme.colors.primary} 300deg,
-            ${theme.colors.primary} 360deg
-        )`};
-        animation: ${spinBorder} 3s linear infinite;
+        ${({ theme, checked_in }) => !checked_in && css`
+            background: conic-gradient(
+                ${theme.colors.primary} 0deg,
+                ${theme.colors.primary} 60deg,
+                transparent 120deg,
+                transparent 240deg,
+                ${theme.colors.primary} 300deg,
+                ${theme.colors.primary} 360deg
+            );
+            animation: ${spinBorder} 3s linear infinite;
+        `}
     }
 
     & > * {
@@ -126,6 +129,29 @@ const QrWrapper = styled.div`
         border-radius: 2px;
         padding: 0.3em;
     }
+`;
+
+const UsedContainer = styled.div`
+    position: relative;
+    display: inline-block;
+
+    & > canvas, & > svg {
+        filter: grayscale(100%) opacity(0.4);
+    }
+`;
+
+const UsedStamp = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 1.8em;
+    font-weight: bold;
+    color: red;
+    border: 0.15em solid red;
+    padding: 0.1em 0.4em;
+    z-index: 2;
+    white-space: nowrap;
 `;
 
 const useTotpQrValue = (ticket_id: number) => {
@@ -139,7 +165,8 @@ const useTotpQrValue = (ticket_id: number) => {
 
         const update = async () => {
             const { otp } = await TOTP.generate(totp_key, { digits: 8 });
-            setQrValue(otp);
+            const randomSalt = btoa(Math.random()+"");
+            setQrValue(`${otp}:${randomSalt}`);
         };
 
         update();
@@ -161,10 +188,10 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
     }
     return (
         <Container>
-            <Left>
-                <Corner left={false} top={true} />
+            <Top>
+                <Corner left={true} top={false} />
                 <Corner left={false} top={false} />
-                <InnerLeft>
+                <InnerTop>
                     <Row>
                         <Title>{ticket.event.name}</Title>
                     </Row>
@@ -202,25 +229,24 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                     ) : (
                         <span>Ingen sitteplass</span>
                     )}
-                </InnerLeft>
-            </Left>
-            <Right checked_in={!!ticket.checked_in}>
+                </InnerTop>
+            </Top>
+            <Bottom checked_in={!!ticket.checked_in}>
                 <Corner left={true} top={true} />
-                <Corner left={true} top={false} />
-                <InnerRight>
+                <Corner left={false} top={true} />
+                <InnerBottom>
                     {ticket.checked_in ? (
-                        <b>
-                            Sjekket
-                            <br />
-                            inn
-                        </b>
+                        <UsedContainer>
+                            <QRCode value="Look at you, hacker: a pathetic creature of meat and bone" size={120} level={'M'} />
+                            <UsedStamp>BRUKT</UsedStamp>
+                        </UsedContainer>
                     ) : (
                         <QrWrapper>
-                            <QRCode value={`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`} size={80} level={'M'} />
+                            <QRCode value={btoa(`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`)} size={120} level={'M'} />
                         </QrWrapper>
                     )}
-                </InnerRight>
-            </Right>
+                </InnerBottom>
+            </Bottom>
         </Container>
     );
 };
