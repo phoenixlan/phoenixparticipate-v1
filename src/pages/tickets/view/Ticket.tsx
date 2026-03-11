@@ -97,10 +97,10 @@ const spinBorder = keyframes`
 
 const QrWrapper = styled.div<{ checked_in?: boolean }>`
     position: relative;
-    padding: ${({ checked_in }) => checked_in ? '0' : '0.15em'};
+    padding: ${({ checked_in }) => (checked_in ? '0' : '0.15em')};
     overflow: hidden;
     border-radius: 4px;
-    ${({ checked_in }) => checked_in ? 'filter: grayscale(100%) opacity(0.5);' : ''}
+    ${({ checked_in }) => (checked_in ? 'filter: grayscale(100%) opacity(0.5);' : '')}
 
     &::before {
         content: '';
@@ -109,17 +109,19 @@ const QrWrapper = styled.div<{ checked_in?: boolean }>`
         left: -50%;
         width: 200%;
         height: 200%;
-        ${({ theme, checked_in }) => !checked_in && css`
-            background: conic-gradient(
-                ${theme.colors.primary} 0deg,
-                ${theme.colors.primary} 60deg,
-                transparent 120deg,
-                transparent 240deg,
-                ${theme.colors.primary} 300deg,
-                ${theme.colors.primary} 360deg
-            );
-            animation: ${spinBorder} 3s linear infinite;
-        `}
+        ${({ theme, checked_in }) =>
+            !checked_in &&
+            css`
+                background: conic-gradient(
+                    ${theme.colors.primary} 0deg,
+                    ${theme.colors.primary} 60deg,
+                    transparent 120deg,
+                    transparent 240deg,
+                    ${theme.colors.primary} 300deg,
+                    ${theme.colors.primary} 360deg
+                );
+                animation: ${spinBorder} 3s linear infinite;
+            `}
     }
 
     & > * {
@@ -135,7 +137,8 @@ const UsedContainer = styled.div`
     position: relative;
     display: inline-block;
 
-    & > canvas, & > svg {
+    & > canvas,
+    & > svg {
         filter: grayscale(100%) opacity(0.4);
     }
 `;
@@ -165,7 +168,7 @@ const useTotpQrValue = (ticket_id: number) => {
 
         const update = async () => {
             const { otp } = await TOTP.generate(totp_key, { digits: 8 });
-            const randomSalt = btoa(Math.random()+"");
+            const randomSalt = btoa(Math.random() + '');
             setQrValue(`${otp}:${randomSalt}`);
         };
 
@@ -237,12 +240,20 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                 <InnerBottom>
                     {ticket.checked_in ? (
                         <UsedContainer>
-                            <QRCode value="Look at you, hacker: a pathetic creature of meat and bone" size={120} level={'M'} />
+                            <QRCode
+                                value="Look at you, hacker: a pathetic creature of meat and bone"
+                                size={120}
+                                level={'M'}
+                            />
                             <UsedStamp>BRUKT</UsedStamp>
                         </UsedContainer>
                     ) : (
                         <QrWrapper>
-                            <QRCode value={btoa(`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`)} size={120} level={'M'} />
+                            <QRCode
+                                value={btoa(`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`)}
+                                size={120}
+                                level={'M'}
+                            />
                         </QrWrapper>
                     )}
                 </InnerBottom>
