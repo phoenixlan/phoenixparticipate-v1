@@ -21,6 +21,7 @@ import { MembershipInfo } from '../../../MembershipInfo';
 import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatus';
 import { InfoBox } from '../../../../../sharedComponents/NoticeBox';
 import { useSiteConfig } from '../../../../../hooks/api/useSiteConfig';
+import { TextSkeleton } from '../../../../../sharedComponents/TextSkeleton';
 
 const Form = styled.form`
     display: flex;
@@ -192,6 +193,15 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
+                    <Header2>Ledsagerbillett</Header2>
+                    <p>
+                        Vi tilbyr ledsagerbilletter. For å få denne billetten må ledsager opprette en konto hos oss, og
+                        sende en henvendelse på e-post til oss på{' '}
+                        <a href={`mailto:${siteConfig?.contact}`}>{siteConfig?.contact ?? <TextSkeleton />}</a>.
+                        Henvendelsen må inneholde navnet til personen som ledsager skal følge, og gyldig ledsagerbevis
+                        utstedt av kommunen du bor i. Når henvendelsen blir godkjent vil ledsager bli tildelt en
+                        ledsagerbillett på sin konto som man kan finne igjen på denne siden.
+                    </p>
                     {ticketSaleOpen || canBypassTicketSaleRestriction ? (
                         <>
                             {canBypassTicketSaleRestriction ? (
