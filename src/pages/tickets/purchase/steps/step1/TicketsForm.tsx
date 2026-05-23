@@ -13,14 +13,16 @@ import { TicketType, TicketVoucher, User } from '@phoenixlan/phoenix.js';
 import { PositiveButton } from '../../../../../sharedComponents/forms/Button';
 import { ChosenTicketType } from '../../utils/types';
 import { ErrorMessage } from '../../../../../sharedComponents/forms/ErrorMessage';
+import { Skeleton } from '../../../../../sharedComponents/Skeleton';
 import { useCurrentEvent } from '../../../../../hooks/api/useCurrentEvent';
 import { Header2 } from '../../../../../sharedComponents/Header2';
 import { useAuth } from '../../../../../authentication/useAuth';
 import { ShadowBox } from '../../../../../sharedComponents/boxes/ShadowBox';
 import { MembershipInfo } from '../../../MembershipInfo';
 import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatus';
-import { InfoBox } from '../../../../../sharedComponents/NoticeBox';
+import { InfoBox, WarningBox } from '../../../../../sharedComponents/NoticeBox';
 import { useSiteConfig } from '../../../../../hooks/api/useSiteConfig';
+import { useTicketAvailability } from '../../../../../hooks/api/useTicketAvailability';
 
 const Form = styled.form`
     display: flex;
@@ -37,9 +39,12 @@ interface Props {
 
 export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSubmit }) => {
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
+    const { data: ticketAvailability, isLoading: isLoadingTicketAvailability } = useTicketAvailability();
     const [canBypassTicketSaleRestriction, setCanBypassTicketSaleRestriction] = useState(false);
     const { data: siteConfig } = useSiteConfig();
     const features = siteConfig?.features ?? [];
+
+    const isLoading = isLoadingCurrentEvent || isLoadingTicketAvailability;
 
     const auth = useAuth();
     // Decode and extract the JWT token so we can see if the user has special permissions
@@ -59,6 +64,11 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
 
     type validationSchemaType = { [index: string]: yup.AnySchema };
     const validationSchemaObject: validationSchemaType = {};
+
+    const apiReportedTicketAvailability = (ticketAvailability?.total);
+    // Fallback to 10 if availability hasnt loaded, should never happen in practice
+    const availableTickets = Math.min(10, apiReportedTicketAvailability != undefined ? apiReportedTicketAvailability : 10);
+
     for (const ticketType of ticketTypes) {
         validationSchemaObject[ticketType.uuid] = yup
             .number()
@@ -71,12 +81,12 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                 }
                 return 0 <= sum;
             })
-            .test('max', 'Du kan maks velge 10 billetter til sammen', function () {
+            .test('max', `Du kan maks velge ${availableTickets} billetter til sammen`, function () {
                 let sum = 0;
                 for (const val of Object.values(this.parent)) {
                     sum += val as number;
                 }
-                return 10 >= sum;
+                return availableTickets >= sum;
             });
     }
     const validationSchema = yup.object().shape(validationSchemaObject);
@@ -128,7 +138,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
     const ticketSaleOpen = new Date().getTime() > bookingTime * 1000;
 
     return (
-        <>
+        <Skeleton loading={isLoading}>
             {ticketVouchers.filter(
                 (voucher: TicketVoucher.BasicTicketVoucher) => !voucher.is_used && !voucher.is_expired,
             ).length > 0 ? (
@@ -139,6 +149,26 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                     </p>
                 </InfoBox>
             ) : null}
+
+            {
+                ticketAvailability?.total == 0 ? (
+                    <WarningBox title="Utsolgt">
+                        <p>
+                            Arrangementet er utsolgt for denne gangen. Takk for din interesse - vi håper du kommer neste gang i stedet.
+                        </p>
+                        <p><b>NB: </b>Vi holder av billetter imens kunder betaler. Dersom arrangementet ble nylig utsolgt er det sjangs for at billetter kan dukke opp ila den neste timen.</p>
+                    </WarningBox>
+                ) : null
+            }
+            {
+                (ticketAvailability?.total !== 0) && (ticketAvailability != undefined && ticketAvailability?.total < 10) ? (
+                    <InfoBox title="Få billetter igjen">
+                        <p>
+                            Det er kun {ticketAvailability?.total} billett(er) igjen - arrangementet er i ferd med å bli utsolgt.
+                        </p>
+                    </InfoBox>
+                ) : null
+            }
             <FormProvider {...formMethods}>
                 <Form onSubmit={handleSubmit}>
                     {formMethods.errors && ticketTypes && ticketTypes.length > 0 && (
@@ -157,7 +187,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             grantsMembership={ticketType.grants_membership}
                             grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
-                            max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                            max={availableTickets - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
                     {noMembershipTickets.length > 0 ? <Header2>Spesielle billetter</Header2> : null}
@@ -173,7 +203,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             grantsMembership={ticketType.grants_membership}
                             grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
-                            max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                            max={availableTickets - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
                     {otherTickets.length > 0 ? <Header2>Annet</Header2> : null}
@@ -189,7 +219,7 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             grantsMembership={ticketType.grants_membership}
                             grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
-                            max={10 - getTotalAmount() + formMethods.watch(ticketType.uuid)}
+                            max={availableTickets - getTotalAmount() + formMethods.watch(ticketType.uuid)}
                         />
                     ))}
                     {ticketSaleOpen || canBypassTicketSaleRestriction ? (
@@ -215,6 +245,6 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                 </Form>
                 {features.includes('membership') ? <MembershipInfo /> : null}
             </FormProvider>
-        </>
+        </Skeleton>
     );
 };
