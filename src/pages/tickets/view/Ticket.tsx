@@ -253,6 +253,7 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                                 value={btoa(`phoenix-ticket:${ticket.ticket_id}:${totpQrValue}`)}
                                 size={120}
                                 level={'M'}
+                                includeMargin={true}
                             />
                         </QrWrapper>
                     )}
