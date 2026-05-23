@@ -3,9 +3,11 @@
  * @project phoenixparticipate-v1
  * @author andreasjj
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
+import { useModal } from '../../../sharedComponents/modal/useModal';
+import { TransferRecommendationModal } from './TransferRecommendationModal';
 
 import { CenterBox } from '../../../sharedComponents/boxes/CenterBox';
 import { Header1 } from '../../../sharedComponents/Header1';
@@ -69,6 +71,23 @@ export const Tickets: React.FC = () => {
 
     const currentTicketsAdmittable = currentTickets.filter((ticket) => ticket.ticket_type.grants_admission);
     const currentTicketsNotAdmittable = currentTickets.filter((ticket) => !ticket.ticket_type.grants_admission);
+
+    const { show: showModal, remove: removeModal } = useModal();
+
+    useEffect(() => {
+        if (!isLoading && currentTicketsAdmittable.length > 1) {
+            showModal(
+                <TransferRecommendationModal
+                    ticketCount={currentTicketsAdmittable.length}
+                    onTransfer={() => {
+                        removeModal();
+                        history.push(`/ticket/${currentTicketsAdmittable[0].ticket_id}`);
+                    }}
+                    onDismiss={removeModal}
+                />,
+            );
+        }
+    }, [isLoading]);
 
     return (
         <Skeleton loading={isLoading}>
