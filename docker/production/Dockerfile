@@ -1,4 +1,4 @@
-FROM node:26 as build
+FROM node:24 as build
 
 ARG BASE_URL
 ARG HOST
