@@ -65,9 +65,12 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
     type validationSchemaType = { [index: string]: yup.AnySchema };
     const validationSchemaObject: validationSchemaType = {};
 
-    const apiReportedTicketAvailability = (ticketAvailability?.total);
+    const apiReportedTicketAvailability = ticketAvailability?.total;
     // Fallback to 10 if availability hasnt loaded, should never happen in practice
-    const availableTickets = Math.min(10, apiReportedTicketAvailability != undefined ? apiReportedTicketAvailability : 10);
+    const availableTickets = Math.min(
+        10,
+        apiReportedTicketAvailability != undefined ? apiReportedTicketAvailability : 10,
+    );
 
     for (const ticketType of ticketTypes) {
         validationSchemaObject[ticketType.uuid] = yup
@@ -150,25 +153,26 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                 </InfoBox>
             ) : null}
 
-            {
-                ticketAvailability?.total == 0 ? (
-                    <WarningBox title="Utsolgt">
-                        <p>
-                            Arrangementet er utsolgt for denne gangen. Takk for din interesse - vi håper du kommer neste gang i stedet.
-                        </p>
-                        <p><b>NB: </b>Vi holder av billetter imens kunder betaler. Dersom arrangementet ble nylig utsolgt er det sjangs for at billetter kan dukke opp ila den neste timen.</p>
-                    </WarningBox>
-                ) : null
-            }
-            {
-                (ticketAvailability?.total !== 0) && (ticketAvailability != undefined && ticketAvailability?.total < 10) ? (
-                    <InfoBox title="Få billetter igjen">
-                        <p>
-                            Det er kun {ticketAvailability?.total} billett(er) igjen - arrangementet er i ferd med å bli utsolgt.
-                        </p>
-                    </InfoBox>
-                ) : null
-            }
+            {ticketAvailability?.total == 0 ? (
+                <WarningBox title="Utsolgt">
+                    <p>
+                        Arrangementet er utsolgt for denne gangen. Takk for din interesse - vi håper du kommer neste
+                        gang i stedet.
+                    </p>
+                    <p>
+                        <b>NB: </b>Vi holder av billetter imens kunder betaler. Dersom arrangementet ble nylig utsolgt
+                        er det sjangs for at billetter kan dukke opp ila den neste timen.
+                    </p>
+                </WarningBox>
+            ) : null}
+            {ticketAvailability?.total !== 0 && ticketAvailability != undefined && ticketAvailability?.total < 10 ? (
+                <InfoBox title="Få billetter igjen">
+                    <p>
+                        Det er kun {ticketAvailability?.total} billett(er) igjen - arrangementet er i ferd med å bli
+                        utsolgt.
+                    </p>
+                </InfoBox>
+            ) : null}
             <FormProvider {...formMethods}>
                 <Form onSubmit={handleSubmit}>
                     {formMethods.errors && ticketTypes && ticketTypes.length > 0 && (
