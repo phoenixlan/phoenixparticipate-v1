@@ -21,7 +21,6 @@ import { ShadowBox } from '../../../../../sharedComponents/boxes/ShadowBox';
 import { RadarEventInfo } from '../../../RadarEventInfo';
 import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatus';
 import { InfoBox, WarningBox } from '../../../../../sharedComponents/NoticeBox';
-import { useSiteConfig } from '../../../../../hooks/api/useSiteConfig';
 import { useTicketAvailability } from '../../../../../hooks/api/useTicketAvailability';
 
 const Form = styled.form`
