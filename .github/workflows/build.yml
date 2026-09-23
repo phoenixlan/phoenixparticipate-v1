@@ -34,6 +34,7 @@ jobs:
             REACT_APP_OAUTH_CLIENT_ID=phoenix-delta-test
             STRIPE_PK=${{ secrets.STRIPE_PK_TEST }}
             REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN_TEST }}
+            EVENT_BRAND=6ac09696-675c-4523-b787-cb5d90715ea6
           file: "docker/production/Dockerfile"
           context: .
           push: true
