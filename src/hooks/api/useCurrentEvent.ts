@@ -7,12 +7,13 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import { getCurrentEvent, Event, RefreshError } from '@phoenixlan/phoenix.js';
 import { useAuth } from '../../authentication/useAuth';
 import { AuthClient } from '../../authentication/client/AuthClient';
+import { EVENT_BRAND } from '../../event_brand';
 
 export const currentEventDefaultQueryKey = 'getCurrentEvent';
 
-const _getCurrentEvent = (client: AuthClient): Promise<Event> => {
+const _getCurrentEvent = (client: AuthClient): Promise<Event | null> => {
     try {
-        return getCurrentEvent();
+        return getCurrentEvent(EVENT_BRAND);
     } catch (e) {
         if (e instanceof RefreshError) {
             client.onAuthRefreshError && client.onAuthRefreshError();
@@ -21,10 +22,10 @@ const _getCurrentEvent = (client: AuthClient): Promise<Event> => {
     }
 };
 
-export const useCurrentEvent = (): QueryObserverResult<Event> => {
+export const useCurrentEvent = (): QueryObserverResult<Event | null> => {
     const { client } = useAuth();
 
-    return useQuery<Event>({
+    return useQuery<Event | null>({
         queryKey: [currentEventDefaultQueryKey],
         queryFn: () => _getCurrentEvent(client),
     });

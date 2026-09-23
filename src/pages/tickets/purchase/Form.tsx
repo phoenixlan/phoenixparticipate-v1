@@ -26,13 +26,17 @@ import { ChosenTicketType, PaymentMethodType, Step } from './utils/types';
 import { Skeleton, SkeletonPlaceholder } from '../../../sharedComponents/Skeleton';
 import { Stripe } from './vendors/stripe';
 import useDidMountEffect from '../../../hooks/useDidMountEffect';
+import { useCurrentEvent } from '../../../hooks';
 import { TicketMinting } from './steps/step6/TicketMinting';
 import { useCurrentEventTicketTypes } from '../../../hooks/api/useCurrentEventTicketTypes';
 import { useOwnedTicketVouchers } from '../../../hooks/api/useOwnedTicketVouchers';
 import { Vipps } from './vendors/vipps';
 import { toast } from 'react-toastify';
 import { ShadowBox } from '../../../sharedComponents/boxes/ShadowBox';
+import { InfoBox } from '../../../sharedComponents/NoticeBox';
 import { PaymentMethodsInfo } from './PaymentMethodsInfo';
+import { useFetchMembershipPersonalia } from '../../../hooks/api/useMembershipPersonalia';
+import { MembershipPersonaliaForm } from '../../membership/MembershipPersonaliaForm';
 
 const Container = styled.div`
     overflow: auto;
@@ -46,8 +50,10 @@ export const Form: React.FC = () => {
     const { data: ticketTypesUnsorted, isLoading: isTicketTypesLoading, isLoadingError } = useCurrentEventTicketTypes();
     const ticketTypes = (ticketTypesUnsorted ?? []).sort((a, b) => a.price - b.price);
     const { data: ticketVouchers, isLoading: isTicketVouchersLoading } = useOwnedTicketVouchers();
+    const { data: currentEvent, isLoading: isCurrentEventLoading } = useCurrentEvent();
+    const fetchMembershipPersonalia = useFetchMembershipPersonalia();
 
-    const isLoading = isTicketTypesLoading || isTicketVouchersLoading;
+    const isLoading = isTicketTypesLoading || isTicketVouchersLoading || isCurrentEventLoading;
 
     const [currentStep, setCurrentStep] = useState<Step>(Step.TicketSelection);
     const [chosenPaymentOption, setChosenPaymentOption] = useState<PaymentMethodType>(PaymentMethodType.None);
@@ -55,6 +61,27 @@ export const Form: React.FC = () => {
     const [storeSession, setStoreSession] = useState<StoreSession>();
     const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>();
     const [payment, setPayment] = useState<VisaPayment | VippsPayment>();
+
+    const hasMembershipTickets = Object.entries(chosenTickets).some(
+        ([ticketUUID, amount]) =>
+            Number(amount) > 0 && !!ticketTypes.find((ticketType) => ticketType.uuid === ticketUUID)?.grants_membership,
+    );
+
+    // Membership tickets require membership personalia. Ask the API right away so we never act on a stale cache,
+    // and show the form if the lookup fails rather than silently skipping it.
+    const goToStepAfterRules = async () => {
+        if (!hasMembershipTickets) {
+            setCurrentStep(Step.TOSpayment);
+            return;
+        }
+        let personalia = null;
+        try {
+            personalia = await fetchMembershipPersonalia();
+        } catch (e) {
+            console.error(e);
+        }
+        setCurrentStep(personalia ? Step.TOSpayment : Step.MembershipPersonalia);
+    };
 
     const makeStoreSession = async () => {
         const data: Cart = {
@@ -68,7 +95,7 @@ export const Form: React.FC = () => {
             data.cart.push(cartItem);
         }
         try {
-            const session = await createStoreSession(data);
+            const session = await createStoreSession(currentEvent?.uuid??"", data);
             setStoreSession(session);
         } catch {
             toast.error('Noe gikk galt. Venligst prøv igjen.');
@@ -146,6 +173,8 @@ export const Form: React.FC = () => {
                 );
             case Step.TOSrules:
                 return <Tos onAccept={nextStep} showRules={true} />;
+            case Step.MembershipPersonalia:
+                return <MembershipPersonaliaForm showIntro={true} onDone={nextStep} submitText="Lagre og fortsett" />;
             case Step.TOSpayment:
                 return <Tos onAccept={nextStep} showRules={false} />;
             case Step.PaymentMethod:
@@ -178,6 +207,9 @@ export const Form: React.FC = () => {
                 setCurrentStep(Step.TOSrules);
                 break;
             case Step.TOSrules:
+                goToStepAfterRules();
+                break;
+            case Step.MembershipPersonalia:
                 setCurrentStep(Step.TOSpayment);
                 break;
             case Step.TOSpayment:
@@ -195,6 +227,9 @@ export const Form: React.FC = () => {
         switch (currentStep) {
             case Step.TOSrules:
                 setCurrentStep(Step.TicketSelection);
+                break;
+            case Step.MembershipPersonalia:
+                setCurrentStep(Step.TOSrules);
                 break;
             case Step.TOSpayment:
                 setCurrentStep(Step.TOSrules);
@@ -233,19 +268,22 @@ export const Form: React.FC = () => {
             <ShadowBox>
                 <Container>
                     <Skeleton loading={isLoading}>
-                        {isLoading && <div>Loading...</div>}
+                        {(!isLoading && !isLoadingError && !currentEvent) ? (
+                            <InfoBox title="Neste arrangement er ikke annonsert enda">
+                                <p>
+                                    Neste arrangement er ikke annonsert enda. Følg med på våre sosiale medier for å få høre når det skjer!
+                                </p>
+                            </InfoBox>
+                        ) : renderStep(currentStep, ticketTypes)
+                        }
                         {!isLoading && isLoadingError && <div>Failed to load tickets</div>}
-                        {!isLoading &&
-                            !isLoadingError &&
-                            ticketTypes &&
-                            ticketTypes.length > 0 &&
-                            renderStep(currentStep, ticketTypes)}
                     </Skeleton>
                 </Container>
             </ShadowBox>
             {(currentStep === Step.TicketSelection ||
                 currentStep === Step.TOSpayment ||
-                currentStep === Step.TOSrules) && (
+                currentStep === Step.TOSrules ||
+                currentStep === Step.MembershipPersonalia) && (
                 <ShadowBox>
                     <PaymentMethodsInfo />
                 </ShadowBox>

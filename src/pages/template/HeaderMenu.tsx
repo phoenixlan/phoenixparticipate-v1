@@ -79,6 +79,11 @@ export const HeaderMenu: React.FC = () => {
                                     client.logout();
                                 },
                             },
+                            {
+                                name: 'Innstillinger',
+                                icon: { left: <Cog /> },
+                                to: '/settings',
+                            },
                             ...(features.includes('avatar')
                                 ? [
                                       {

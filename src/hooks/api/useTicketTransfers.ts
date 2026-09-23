@@ -10,7 +10,7 @@ import { AuthClient } from '../../authentication/client/AuthClient';
 
 export const ticketTransfersDefaultQueryKey = 'getTicketTransfers';
 
-const _getTicketTransfers = (client: AuthClient): Promise<Array<Ticket.FullTicketTransfer>> => {
+const _getTicketTransfers = (client: AuthClient, event_uuid: string): Promise<Array<Ticket.FullTicketTransfer>> => {
     try {
         const user = client.user;
 
@@ -19,7 +19,7 @@ const _getTicketTransfers = (client: AuthClient): Promise<Array<Ticket.FullTicke
                 res([]);
             });
         }
-        return User.getTicketTransfers(user.uuid);
+        return User.getTicketTransfers(user.uuid, event_uuid);
     } catch (e) {
         if (e instanceof RefreshError) {
             client.onAuthRefreshError && client.onAuthRefreshError();
@@ -28,11 +28,12 @@ const _getTicketTransfers = (client: AuthClient): Promise<Array<Ticket.FullTicke
     }
 };
 
-export const useTicketTransfers = (): QueryObserverResult<Array<Ticket.FullTicketTransfer>> => {
+export const useTicketTransfers = (event_uuid?: string): QueryObserverResult<Array<Ticket.FullTicketTransfer>> => {
     const { client } = useAuth();
 
     return useQuery<Array<Ticket.FullTicketTransfer>>({
         queryKey: [ticketTransfersDefaultQueryKey],
-        queryFn: () => _getTicketTransfers(client),
+        queryFn: () => _getTicketTransfers(client, event_uuid??""),
+        enabled: !!event_uuid
     });
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useMembershipStatus } from '../../hooks/api/useMembershipStatus';
+import { useMembershipPersonalia } from '../../hooks/api/useMembershipPersonalia';
 
 import { CenterBox } from '../../sharedComponents/boxes/CenterBox';
 import { Header1 } from '../../sharedComponents/Header1';
@@ -44,10 +45,11 @@ const Container = styled.div`
 
 export const MembershipStatus = () => {
     const { data: membershipStatus, isLoading: isMembershipStatusLoading } = useMembershipStatus();
+    const { data: membershipPersonalia, isLoading: isMembershipPersonaliaLoading } = useMembershipPersonalia()
     const { client } = useAuth();
 
     return (
-        <Skeleton loading={isMembershipStatusLoading}>
+        <Skeleton loading={isMembershipStatusLoading || isMembershipPersonaliaLoading}>
             <CenterBox centerVertically={false}>
                 <Header1>Radar Event-medlemskap</Header1>
                 <Container>
@@ -61,8 +63,8 @@ export const MembershipStatus = () => {
                                         {client.user?.firstname} {client.user?.lastname}
                                     </p>
                                     <p>{client.user?.birthdate}</p>
-                                    <p>{client.user?.address}</p>
-                                    <p>{client.user?.postal_code}</p>
+                                    <p>{membershipPersonalia?.address}</p>
+                                    <p>{membershipPersonalia?.postal_code}</p>
                                 </MembershipCardUserInfo>
                             </MembershipCard>
                         </MembershipInfoBox>

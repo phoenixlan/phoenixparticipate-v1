@@ -10,6 +10,9 @@ import { Header2 } from '../../../sharedComponents/Header2';
 import { CenterBox } from '../../../sharedComponents/boxes/CenterBox';
 import { TicketSettings } from './TicketSettings';
 import { Ticket as PhoenixJsTicket } from '@phoenixlan/phoenix.js';
+import { useAuth } from '../../../authentication/useAuth';
+import { useMembershipPersonalia } from '../../../hooks/api/useMembershipPersonalia';
+import { MembershipPersonaliaForm } from '../../membership/MembershipPersonaliaForm';
 
 const S = {
     Container: styled.div`
@@ -42,9 +45,27 @@ interface TicketViewerParams {
 export const TicketViewer: React.FC = (props) => {
     const { ticket_id } = useParams<TicketViewerParams>();
     const { data: ticket, isLoading: isTicketLoading } = useTicket(Number.parseInt(ticket_id, 10));
+    const { data: membershipPersonalia, isLoading: isMembershipPersonaliaLoading } = useMembershipPersonalia();
+    const { client } = useAuth();
+
+    const mustFillMembershipPersonalia =
+        !!ticket &&
+        ticket.owner.uuid === client.user?.uuid &&
+        ticket.ticket_type.grants_membership &&
+        !membershipPersonalia;
+
     return (
-        <Skeleton loading={isTicketLoading}>
-            {ticket ? (
+        <Skeleton loading={isTicketLoading || isMembershipPersonaliaLoading}>
+            {ticket && mustFillMembershipPersonalia ? (
+                <CenterBox>
+                    <S.Container>
+                        <S.ContentBox>
+                            <Header2>Medlemsinformasjon mangler</Header2>
+                            <MembershipPersonaliaForm showIntro={true} submitText="Lagre og vis billett" />
+                        </S.ContentBox>
+                    </S.Container>
+                </CenterBox>
+            ) : ticket ? (
                 <CenterBox>
                     <S.Container>
                         <Ticket ticket={ticket} />

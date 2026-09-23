@@ -48,7 +48,7 @@ export const Tickets: React.FC = () => {
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
     const { data: ownedTickets, isLoading: isLoadingOwnedTickets } = useOwnedTickets();
     const { data: ticketVouchers, isLoading: isTicketVouchersLoading } = useOwnedTicketVouchers();
-    const { data: ticketTransfers, isLoading: isLoadingTicketTransfers } = useTicketTransfers();
+    const { data: ticketTransfers, isLoading: isLoadingTicketTransfers } = useTicketTransfers(currentEvent?.uuid);
     const { data: siteConfig } = useSiteConfig();
     const features = siteConfig?.features ?? [];
     const siteName = siteConfig?.name;
@@ -73,48 +73,100 @@ export const Tickets: React.FC = () => {
     return (
         <Skeleton loading={isLoading}>
             <CenterBox centerVertically={false}>
-                {(ticketVouchers ?? []).filter(
-                    (voucher: TicketVoucher.BasicTicketVoucher) => !voucher.is_used && !voucher.is_expired,
-                ).length > 0 ? (
-                    <InfoBox title="Du har ubrukte billett-gavekort">
-                        <p>
-                            Du har ubrukte billett-gavekort - dersom du vil delta på arrangementet med de må du først
-                            konvertere dem til en billett. Det kan du gjøre her
-                        </p>
-                    </InfoBox>
-                ) : null}
-                {(ticketTransfers ?? []).length > 0 ? (
-                    <>
-                        <Header1>Billett-overføringer</Header1>
-                        <TicketTransferContainer>
-                            {(ticketTransfers ?? []).map((transfer) => (
-                                <TicketTransfer key={transfer.uuid} transfer={transfer} />
-                            ))}
-                        </TicketTransferContainer>
-                    </>
-                ) : null}
-                <Header1>Billetter til {currentEvent?.name ?? '(laster)'}</Header1>
-                <TicketEntryContainer>
-                    {currentTicketsAdmittable.map((ticket) => (
-                        <TicketEntry key={ticket.ticket_id} ticket={ticket} />
-                    ))}
-                </TicketEntryContainer>
-                {currentTicketsAdmittable.length === 0 ? (
-                    <BuyTicketPrompt>
-                        <p>Du har ingen billetter.</p>
-                        <PositiveButton onClick={buyTickets}>Kjøp billetter</PositiveButton>
-                    </BuyTicketPrompt>
-                ) : null}
-                {currentTicketsNotAdmittable.length > 0 ? (
-                    <>
-                        <Header1>Andre ting for {currentEvent?.name ?? '(laster)'}</Header1>
-                        <TicketEntryContainer>
-                            {currentTicketsNotAdmittable.map((ticket) => (
-                                <TicketEntry key={ticket.ticket_id} ticket={ticket} />
-                            ))}
-                        </TicketEntryContainer>
-                    </>
-                ) : null}
+                {
+                    !currentEvent ? (
+                        <InfoBox title="Neste arrangement er ikke annonsert enda">
+                            <p>
+                                Neste arrangement er ikke annonsert enda. Følg med på våre sosiale medier for å få høre når det skjer!
+                            </p>
+                        </InfoBox>
+                    ) : (
+                        <>
+                            {(ticketVouchers ?? []).filter(
+                                (voucher: TicketVoucher.BasicTicketVoucher) => !voucher.is_used && !voucher.is_expired,
+                            ).length > 0 ? (
+                                <InfoBox title="Du har ubrukte billett-gavekort">
+                                    <p>
+                                        Du har ubrukte billett-gavekort - dersom du vil delta på arrangementet med de må du først
+                                        konvertere dem til en billett. Det kan du gjøre her
+                                    </p>
+                                </InfoBox>
+                            ) : null}
+                            {(ticketTransfers ?? []).length > 0 ? (
+                                <>
+                                    <Header1>Billett-overføringer</Header1>
+                                    <TicketTransferContainer>
+                                        {(ticketTransfers ?? []).map((transfer) => (
+                                            <TicketTransfer key={transfer.uuid} transfer={transfer} />
+                                        ))}
+                                    </TicketTransferContainer>
+                                </>
+                            ) : null}
+                            <Header1>Billetter til {currentEvent?.name ?? '(laster)'}</Header1>
+                            <TicketEntryContainer>
+                                {currentTicketsAdmittable.map((ticket) => (
+                                    <TicketEntry key={ticket.ticket_id} ticket={ticket} />
+                                ))}
+                            </TicketEntryContainer>
+                            {currentTicketsAdmittable.length === 0 ? (
+                                <BuyTicketPrompt>
+                                    <p>Du har ingen billetter.</p>
+                                    <PositiveButton onClick={buyTickets}>Kjøp billetter</PositiveButton>
+                                </BuyTicketPrompt>
+                            ) : null}
+                            {currentTicketsNotAdmittable.length > 0 ? (
+                                <>
+                                    <Header1>Andre ting for {currentEvent?.name ?? '(laster)'}</Header1>
+                                    <TicketEntryContainer>
+                                        {currentTicketsNotAdmittable.map((ticket) => (
+                                            <TicketEntry key={ticket.ticket_id} ticket={ticket} />
+                                        ))}
+                                    </TicketEntryContainer>
+                                </>
+                            ) : null}
+                            <TutorialContainer>
+                                <Header2>Hvordan fungerer overførte billetter?</Header2>
+                                <p>
+                                    I stedet for at alle i vennegjengen må møte opp til starten av billettsalget, kan en kjøpe for
+                                    hele gruppen. En konto kan kjøpe opp til 10 billetter om gangen, som så kan overføres til andre.
+                                    Dette gjør du ved å trykke på billetten, velge &quot;overfør billett&quot;, og skrive inn e-post
+                                    addressen til mottakeren. <b>Mottakeren må også ha konto hos {siteName}</b>. Du kan også
+                                    overføre billetter dersom du f.eks finner ut at du ikke kunne komme, og selger den videre.
+                                </p>
+                                <p>
+                                    <b>Kan en billettoverføring angres?</b>
+                                </p>
+                                <p>
+                                    Ja. Når du overfører en billett vil du kunne angre på overføringen i 24 timer, skulle du ha sent
+                                    billetten til feil person. Mottakeren er også informert om at overføringen kan angres i 24
+                                    timer. Alle overføringer er loggført, og mottakeren vil bli informert dersom overføringen blir
+                                    angret.
+                                </p>
+                            </TutorialContainer>
+                            {features.includes('seatmap') && (
+                                <TutorialContainer>
+                                    <Header2>Hva er en seater? Hva gjør vi om vi er en gruppe?</Header2>
+                                    <p>
+                                        Du kan gi en annen person rettigheter til å plassere billetten din for deg, slik at en
+                                        person kan seate vennegjengen deres samlet. Trykk på en billett for å gjøre dette.
+                                    </p>
+                                    <p>
+                                        Dere kan også kjøpe billettene samlet og overføre til riktig eier senere. Husk i såfall å
+                                        kjøpe riktig billett til riktig person - folk med eksisterende medlemskap i Radar Event
+                                        trenger ikke å kjøpe et nytt medlemskap. Folk uten medlemskap i Radar Event er nødt til å ha
+                                        en billett med medlemskap(Eller den mye dyrere billetten for ikke-medlemmer). Det går også
+                                        an å kjøpe medlemskap separat senere.
+                                    </p>
+                                    <p>
+                                        <b>
+                                            Billetten MÅ være overført til riktig bruker innen LANet starter - ellers slipper du
+                                            ikke inn!
+                                        </b>
+                                    </p>
+                                </TutorialContainer>
+                    )
+                }
+                </>)}
                 {oldTickets.length > 0 ? (
                     <>
                         <Header1>Tidligere kjøp</Header1>
@@ -125,47 +177,6 @@ export const Tickets: React.FC = () => {
                         </TicketEntryContainer>
                     </>
                 ) : null}
-                <TutorialContainer>
-                    <Header2>Hvordan fungerer overførte billetter?</Header2>
-                    <p>
-                        I stedet for at alle i vennegjengen må møte opp til starten av billettsalget, kan en kjøpe for
-                        hele gruppen. En konto kan kjøpe opp til 10 billetter om gangen, som så kan overføres til andre.
-                        Dette gjør du ved å trykke på billetten, velge &quot;overfør billett&quot;, og skrive inn e-post
-                        addressen til mottakeren. <b>Mottakeren må også ha konto hos {siteName}</b>. Du kan også
-                        overføre billetter dersom du f.eks finner ut at du ikke kunne komme, og selger den videre.
-                    </p>
-                    <p>
-                        <b>Kan en billettoverføring angres?</b>
-                    </p>
-                    <p>
-                        Ja. Når du overfører en billett vil du kunne angre på overføringen i 24 timer, skulle du ha sent
-                        billetten til feil person. Mottakeren er også informert om at overføringen kan angres i 24
-                        timer. Alle overføringer er loggført, og mottakeren vil bli informert dersom overføringen blir
-                        angret.
-                    </p>
-                </TutorialContainer>
-                {features.includes('seatmap') && (
-                    <TutorialContainer>
-                        <Header2>Hva er en seater? Hva gjør vi om vi er en gruppe?</Header2>
-                        <p>
-                            Du kan gi en annen person rettigheter til å plassere billetten din for deg, slik at en
-                            person kan seate vennegjengen deres samlet. Trykk på en billett for å gjøre dette.
-                        </p>
-                        <p>
-                            Dere kan også kjøpe billettene samlet og overføre til riktig eier senere. Husk i såfall å
-                            kjøpe riktig billett til riktig person - folk med eksisterende medlemskap i Radar Event
-                            trenger ikke å kjøpe et nytt medlemskap. Folk uten medlemskap i Radar Event er nødt til å ha
-                            en billett med medlemskap(Eller den mye dyrere billetten for ikke-medlemmer). Det går også
-                            an å kjøpe medlemskap separat senere.
-                        </p>
-                        <p>
-                            <b>
-                                Billetten MÅ være overført til riktig bruker innen LANet starter - ellers slipper du
-                                ikke inn!
-                            </b>
-                        </p>
-                    </TutorialContainer>
-                )}
             </CenterBox>
         </Skeleton>
     );

@@ -7,12 +7,13 @@ import { QueryObserverResult, useQuery } from 'react-query';
 import { RefreshError, Seatmap, Ticket, getCurrentEvent } from '@phoenixlan/phoenix.js';
 import { useAuth } from '../../authentication/useAuth';
 import { AuthClient } from '../../authentication/client/AuthClient';
+import { EVENT_BRAND } from '../../event_brand';
 
 export const currentSeatmapDefaultQueryKey = 'getCurrentSeatmap';
 
 const _getCurrentSeatmap = async (client: AuthClient): Promise<Seatmap.SeatmapAvailability | null> => {
     try {
-        const event = await getCurrentEvent();
+        const event = await getCurrentEvent(EVENT_BRAND);
         if (!event) {
             return new Promise((res) => {
                 res(null);
@@ -23,7 +24,7 @@ const _getCurrentSeatmap = async (client: AuthClient): Promise<Seatmap.SeatmapAv
                 res(null);
             });
         }
-        return Seatmap.getSeatmapAvailability(event.seatmap_uuid);
+        return Seatmap.getSeatmapAvailability(event.seatmap_uuid, event.uuid);
     } catch (e) {
         if (e instanceof RefreshError) {
             client.onAuthRefreshError && client.onAuthRefreshError();

@@ -6,6 +6,7 @@
 export enum Step {
     TicketSelection = 1,
     TOSrules = 2,
+    MembershipPersonalia = 2.5,
     TOSpayment = 3,
     PaymentMethod = 4,
     Confirmation = 5,

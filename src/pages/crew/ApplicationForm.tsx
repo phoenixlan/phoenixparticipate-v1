@@ -15,11 +15,13 @@ import { TextArea } from '../../sharedComponents/forms/TextArea';
 import { Crew } from '@phoenixlan/phoenix.js';
 import { useMutation, useQueryClient } from 'react-query';
 import { userApplicationDefaultQueryKey } from '../../hooks/api/useUserApplications';
+import { useCurrentEvent } from '../../hooks/api/useCurrentEvent';
 import { InlineSpinner, LoadingSpinner } from '../../sharedComponents/LoadingSpinner';
 import { toast } from 'react-toastify';
 import { Header2 } from '../../sharedComponents/Header2';
 import { FormLabel } from '../../sharedComponents/forms/FormLabel';
 import { ErrorMessage } from '../../sharedComponents/forms/ErrorMessage';
+import { EVENT_BRAND } from '../../event_brand';
 
 const Form = styled.form`
     display: flex;
@@ -71,6 +73,12 @@ const validationSchema = yup
     );
 
 export const ApplicationForm: React.FC = () => {
+    const { data: currentEvent, isLoading: isCurrentEventLoading } = useCurrentEvent();
+
+    if ( isCurrentEventLoading ) {
+        return (<InlineSpinner />)
+    }
+
     const formMethods = useForm<FormData>({
         resolver: yupResolver(validationSchema),
         defaultValues: {
@@ -84,7 +92,7 @@ export const ApplicationForm: React.FC = () => {
     const queryClient = useQueryClient();
     const addApplicationMutation = useMutation(
         (newApplcation: { crews: Array<string>; contents: string }) =>
-            Crew.Applications.createApplication(newApplcation.crews, newApplcation.contents),
+            Crew.Applications.createApplication(currentEvent?.uuid??"", newApplcation.crews, newApplcation.contents),
         {
             onSuccess: (application) => {
                 console.log('success');
