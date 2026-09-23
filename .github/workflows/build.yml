@@ -28,9 +28,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           build-args: |
-            BASE_URL=https://api.test.phoenixlan.no
-            HOST=https://delta.test.phoenixlan.no
-            REACT_APP_MAIN_SITE=https://test.phoenixlan.no
+            BASE_URL=https://api.test.radarevent.no
+            HOST=https://tickets.test.constellation.no
+            REACT_APP_MAIN_SITE=https://constellation.no
             REACT_APP_OAUTH_CLIENT_ID=phoenix-delta-test
             STRIPE_PK=${{ secrets.STRIPE_PK_TEST }}
             REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN_TEST }}
