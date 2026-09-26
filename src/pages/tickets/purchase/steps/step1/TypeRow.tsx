@@ -29,6 +29,11 @@ const Name = styled.div`
 
 const Description = styled.div``;
 
+const Availability = styled.div`
+    font-weight: bold;
+    margin-top: ${({ theme }) => theme.spacing.xxs};
+`;
+
 const TicketPresentation = styled.div`
     flex: 5;
     padding: ${({ theme }) => theme.spacing.xxs};
@@ -69,7 +74,12 @@ interface Props {
     max: number;
     enabled: boolean;
     isSeatable: boolean;
+    // How many more tickets of this type can be added to the cart. null if unlimited
+    remaining?: number | null;
 }
+
+// Only show the remaining count when it is low enough to matter
+const LOW_AVAILABILITY_THRESHOLD = 10;
 
 export const TypeRow: React.FC<Props> = ({
     amount,
@@ -82,8 +92,21 @@ export const TypeRow: React.FC<Props> = ({
     grantsMembership,
     grantsAdmission,
     isSeatable,
+    remaining = null,
 }) => {
     const { data: membershipStatus, isLoading: isMembershipStatusLoading } = useMembershipStatus();
+
+    const getAvailabilityText = () => {
+        if (remaining === null || remaining >= LOW_AVAILABILITY_THRESHOLD) {
+            return null;
+        }
+        if (remaining === 0) {
+            // Having picked every remaining ticket isn't the same as the ticket type being sold out
+            return Number(amount) > 0 ? 'Ingen flere igjen' : 'Utsolgt';
+        }
+        return `Kun ${remaining} igjen`;
+    };
+    const availabilityText = getAvailabilityText();
 
     return (
         <Container>
@@ -94,6 +117,7 @@ export const TypeRow: React.FC<Props> = ({
                         {name}
                     </Name>
                     <Description>{description}</Description>
+                    {availabilityText ? <Availability>{availabilityText}</Availability> : null}
                 </TicketPresentation>
                 <Price>{`${price},-`}</Price>
                 {enabled ? (

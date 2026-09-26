@@ -192,6 +192,8 @@ export const NumberInput: React.FC<Props> = ({ min = 0, max = 10, tabindex = 1, 
         <Controller
             control={control}
             name={name}
+            // Fields added after the form was created (e.g. ticket types unlocked with a code) have no default value
+            defaultValue={0}
             render={({ onChange, value }) => (
                 <_NumberInput min={min} max={max} value={value} onChange={onChange} tabindex={tabindex} />
             )}
