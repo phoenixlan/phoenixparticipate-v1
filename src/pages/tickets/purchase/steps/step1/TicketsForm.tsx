@@ -169,18 +169,18 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
         onSubmit(data);
     });
 
-    const getAmount = () => {
-        let amount = 0;
-        for (const ticketType of ticketTypes) {
-            amount += ticketType.price * formMethods.watch(ticketType.uuid);
-        }
-        return amount;
-    };
-
     const cart: ChosenTicketType = {};
     for (const ticketType of ticketTypes) {
         cart[ticketType.uuid] = toAmount(formMethods.watch(ticketType.uuid));
     }
+
+    const getAmount = () => {
+        let amount = 0;
+        for (const ticketType of ticketTypes) {
+            amount += ticketType.price * cart[ticketType.uuid];
+        }
+        return amount;
+    };
     const cartAvailability = applyCartToAvailability(ticketAvailability, cart);
 
     const getTotalAmount = () => {
@@ -306,7 +306,9 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                                 </>
                             ) : null}
                             <Header2>Totalsum: {getAmount()},-</Header2>
-                            <PositiveButton fluid={true} disabled={getAmount() === 0}>{`Betal`}</PositiveButton>
+                            <PositiveButton fluid={true} disabled={getTotalAmount() === 0}>
+                                {getTotalAmount() > 0 && getAmount() === 0 ? 'Løs ut' : 'Betal'}
+                            </PositiveButton>
                         </>
                     ) : (
                         <>

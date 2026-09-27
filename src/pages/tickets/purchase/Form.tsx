@@ -11,13 +11,14 @@ import {
     Cart,
     createPayment,
     createStoreSession,
+    initiateFreePayment,
+    initiateStripePayment,
     initiateVippsPayment,
-    initiateVisaPayment,
     PaymentInfo,
     StoreSession,
+    StripePayment,
     TicketType,
     VippsPayment,
-    VisaPayment,
 } from '@phoenixlan/phoenix.js';
 import { PaymentMethods } from './steps/step4/PaymentMethods';
 import { Tos } from './steps/step2and3/Tos';
@@ -60,7 +61,7 @@ export const Form: React.FC = () => {
     const [chosenTickets, setChosenTickets] = useState<ChosenTicketType>({});
     const [storeSession, setStoreSession] = useState<StoreSession>();
     const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>();
-    const [payment, setPayment] = useState<VisaPayment | VippsPayment>();
+    const [payment, setPayment] = useState<StripePayment | VippsPayment>();
 
     const hasMembershipTickets = Object.entries(chosenTickets).some(
         ([ticketUUID, amount]) =>
@@ -126,9 +127,16 @@ export const Form: React.FC = () => {
                         break;
                     }
                     case PaymentMethodType.card: {
-                        const _payment = await initiateVisaPayment(_paymentInfo.uuid);
+                        const _payment = await initiateStripePayment(_paymentInfo.uuid);
                         setPayment(_payment);
                         break;
+                    }
+                    case PaymentMethodType.free: {
+                        // Nothing to pay, so skip the confirmation step and go straight to waiting for the tickets
+                        await initiateFreePayment(_paymentInfo.uuid);
+                        setPaymentInfo(_paymentInfo);
+                        setCurrentStep(Step.TicketMinting);
+                        return;
                     }
                 }
                 setPaymentInfo(_paymentInfo);
@@ -145,7 +153,7 @@ export const Form: React.FC = () => {
         }
         switch (chosenPaymentOption) {
             case PaymentMethodType.card: {
-                const stripePayment = payment as VisaPayment;
+                const stripePayment = payment as StripePayment;
                 if (stripePayment && stripePayment.client_secret) {
                     return <Stripe clientSecret={stripePayment.client_secret} next={nextStep} />;
                 }
@@ -178,7 +186,10 @@ export const Form: React.FC = () => {
             case Step.TOSpayment:
                 return <Tos onAccept={nextStep} showRules={false} />;
             case Step.PaymentMethod:
-                return <PaymentMethods onClick={setPaymentMethod} />;
+                if (!storeSession) {
+                    return <SkeletonPlaceholder />;
+                }
+                return <PaymentMethods isFree={storeSession.total === 0} onClick={setPaymentMethod} />;
             case Step.Confirmation:
                 if (!paymentInfo) {
                     return <SkeletonPlaceholder />;
@@ -252,7 +263,10 @@ export const Form: React.FC = () => {
 
     const setPaymentMethod = (paymentMethod: PaymentMethodType) => {
         setChosenPaymentOption(paymentMethod);
-        nextStep();
+        // The free flow moves on by itself once the payment is created
+        if (paymentMethod !== PaymentMethodType.free) {
+            nextStep();
+        }
     };
 
     if (uuid) {

@@ -16,5 +16,6 @@ export enum PaymentMethodType {
     None = 'undefined',
     card = 'stripe',
     vipps = 'vipps',
+    free = 'free',
 }
 export type ChosenTicketType = { [index: string]: number };
