@@ -29,6 +29,16 @@
     "react/prop-types": 0,
     "semi": 2
   },
+  "overrides": [
+    {
+      // Storybook stories render through inline functions, and the API mocks mirror phoenix.js' signatures
+      "files": ["stories/**", ".storybook/**"],
+      "rules": {
+        "react/display-name": 0,
+        "@typescript-eslint/explicit-module-boundary-types": 0
+      }
+    }
+  ],
   "settings": {
     "react": {
       "version": "detect"
