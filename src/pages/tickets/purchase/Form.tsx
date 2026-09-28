@@ -22,6 +22,7 @@ import {
 } from '@phoenixlan/phoenix.js';
 import { PaymentMethods } from './steps/step4/PaymentMethods';
 import { Tos } from './steps/step2and3/Tos';
+import { Disclaimers } from './steps/disclaimers/Disclaimers';
 import { Confirmation } from './steps/step5/Confirmation';
 import { ChosenTicketType, PaymentMethodType, Step } from './utils/types';
 import { Skeleton, SkeletonPlaceholder } from '../../../sharedComponents/Skeleton';
@@ -66,6 +67,11 @@ export const Form: React.FC = () => {
     const hasMembershipTickets = Object.entries(chosenTickets).some(
         ([ticketUUID, amount]) =>
             Number(amount) > 0 && !!ticketTypes.find((ticketType) => ticketType.uuid === ticketUUID)?.grants_membership,
+    );
+
+    // Chosen ticket types with special terms the user has to confirm before continuing
+    const disclaimerTicketTypes = ticketTypes.filter(
+        (ticketType) => Number(chosenTickets[ticketType.uuid]) > 0 && !!ticketType.disclaimer,
     );
 
     // Membership tickets require membership personalia. Ask the API right away so we never act on a stale cache,
@@ -179,6 +185,8 @@ export const Form: React.FC = () => {
                         onSubmit={setTickets}
                     />
                 );
+            case Step.Disclaimers:
+                return <Disclaimers ticketTypes={disclaimerTicketTypes} onAccept={nextStep} />;
             case Step.TOSrules:
                 return <Tos onAccept={nextStep} showRules={true} />;
             case Step.MembershipPersonalia:
@@ -214,7 +222,7 @@ export const Form: React.FC = () => {
 
     const nextStep = () => {
         switch (currentStep) {
-            case Step.TicketSelection:
+            case Step.Disclaimers:
                 setCurrentStep(Step.TOSrules);
                 break;
             case Step.TOSrules:
@@ -258,7 +266,12 @@ export const Form: React.FC = () => {
 
     const setTickets = (tickets: ChosenTicketType) => {
         setChosenTickets(tickets);
-        nextStep();
+        // Decided from the argument, as chosenTickets isn't updated until the next render
+        setCurrentStep(
+            ticketTypes.some((ticketType) => Number(tickets[ticketType.uuid]) > 0 && !!ticketType.disclaimer)
+                ? Step.Disclaimers
+                : Step.TOSrules,
+        );
     };
 
     const setPaymentMethod = (paymentMethod: PaymentMethodType) => {
@@ -295,6 +308,7 @@ export const Form: React.FC = () => {
                 </Container>
             </ShadowBox>
             {(currentStep === Step.TicketSelection ||
+                currentStep === Step.Disclaimers ||
                 currentStep === Step.TOSpayment ||
                 currentStep === Step.TOSrules ||
                 currentStep === Step.MembershipPersonalia) && (

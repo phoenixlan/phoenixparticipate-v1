@@ -5,6 +5,7 @@
  */
 export enum Step {
     TicketSelection = 1,
+    Disclaimers = 1.5,
     TOSrules = 2,
     MembershipPersonalia = 2.5,
     TOSpayment = 3,

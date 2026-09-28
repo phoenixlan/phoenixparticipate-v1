@@ -30,10 +30,11 @@ import { Settings } from '../pages/settings';
 
 export const Router: React.FC = () => {
     const { initialized } = useAuth();
-    const { data: siteConfig } = useSiteConfig();
+    const { data: siteConfig, isLoading: isSiteConfigLoading } = useSiteConfig();
     const features = siteConfig?.features ?? [];
 
-    if (!initialized) {
+    // Feature-gated routes don't exist until the site config is loaded, so wait for it to avoid a 404 flash
+    if (!initialized || isSiteConfigLoading) {
         return <Loading />;
     }
 
@@ -47,52 +48,54 @@ export const Router: React.FC = () => {
                     path="/"
                     render={(props) => (
                         <Template>
-                            {features.includes('crew') && (
-                                <AuthRoute {...props} exact path="/crew">
-                                    <Crew />
+                            <Switch>
+                                {features.includes('crew') && (
+                                    <AuthRoute {...props} exact path="/crew">
+                                        <Crew />
+                                    </AuthRoute>
+                                )}
+                                <AuthRoute {...props} exact path="/">
+                                    <Tickets />
                                 </AuthRoute>
-                            )}
-                            <AuthRoute {...props} exact path="/">
-                                <Tickets />
-                            </AuthRoute>
-                            <AuthRoute {...props} exact path="/ticket/:ticket_id">
-                                <TicketViewer />
-                            </AuthRoute>
-                            <AuthRoute {...props} exact path="/seating">
-                                <TicketSeating />
-                            </AuthRoute>
-                            {features.includes('membership') && (
-                                <AuthRoute {...props} exact path="/membership">
-                                    <MembershipStatus />
+                                <AuthRoute {...props} exact path="/ticket/:ticket_id">
+                                    <TicketViewer />
                                 </AuthRoute>
-                            )}
-                            {features.includes('discord') && (
-                                <AuthRoute {...props} exact path="/third_party_mapping">
-                                    <DiscordMappingManagement />
+                                <AuthRoute {...props} exact path="/seating">
+                                    <TicketSeating />
                                 </AuthRoute>
-                            )}
-                            <AuthRoute {...props} exact path="/buy">
-                                <TicketPurchase />
-                            </AuthRoute>
-                            {features.includes('avatar') && (
-                                <AuthRoute {...props} exact path="/avatar">
-                                    <Avatar />
+                                {features.includes('membership') && (
+                                    <AuthRoute {...props} exact path="/membership">
+                                        <MembershipStatus />
+                                    </AuthRoute>
+                                )}
+                                {features.includes('discord') && (
+                                    <AuthRoute {...props} exact path="/third_party_mapping">
+                                        <DiscordMappingManagement />
+                                    </AuthRoute>
+                                )}
+                                <AuthRoute {...props} exact path="/buy">
+                                    <TicketPurchase />
                                 </AuthRoute>
-                            )}
-                            {features.includes('crew') && (
-                                <AuthRoute {...props} exact path="/my-crew">
-                                    <MyCrew />
+                                {features.includes('avatar') && (
+                                    <AuthRoute {...props} exact path="/avatar">
+                                        <Avatar />
+                                    </AuthRoute>
+                                )}
+                                {features.includes('crew') && (
+                                    <AuthRoute {...props} exact path="/my-crew">
+                                        <MyCrew />
+                                    </AuthRoute>
+                                )}
+                                <AuthRoute {...props} exact path="/ticket-vouchers">
+                                    <TicketVouchers />
                                 </AuthRoute>
-                            )}
-                            <AuthRoute {...props} exact path="/ticket-vouchers">
-                                <TicketVouchers />
-                            </AuthRoute>
-                            <AuthRoute {...props} exact path="/settings">
-                                <Settings />
-                            </AuthRoute>
-                            <AuthRoute {...props} path="*">
-                                <Error404 />
-                            </AuthRoute>
+                                <AuthRoute {...props} exact path="/settings">
+                                    <Settings />
+                                </AuthRoute>
+                                <AuthRoute {...props} path="*">
+                                    <Error404 />
+                                </AuthRoute>
+                            </Switch>
                         </Template>
                     )}
                 />
