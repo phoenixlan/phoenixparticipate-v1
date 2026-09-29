@@ -12,29 +12,49 @@ interface TicketEntryProps {
 }
 
 const S = {
-    Container: styled.div`
-        display: flex;
-        justify-content: space-between;
+    // Fixed columns so the seat and seater line up between rows
+    Container: styled.div<{ hasSeatmap: boolean }>`
+        display: grid;
+        grid-template-columns: ${({ hasSeatmap }) =>
+            hasSeatmap ? '8rem 1fr 7rem 9rem 1.5rem' : '8rem 1fr 1.5rem'};
+        align-items: center;
+        gap: ${({ theme }) => theme.spacing.s};
+        text-align: left;
+        padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s};
 
-        padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s} ${({ theme }) => theme.spacing.m}
-            ${({ theme }) => theme.spacing.s};
+        @media screen and (max-width: ${({ theme }) => theme.media.smallTablet}) {
+            grid-template-columns: ${({ hasSeatmap }) =>
+                hasSeatmap ? '8rem 1fr 6rem 1.5rem' : '8rem 1fr 1.5rem'};
+        }
 
         :hover {
             background-color: ${({ theme }) => theme.colors.Gray};
             cursor: pointer;
         }
     `,
-    TicketId: styled.span``,
-    TicketType: styled.span``,
-    TicketSeater: styled.span``,
-    SeatContainer: styled.span`
+    TicketId: styled.span`
+        text-align: center;
+        white-space: nowrap;
+    `,
+    Cell: styled.div`
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        min-width: 0;
     `,
-    Row: styled.span``,
-    Seat: styled.span``,
-    TicketStatus: styled.span``,
+    // Hidden on phones, where there is no room for it
+    SeaterCell: styled.div`
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+
+        @media screen and (max-width: ${({ theme }) => theme.media.smallTablet}) {
+            display: none;
+        }
+    `,
+    Label: styled.span`
+        font-size: ${({ theme }) => theme.fontSize.s};
+        color: ${({ theme }) => theme.colors.DarkGray};
+    `,
     ArrowRightSquare: styled(ArrowRightSquare)`
         height: 1.5em;
     `,
@@ -56,42 +76,43 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
     return (
         <S.ContainerLinkOuter>
             <S.ContainerLink to={`/ticket/${ticket.ticket_id}`}>
-                <S.Container>
+                <S.Container hasSeatmap={hasSeatmap}>
                     <S.TicketId>
-                        {ticket.ticket_type.grants_admission ? 'Billett ' : 'Kjøp '}&#x23;{ticket.ticket_id}
+                        {ticket.ticket_type.grants_admission ? 'Billett ' : 'Kjøp '}
+                        <code>&#x23;{ticket.ticket_id}</code>
                     </S.TicketId>
-                    <S.TicketType>{ticket.ticket_type.name}</S.TicketType>
-                    {hasSeatmap &&
-                        (ticket.seat ? (
-                            <S.SeatContainer>
-                                <S.Row>Rad {ticket.seat.row.row_number}</S.Row>
-                                <S.Seat>Sete {ticket.seat.number}</S.Seat>
-                            </S.SeatContainer>
-                        ) : (
-                            <b>Ikke seatet</b>
-                        ))}
+                    <span>{ticket.ticket_type.name}</span>
                     {hasSeatmap && (
-                        <S.TicketSeater>
-                            {ticket.ticket_type.seatable ? (
-                                ticket.seater && ticket.seater.uuid !== client.user!.uuid ? (
+                        <S.Cell>
+                            {ticket.seat ? (
+                                <>
+                                    <S.Label>Plass</S.Label>
                                     <span>
-                                        Seatet av:
-                                        <br />
-                                        <b>
-                                            {ticket.seater.firstname} {ticket.seater.lastname}
-                                        </b>
+                                        Rad {ticket.seat.row.row_number}, sete {ticket.seat.number}
                                     </span>
-                                ) : (
-                                    <span>
-                                        Seatet av:
-                                        <br />
-                                        <b>deg</b>
-                                    </span>
-                                )
+                                </>
+                            ) : ticket.ticket_type.seatable ? (
+                                <b>Ikke seatet</b>
+                            ) : ticket.ticket_type.grants_admission ? (
+                                <S.Label>Ingen sitteplass</S.Label>
                             ) : (
-                                <b>Ingen sitteplass</b>
+                                <S.Label>Gir ikke inngang</S.Label>
                             )}
-                        </S.TicketSeater>
+                        </S.Cell>
+                    )}
+                    {hasSeatmap && (
+                        <S.SeaterCell>
+                            {ticket.ticket_type.seatable && (
+                                <>
+                                    <S.Label>Seatet av</S.Label>
+                                    <span>
+                                        {ticket.seater && ticket.seater.uuid !== client.user!.uuid
+                                            ? `${ticket.seater.firstname} ${ticket.seater.lastname}`
+                                            : 'Deg'}
+                                    </span>
+                                </>
+                            )}
+                        </S.SeaterCell>
                     )}
                     <S.ArrowRightSquare />
                 </S.Container>

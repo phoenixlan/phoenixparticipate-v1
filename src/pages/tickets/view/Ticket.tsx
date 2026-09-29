@@ -229,8 +229,10 @@ export const Ticket: React.FC<TicketProps> = ({ ticket }) => {
                         <span>
                             <b>Ikke seatet</b>
                         </span>
-                    ) : (
+                    ) : ticket.ticket_type.grants_admission ? (
                         <span>Ingen sitteplass</span>
+                    ) : (
+                        <span>Gir ikke inngang</span>
                     )}
                 </InnerTop>
             </Top>

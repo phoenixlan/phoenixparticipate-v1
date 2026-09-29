@@ -75,15 +75,24 @@ export const User = {
     getTicketVouchers: () => respond(api().ticketVouchers),
     getTicketTransfers: () => respond(api().ticketTransfers),
     getSeatableTickets: () => respond(api().seatableTickets),
-    getUserMembershipStatus: () => respond(api().membershipStatus),
+    getUserMembershipStatus: (_uuid: string, year?: number) =>
+        respond(
+            year === undefined || year === new Date().getFullYear()
+                ? api().membershipStatus
+                : api().otherYearMembershipStatus,
+        ),
     getDiscordMapping: () => respond(api().discordMapping),
     revokeDiscordMapping: () => ok(undefined),
     createDiscordMappingOauthUrl: () => ok({ url: '#discord-mock' }),
     MembershipPersonalia: {
         ...real.User.MembershipPersonalia,
         getMembershipPersonalia: () => respond(api().membershipPersonalia),
-        upsertMembershipPersonalia: (_user_uuid: string, address: string, postal_code: string) =>
-            ok({ address, postal_code, country_code: 'NO' }),
+        // Stored in the mock state so refetches see the saved personalia
+        upsertMembershipPersonalia: (_user_uuid: string, address: string, postal_code: string) => {
+            const personalia = { address, postal_code, country_code: 'NO' };
+            api().membershipPersonalia = personalia;
+            return ok(personalia);
+        },
     },
 };
 
@@ -100,6 +109,12 @@ export const Crew = {
 
 export const Ticket = {
     ...real.Ticket,
+    // Served from the owned tickets, so a story picks the ticket through its route
+    getTicket: (ticket_id: number) => {
+        const tickets = api().ownedTickets;
+        return respond(Array.isArray(tickets) ? tickets.find((t) => t.ticket_id === ticket_id) ?? ERROR : tickets);
+    },
+    getTicketTotp: () => ok({ totp: 'JBSWY3DPEHPK3PXP' }),
     transferTicket: () => ok(undefined),
     revertTransfer: () => ok(undefined),
     seatTicket: () => ok(undefined),
@@ -108,7 +123,16 @@ export const Ticket = {
 
 export const TicketVoucher = {
     ...real.TicketVoucher,
-    burnTicketVoucher: () => ok(true),
+    // Marked as used in the mock state so refetches see it
+    burnTicketVoucher: (voucher_uuid: string) => {
+        const vouchers = api().ticketVouchers;
+        if (Array.isArray(vouchers)) {
+            api().ticketVouchers = vouchers.map((voucher) =>
+                voucher.uuid === voucher_uuid ? { ...voucher, is_used: true } : voucher,
+            );
+        }
+        return ok(true);
+    },
 };
 
 export const Seatmap = {

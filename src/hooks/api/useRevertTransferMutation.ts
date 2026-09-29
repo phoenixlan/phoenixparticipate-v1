@@ -4,6 +4,7 @@ import { Ticket } from '@phoenixlan/phoenix.js';
 import { toast } from 'react-toastify';
 
 import { ticketTransfersDefaultQueryKey } from './useTicketTransfers';
+import { ownedTicketsDefaultQueryKey } from './useOwnedTickets';
 
 export const useRevertTransferMutation = () => {
     const queryClient = useQueryClient();
@@ -18,6 +19,8 @@ export const useRevertTransferMutation = () => {
         },
         onSettled: () => {
             queryClient.invalidateQueries([ticketTransfersDefaultQueryKey]);
+            // The ticket goes back to the sender
+            queryClient.invalidateQueries([ownedTicketsDefaultQueryKey]);
         },
     });
 };

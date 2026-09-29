@@ -25,6 +25,10 @@ export const OnlyUnused: Story = {
     parameters: { api: { ticketVouchers: ticketVouchers.filter((v) => !v.is_used && !v.is_expired) } },
 };
 
+export const NoEventAnnounced: Story = {
+    parameters: { api: { ticketVouchers, currentEvent: null } },
+};
+
 export const NoVouchers: Story = {
     parameters: { api: { ticketVouchers: [] } },
 };

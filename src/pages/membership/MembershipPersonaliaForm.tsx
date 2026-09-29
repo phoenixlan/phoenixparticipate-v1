@@ -43,6 +43,8 @@ interface Props {
     onDone?: () => void;
     defaultValues?: User.MembershipPersonalia.MembershipPersonalia | null;
     showIntro?: boolean;
+    // Replaces the first paragraph of the intro, which is written for the purchase flow
+    introText?: string;
     submitText?: string;
 }
 
@@ -50,6 +52,7 @@ export const MembershipPersonaliaForm: React.FC<Props> = ({
     onDone,
     defaultValues,
     showIntro = false,
+    introText = 'En eller flere av billettene dine inkluderer medlemskap i Radar Event. For å registrere medlemskapet trenger vi litt informasjon om deg. Denne informasjonen gir oss hodestøtte, les mer på medlemskapssiden.',
     submitText = 'Lagre',
 }) => {
     const formMethods = useForm<FormData>({
@@ -77,11 +80,7 @@ export const MembershipPersonaliaForm: React.FC<Props> = ({
             <Form onSubmit={onSubmit}>
                 {showIntro && (
                     <Info>
-                        <p>
-                            En eller flere av billettene dine inkluderer medlemskap i Radar Event. For å registrere
-                            medlemskapet trenger vi litt informasjon om deg. Denne informasjonen gir oss hodestøtte, les
-                            mer på medlemskapssiden.
-                        </p>
+                        <p>{introText}</p>
                         <p>Informasjonen behandles i henhold til våre bruksvilkår.</p>
                         <InfoButtons>
                             <TertiaryButton type="button" size="small" onClick={() => window.open('/membership', '_blank')}>

@@ -40,6 +40,8 @@ const config: StorybookConfig = {
                 // All API calls go through a mock that serves story-controlled data. It re-exports the real library
                 // for everything that isn't a network call
                 '@phoenixlan/phoenix.js$': path.resolve(__dirname, '../stories/mocks/phoenix.ts'),
+                // The real library imports node:crypto, which webpack can't bundle for the browser
+                'totp-generator$': path.resolve(__dirname, '../stories/mocks/totp-generator.ts'),
             },
         };
         return config;

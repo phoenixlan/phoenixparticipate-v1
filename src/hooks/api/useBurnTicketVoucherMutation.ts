@@ -18,7 +18,8 @@ export const useBurnTicketVoucherMutation = () => {
             toast.error('Det skjede en feil');
         },
         onSettled: () => {
-            queryClient.invalidateQueries([ownedTicketVouchersDefaultQueryKey, ownedTicketsDefaultQueryKey]);
+            queryClient.invalidateQueries([ownedTicketVouchersDefaultQueryKey]);
+            queryClient.invalidateQueries([ownedTicketsDefaultQueryKey]);
         },
     });
 };

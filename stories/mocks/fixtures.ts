@@ -482,6 +482,7 @@ export const createDefaultApi = (): MockApiState => ({
     ticketTransfers: [],
     seatableTickets: ownedTickets.filter((t) => t.event.uuid === currentEvent.uuid && t.ticket_type.seatable),
     membershipStatus: false,
+    otherYearMembershipStatus: false,
     membershipPersonalia: { address: 'Storgata 1', postal_code: '1383', country_code: 'NO' },
     discordMapping: { discord_id: '1234', username: 'olanordmann', avatar: '' },
     crews,

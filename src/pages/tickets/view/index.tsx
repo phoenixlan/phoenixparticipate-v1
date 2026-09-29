@@ -61,7 +61,11 @@ export const TicketViewer: React.FC = (props) => {
                     <S.Container>
                         <S.ContentBox>
                             <Header2>Medlemsinformasjon mangler</Header2>
-                            <MembershipPersonaliaForm showIntro={true} submitText="Lagre og vis billett" />
+                            <MembershipPersonaliaForm
+                                showIntro={true}
+                                introText="Denne billetten gir medlemskap i Radar Event, men du har ikke registrert medlemskapsinformasjon enda. For å registrere medlemskapet trenger vi litt informasjon om deg."
+                                submitText="Lagre og vis billett"
+                            />
                         </S.ContentBox>
                     </S.Container>
                 </CenterBox>
@@ -73,10 +77,7 @@ export const TicketViewer: React.FC = (props) => {
                             <b>Merk:</b> Billetten er beskyttet mot forfalskning - et screenshot holder ikke
                         </p>
                         <S.Spacing />
-                        <S.ContentBox>
-                            <Header2>Innstillinger</Header2>
-                            <TicketSettings ticket={ticket as PhoenixJsTicket.FullTicket} />
-                        </S.ContentBox>
+                        <TicketSettings ticket={ticket as PhoenixJsTicket.FullTicket} />
                     </S.Container>
                 </CenterBox>
             ) : null}

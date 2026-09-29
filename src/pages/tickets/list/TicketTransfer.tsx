@@ -4,37 +4,44 @@ import { Ticket } from '@phoenixlan/phoenix.js';
 import { useAuth } from '../../../authentication/useAuth';
 import { NegativeButton } from '../../../sharedComponents/forms/Button';
 import { useRevertTransferMutation } from '../../../hooks/api/useRevertTransferMutation';
-import { InlineSpinner } from '../../../sharedComponents/LoadingSpinner';
 
 const S = {
+    // Same kind of fixed columns as TicketEntry, so rows line up
     Container: styled.div`
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 8rem 1fr 7rem 9rem 8rem 7rem;
+        align-items: center;
+        gap: ${({ theme }) => theme.spacing.s};
+        text-align: left;
+        padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s};
 
-        padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s} ${({ theme }) => theme.spacing.m}
-            ${({ theme }) => theme.spacing.s};
-    `,
-    TicketId: styled.span``,
-    TicketType: styled.span`
-        @media only screen and (max-width: 40em) {
-            display: none;
+        @media screen and (max-width: ${({ theme }) => theme.media.tablet}) {
+            grid-template-columns: 7rem 1fr 1fr 7rem;
         }
     `,
-    TicketSeater: styled.span``,
-    TicketGiver: styled.div``,
-    TicketReceiver: styled.div``,
-    TicketRevertNotice: styled.div``,
-    SeatContainer: styled.span`
-        @media only screen and (max-width: 40em) {
-            display: none;
-        }
+    TicketId: styled.span`
+        text-align: center;
+        white-space: nowrap;
+    `,
+    Cell: styled.div`
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        min-width: 0;
     `,
-    Row: styled.span``,
-    Seat: styled.span``,
-    TicketStatus: styled.span``,
+    // Hidden on smaller screens, where there is no room for them
+    WideOnly: styled.div`
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+
+        @media screen and (max-width: ${({ theme }) => theme.media.tablet}) {
+            display: none;
+        }
+    `,
+    Label: styled.span`
+        font-size: ${({ theme }) => theme.fontSize.s};
+        color: ${({ theme }) => theme.colors.DarkGray};
+    `,
     ContainerLinkOuter: styled.div`
         width: 100%;
         border-top: 1px solid ${({ theme }) => theme.colors.Gray};
@@ -51,91 +58,65 @@ export const TicketTransfer: React.FC<TicketTransferProps> = ({ transfer }) => {
     const [reverting, setReverting] = useState(false);
     const revertTransferMutation = useRevertTransferMutation();
 
-    const user_uuid = client.user?.uuid;
+    const isSender = transfer.from_user.uuid === client.user?.uuid;
+    const otherUser = isSender ? transfer.to_user : transfer.from_user;
 
-    const cancelTime = transfer.expires - new Date().getTime() / 1000;
-
-    let timeLeftLabel = (
-        <span>
-            {cancelTime < 60 * 60
-                ? `${Math.floor(cancelTime / 60)} minutter`
-                : `${Math.floor(cancelTime / 60 / 60)} timer`}
-        </span>
-    );
-    if (transfer.reverted) {
-        timeLeftLabel = (
-            <span>
-                <b>Overføring er angret</b>
-            </span>
-        );
-    } else if (transfer.expired) {
-        timeLeftLabel = (
-            <span>
-                <b>Utgått - kan ikke angres</b>
-            </span>
-        );
-    }
+    const secondsLeft = Math.max(0, transfer.expires - new Date().getTime() / 1000);
+    const hoursLeft = Math.floor(secondsLeft / 60 / 60);
+    const timeLeft =
+        secondsLeft < 60 * 60
+            ? `${Math.floor(secondsLeft / 60)} min igjen`
+            : `${hoursLeft} ${hoursLeft === 1 ? 'time' : 'timer'} igjen`;
 
     const revert = async () => {
         setReverting(true);
-        await revertTransferMutation.mutateAsync(transfer.uuid);
+        try {
+            await revertTransferMutation.mutateAsync(transfer.uuid);
+        } catch {
+            // Error is reported by the mutation
+        }
+        setReverting(false);
     };
 
     return (
         <S.ContainerLinkOuter>
             <S.Container>
                 <S.TicketId>
-                    {transfer.ticket.ticket_type.seatable ? 'Billett ' : 'Kjøp '}&#x23;{transfer.ticket.ticket_id}
+                    {transfer.ticket.ticket_type.grants_admission ? 'Billett ' : 'Kjøp '}
+                    <code>&#x23;{transfer.ticket.ticket_id}</code>
                 </S.TicketId>
-                <S.TicketType>{transfer.ticket.ticket_type.name}</S.TicketType>
-                {transfer.ticket.seat ? (
-                    <S.SeatContainer>
-                        <S.Row>Rad {transfer.ticket.seat.row.row_number}</S.Row>
-                        <S.Seat>Sete {transfer.ticket.seat.number}</S.Seat>
-                    </S.SeatContainer>
-                ) : (
-                    <b>Ikke seatet</b>
-                )}
-                <S.TicketReceiver>
+                <S.WideOnly>
+                    <span>{transfer.ticket.ticket_type.name}</span>
+                </S.WideOnly>
+                <S.WideOnly>
+                    {transfer.ticket.seat ? (
+                        <>
+                            <S.Label>Plass</S.Label>
+                            <span>
+                                Rad {transfer.ticket.seat.row.row_number}, sete {transfer.ticket.seat.number}
+                            </span>
+                        </>
+                    ) : transfer.ticket.ticket_type.seatable ? (
+                        <b>Ikke seatet</b>
+                    ) : null}
+                </S.WideOnly>
+                <S.Cell>
+                    <S.Label>{isSender ? 'Til' : 'Fra'}</S.Label>
                     <span>
-                        Til:
-                        <br />
-                        {transfer.to_user.uuid == user_uuid ? (
-                            <b>Deg</b>
-                        ) : (
-                            `${transfer.to_user.firstname} ${transfer.to_user.lastname}`
-                        )}
+                        {otherUser.firstname} {otherUser.lastname}
                     </span>
-                </S.TicketReceiver>
-                <S.TicketGiver>
-                    <span>
-                        Fra:
-                        <br />
-                        {transfer.from_user.uuid == user_uuid ? (
-                            <b>Deg</b>
-                        ) : (
-                            `${transfer.from_user.firstname} ${transfer.from_user.lastname}`
-                        )}
-                    </span>
-                </S.TicketGiver>
-                <S.TicketRevertNotice>
-                    {transfer.reverted ? (
-                        <b>Overføring er angret</b>
-                    ) : (
-                        <span>
-                            Angrefrist:
-                            <br />
-                            {timeLeftLabel}
-                        </span>
-                    )}
-                </S.TicketRevertNotice>
-                {transfer.from_user.uuid === user_uuid && !transfer.expired && !transfer.reverted ? (
-                    reverting ? (
-                        <InlineSpinner />
-                    ) : (
-                        <NegativeButton onClick={revert}>Angre</NegativeButton>
-                    )
-                ) : null}
+                </S.Cell>
+                <S.Cell>
+                    <S.Label>Angrefrist</S.Label>
+                    <span>{transfer.reverted ? 'Angret' : transfer.expired ? 'Utløpt' : timeLeft}</span>
+                </S.Cell>
+                <div>
+                    {isSender && !transfer.expired && !transfer.reverted ? (
+                        <NegativeButton size="small" isLoading={reverting} onClick={revert}>
+                            Angre
+                        </NegativeButton>
+                    ) : null}
+                </div>
             </S.Container>
         </S.ContainerLinkOuter>
     );

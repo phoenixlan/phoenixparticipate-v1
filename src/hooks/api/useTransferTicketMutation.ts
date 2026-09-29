@@ -20,7 +20,9 @@ export const useTransferTicketMutation = () => {
         },
         onError: (e) => {
             console.log(e);
-            toast.error('Det skjede en feil');
+            // The API explains why, e.g. that the recipient has no account
+            const reason = e instanceof Error && e.message ? `: ${e.message}` : '';
+            toast.error(`Kunne ikke overføre billetten${reason}`);
         },
         onSettled: () => {
             queryClient.invalidateQueries([ticketTransfersDefaultQueryKey]);

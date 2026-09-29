@@ -10,7 +10,7 @@ import { AuthClient } from '../../authentication/client/AuthClient';
 
 export const membershipStatusDefaultQueryKey = 'getMembershipStatus';
 
-const _getMembershipStatus = (client: AuthClient): Promise<boolean> => {
+const _getMembershipStatus = (client: AuthClient, year?: number): Promise<boolean> => {
     try {
         const user = client.user;
 
@@ -19,7 +19,7 @@ const _getMembershipStatus = (client: AuthClient): Promise<boolean> => {
                 res(false);
             });
         }
-        return User.getUserMembershipStatus(user.uuid);
+        return User.getUserMembershipStatus(user.uuid, year);
     } catch (e) {
         if (e instanceof RefreshError) {
             client.onAuthRefreshError && client.onAuthRefreshError();
@@ -28,11 +28,12 @@ const _getMembershipStatus = (client: AuthClient): Promise<boolean> => {
     }
 };
 
-export const useMembershipStatus = (): QueryObserverResult<boolean> => {
+// Without a year, the API checks membership for the current year
+export const useMembershipStatus = (year?: number): QueryObserverResult<boolean> => {
     const { client } = useAuth();
 
     return useQuery<boolean>({
-        queryKey: [membershipStatusDefaultQueryKey],
-        queryFn: () => _getMembershipStatus(client),
+        queryKey: year === undefined ? [membershipStatusDefaultQueryKey] : [membershipStatusDefaultQueryKey, year],
+        queryFn: () => _getMembershipStatus(client, year),
     });
 };

@@ -31,6 +31,8 @@ export interface MockApiState {
     ticketTransfers: Mocked<Array<Ticket.FullTicketTransfer>>;
     seatableTickets: Mocked<Array<Ticket.FullTicket>>;
     membershipStatus: Mocked<boolean>;
+    // Membership status when asked about a year other than the current one
+    otherYearMembershipStatus: Mocked<boolean>;
     membershipPersonalia: Mocked<User.MembershipPersonalia.MembershipPersonalia | null>;
     discordMapping: Mocked<User.DiscordMapping | null>;
     crews: Mocked<Array<Crew.BaseCrew>>;
