@@ -25,17 +25,18 @@ const VoucherLink = styled(NavLink)<NavLinkProps>`
     width: 100%;
 `;
 
-// Fixed columns so the rows line up, like the ticket list
+// Proportional columns so the rows line up, like the ticket list, while long text wraps
 const Voucher = styled.div<{ isLink?: boolean }>`
     display: grid;
-    grid-template-columns: 1fr 7rem 10rem 9rem;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 1.5fr) 9rem;
     align-items: center;
     gap: ${({ theme }) => theme.spacing.s};
     text-align: left;
+    overflow-wrap: anywhere;
     padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s};
 
     @media screen and (max-width: ${({ theme }) => theme.media.smallTablet}) {
-        grid-template-columns: 1fr 7rem 9rem;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) 9rem;
     }
 
     ${({ isLink, theme }) =>
@@ -49,8 +50,6 @@ const Voucher = styled.div<{ isLink?: boolean }>`
 `;
 
 const Cell = styled.div`
-    display: flex;
-    flex-direction: column;
     min-width: 0;
 `;
 
@@ -59,11 +58,6 @@ const WideOnlyCell = styled(Cell)`
     @media screen and (max-width: ${({ theme }) => theme.media.smallTablet}) {
         display: none;
     }
-`;
-
-const Label = styled.span`
-    font-size: ${({ theme }) => theme.fontSize.s};
-    color: ${({ theme }) => theme.colors.DarkGray};
 `;
 
 const Action = styled.div`
@@ -88,17 +82,10 @@ interface VoucherCellsProps {
 // The columns every voucher row has, before the action column
 const VoucherCells: React.FC<VoucherCellsProps> = ({ voucher, lastUseLabel }) => (
     <>
-        <Cell>
-            <Label>Gir deg en</Label>
-            <span>{voucher.ticket_type.name}</span>
-        </Cell>
-        <Cell>
-            <Label>Mottatt</Label>
-            <span>{formatDate(voucher.created)}</span>
-        </Cell>
+        <Cell>{voucher.ticket_type.name}</Cell>
+        <Cell>Mottatt {formatDate(voucher.created)}</Cell>
         <WideOnlyCell>
-            <Label>{lastUseLabel}</Label>
-            <span>{voucher.last_use_event.name}</span>
+            {lastUseLabel} {voucher.last_use_event.name}
         </WideOnlyCell>
     </>
 );

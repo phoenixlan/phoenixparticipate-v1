@@ -38,10 +38,6 @@ const Action = styled.div`
     }
 `;
 
-const MutedText = styled.p`
-    color: ${({ theme }) => theme.colors.DarkGray};
-`;
-
 const Buttons = styled.div`
     display: flex;
     flex-wrap: wrap;
@@ -175,9 +171,7 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
                         <p>
                             <b>Seater</b>
                         </p>
-                        <MutedText>
-                            {hasOtherSeater ? `${ticket.seater?.firstname} ${ticket.seater?.lastname}` : 'Deg'}
-                        </MutedText>
+                        <p>{hasOtherSeater ? `${ticket.seater?.firstname} ${ticket.seater?.lastname}` : 'Deg'}</p>
                     </div>
                     <Buttons>
                         {hasOtherSeater && (
@@ -197,7 +191,7 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
                         <p>
                             <b>Overfør billett</b>
                         </p>
-                        <MutedText>Gi billetten til en annen bruker</MutedText>
+                        <p>Gi billetten til en annen bruker</p>
                     </div>
                     <Buttons>
                         <NegativeButton size="small" onClick={() => setState(ModificationState.TRANSFER)}>

@@ -6,17 +6,18 @@ import { NegativeButton } from '../../../sharedComponents/forms/Button';
 import { useRevertTransferMutation } from '../../../hooks/api/useRevertTransferMutation';
 
 const S = {
-    // Same kind of fixed columns as TicketEntry, so rows line up
+    // Same kind of proportional columns as TicketEntry, so rows line up and long text wraps
     Container: styled.div`
         display: grid;
-        grid-template-columns: 8rem 1fr 7rem 9rem 8rem 7rem;
+        grid-template-columns: 8rem minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1.5fr) 7rem;
         align-items: center;
         gap: ${({ theme }) => theme.spacing.s};
         text-align: left;
+        overflow-wrap: anywhere;
         padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s};
 
         @media screen and (max-width: ${({ theme }) => theme.media.tablet}) {
-            grid-template-columns: 7rem 1fr 1fr 7rem;
+            grid-template-columns: 7rem minmax(0, 1fr) minmax(0, 1fr) 7rem;
         }
     `,
     TicketId: styled.span`
@@ -24,23 +25,15 @@ const S = {
         white-space: nowrap;
     `,
     Cell: styled.div`
-        display: flex;
-        flex-direction: column;
         min-width: 0;
     `,
     // Hidden on smaller screens, where there is no room for them
     WideOnly: styled.div`
-        display: flex;
-        flex-direction: column;
         min-width: 0;
 
         @media screen and (max-width: ${({ theme }) => theme.media.tablet}) {
             display: none;
         }
-    `,
-    Label: styled.span`
-        font-size: ${({ theme }) => theme.fontSize.s};
-        color: ${({ theme }) => theme.colors.DarkGray};
     `,
     ContainerLinkOuter: styled.div`
         width: 100%;
@@ -65,8 +58,8 @@ export const TicketTransfer: React.FC<TicketTransferProps> = ({ transfer }) => {
     const hoursLeft = Math.floor(secondsLeft / 60 / 60);
     const timeLeft =
         secondsLeft < 60 * 60
-            ? `${Math.floor(secondsLeft / 60)} min igjen`
-            : `${hoursLeft} ${hoursLeft === 1 ? 'time' : 'timer'} igjen`;
+            ? `Kan angres i ${Math.floor(secondsLeft / 60)} min`
+            : `Kan angres i ${hoursLeft} ${hoursLeft === 1 ? 'time' : 'timer'}`;
 
     const revert = async () => {
         setReverting(true);
@@ -85,30 +78,21 @@ export const TicketTransfer: React.FC<TicketTransferProps> = ({ transfer }) => {
                     {transfer.ticket.ticket_type.grants_admission ? 'Billett ' : 'Kjøp '}
                     <code>&#x23;{transfer.ticket.ticket_id}</code>
                 </S.TicketId>
-                <S.WideOnly>
-                    <span>{transfer.ticket.ticket_type.name}</span>
-                </S.WideOnly>
+                <S.WideOnly>{transfer.ticket.ticket_type.name}</S.WideOnly>
                 <S.WideOnly>
                     {transfer.ticket.seat ? (
-                        <>
-                            <S.Label>Plass</S.Label>
-                            <span>
-                                Rad {transfer.ticket.seat.row.row_number}, sete {transfer.ticket.seat.number}
-                            </span>
-                        </>
+                        <span>
+                            Rad {transfer.ticket.seat.row.row_number}, sete {transfer.ticket.seat.number}
+                        </span>
                     ) : transfer.ticket.ticket_type.seatable ? (
                         <b>Ikke seatet</b>
                     ) : null}
                 </S.WideOnly>
                 <S.Cell>
-                    <S.Label>{isSender ? 'Til' : 'Fra'}</S.Label>
-                    <span>
-                        {otherUser.firstname} {otherUser.lastname}
-                    </span>
+                    {isSender ? 'Til' : 'Fra'} {otherUser.firstname} {otherUser.lastname}
                 </S.Cell>
                 <S.Cell>
-                    <S.Label>Angrefrist</S.Label>
-                    <span>{transfer.reverted ? 'Angret' : transfer.expired ? 'Utløpt' : timeLeft}</span>
+                    {transfer.reverted ? 'Angret' : transfer.expired ? 'Angrefrist utløpt' : timeLeft}
                 </S.Cell>
                 <div>
                     {isSender && !transfer.expired && !transfer.reverted ? (

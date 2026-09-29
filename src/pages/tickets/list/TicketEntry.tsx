@@ -12,19 +12,20 @@ interface TicketEntryProps {
 }
 
 const S = {
-    // Fixed columns so the seat and seater line up between rows
+    // Proportional columns so the seat and seater line up between rows, while long text wraps instead of overflowing
     Container: styled.div<{ hasSeatmap: boolean }>`
         display: grid;
         grid-template-columns: ${({ hasSeatmap }) =>
-            hasSeatmap ? '8rem 1fr 7rem 9rem 1.5rem' : '8rem 1fr 1.5rem'};
+            hasSeatmap ? '8rem minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.5fr) 1.5rem' : '8rem minmax(0, 1fr) 1.5rem'};
         align-items: center;
         gap: ${({ theme }) => theme.spacing.s};
         text-align: left;
+        overflow-wrap: anywhere;
         padding: ${({ theme }) => theme.spacing.m} ${({ theme }) => theme.spacing.s};
 
         @media screen and (max-width: ${({ theme }) => theme.media.smallTablet}) {
             grid-template-columns: ${({ hasSeatmap }) =>
-                hasSeatmap ? '8rem 1fr 6rem 1.5rem' : '8rem 1fr 1.5rem'};
+                hasSeatmap ? '8rem minmax(0, 2fr) minmax(0, 1fr) 1.5rem' : '8rem minmax(0, 1fr) 1.5rem'};
         }
 
         :hover {
@@ -36,23 +37,15 @@ const S = {
         white-space: nowrap;
     `,
     Cell: styled.div`
-        display: flex;
-        flex-direction: column;
         min-width: 0;
     `,
     // Hidden on phones, where there is no room for it
     SeaterCell: styled.div`
-        display: flex;
-        flex-direction: column;
         min-width: 0;
 
         @media screen and (max-width: ${({ theme }) => theme.media.smallTablet}) {
             display: none;
         }
-    `,
-    Label: styled.span`
-        font-size: ${({ theme }) => theme.fontSize.s};
-        color: ${({ theme }) => theme.colors.DarkGray};
     `,
     NoSeat: styled.span`
         font-style: italic;
@@ -87,12 +80,9 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
                     {hasSeatmap && (
                         <S.Cell>
                             {ticket.seat ? (
-                                <>
-                                    <S.Label>Plass</S.Label>
-                                    <span>
-                                        Rad {ticket.seat.row.row_number}, sete {ticket.seat.number}
-                                    </span>
-                                </>
+                                <span>
+                                    Rad {ticket.seat.row.row_number}, sete {ticket.seat.number}
+                                </span>
                             ) : ticket.ticket_type.seatable ? (
                                 <b>Ikke seatet</b>
                             ) : ticket.ticket_type.grants_admission ? (
@@ -105,14 +95,12 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
                     {hasSeatmap && (
                         <S.SeaterCell>
                             {ticket.ticket_type.seatable && (
-                                <>
-                                    <S.Label>Seatet av</S.Label>
-                                    <span>
-                                        {ticket.seater && ticket.seater.uuid !== client.user!.uuid
-                                            ? `${ticket.seater.firstname} ${ticket.seater.lastname}`
-                                            : 'Deg'}
-                                    </span>
-                                </>
+                                <span>
+                                    Seatet av{' '}
+                                    {ticket.seater && ticket.seater.uuid !== client.user!.uuid
+                                        ? `${ticket.seater.firstname} ${ticket.seater.lastname}`
+                                        : 'deg'}
+                                </span>
                             )}
                         </S.SeaterCell>
                     )}
