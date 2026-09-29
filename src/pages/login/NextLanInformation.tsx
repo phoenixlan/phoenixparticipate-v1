@@ -61,10 +61,12 @@ export const NextLanInformation: React.FC = () => {
         isLoadingError: isTicketTypesLoadingError,
     } = useCurrentEventTicketTypes();
 
-    const typesSorted = (ticketTypes ?? []).filter((type) => type.grants_admission).sort((a, b) => a.price - b.price);
-    console.log(typesSorted);
+    // Free tickets (crew, vouchers and such) aren't what a participant pays
+    const typesSorted = (ticketTypes ?? [])
+        .filter((type) => type.grants_admission && type.price > 0)
+        .sort((a, b) => a.price - b.price);
 
-    const cheapestPrice = typesSorted.length == 0 ? 0 : typesSorted[0].price;
+    const cheapestPrice = typesSorted.length == 0 ? null : typesSorted[0].price;
 
     const isLoading = isEventLoading || isTicketTypesLoading;
     const isLoadingError = isEventLoadingError || isTicketTypesLoadingError;
@@ -79,6 +81,12 @@ export const NextLanInformation: React.FC = () => {
         const newDate2 = new Date(date2);
         return `${newDate1.toLocaleString('no-NB', { day: '2-digit' })} - 
         ${newDate2.toLocaleString('no-NB', { month: 'long', day: '2-digit' })}`;
+    };
+
+    // Until the event is announced we only reveal roughly when it is
+    const toHalfYearString = (date: number) => {
+        const newDate = new Date(date);
+        return `${newDate.getMonth() < 6 ? 'Første' : 'Andre'} halvdel av ${newDate.getFullYear()}`;
     };
 
     const toDateString = (date: number) => {
@@ -99,15 +107,27 @@ export const NextLanInformation: React.FC = () => {
             ) : (
                 <>
                     <h2>Neste arrangement er:</h2>
-                    <p>
-                        {event?.start_time &&
-                            event?.end_time &&
-                            toDayRangeString(event.start_time * 1000, event.end_time * 1000)}
-                        , dørene åpner kl. {event?.start_time && toHourString(event.start_time * 1000)}
-                    </p>
-                    <p>Pris per billett: fra {cheapestPrice},-</p>
-                    <p>Billettsalget starter {event?.booking_time && toDateString(event.booking_time * 1000)}</p>
-                    {event?.seatmap_uuid ? (
+                    {event && !event.announced ? (
+                        <>
+                            <p>{toHalfYearString(event.start_time * 1000)}</p>
+                            <p>Følg oss på sosiale medier for å vite når en dato er satt</p>
+                        </>
+                    ) : (
+                        <p>
+                            {event?.start_time &&
+                                event?.end_time &&
+                                toDayRangeString(event.start_time * 1000, event.end_time * 1000)}
+                            , dørene åpner kl. {event?.start_time && toHourString(event.start_time * 1000)}
+                        </p>
+                    )}
+                    {cheapestPrice !== null && <p>Pris per billett: fra {cheapestPrice},-</p>}
+                    {event?.announced && (
+                        <p>
+                            Billettsalget {Date.now() >= event.booking_time * 1000 ? 'startet' : 'starter'}{' '}
+                            {event.booking_time && toDateString(event.booking_time * 1000)}
+                        </p>
+                    )}
+                    {event?.announced && event.seatmap_uuid ? (
                         <>
                             <p>
                                 Gruppe-seating starter{' '}

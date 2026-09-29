@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 
 import { ownedTicketsDefaultQueryKey } from './useOwnedTickets';
 import { ticketTransfersDefaultQueryKey } from './useTicketTransfers';
+import { ticketDefaultQueryKey } from './useTicket';
 
 interface TransferTicketMutationProps {
     ticket_id: number;
@@ -27,6 +28,7 @@ export const useTransferTicketMutation = () => {
         onSettled: () => {
             queryClient.invalidateQueries([ticketTransfersDefaultQueryKey]);
             queryClient.invalidateQueries([ownedTicketsDefaultQueryKey]);
+            queryClient.invalidateQueries([ticketDefaultQueryKey]);
         },
     });
 };

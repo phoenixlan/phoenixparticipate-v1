@@ -11,9 +11,14 @@ const Header = styled.h1<{ center: boolean }>`
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.3;
-    margin: 0 0 ${({ theme }) => theme.spacing.m};
+    margin: ${({ theme }) => theme.spacing.xl} 0 ${({ theme }) => theme.spacing.m};
     color: ${({ theme }) => theme.colors.Black};
     ${({ center }) => center && 'text-align: center;'};
+
+    /* The container's own padding is enough above a heading that starts it */
+    &:first-child {
+        margin-top: 0;
+    }
 
     @media screen and (min-width: ${({ theme }) => theme.media.smallTablet}) {
         font-size: ${({ theme }) => theme.fontSize.xxl};

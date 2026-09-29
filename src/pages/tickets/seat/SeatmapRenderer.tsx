@@ -11,6 +11,9 @@ import { InlineSpinner } from '../../../sharedComponents/LoadingSpinner';
 import { Header2 } from '../../../sharedComponents/Header2';
 import { useCurrentEvent } from '../../../hooks';
 import { toast } from 'react-toastify';
+import { useQueryClient } from 'react-query';
+import { ownedTicketsDefaultQueryKey } from '../../../hooks/api/useOwnedTickets';
+import { ticketDefaultQueryKey } from '../../../hooks/api/useTicket';
 
 interface SeatmapContainerProps {
     width: number;
@@ -93,6 +96,7 @@ interface SeatmapRendererProps {
 export const SeatmapRenderer: React.FC<SeatmapRendererProps> = ({ activeTicket, onSeatedTicket }) => {
     const { data: seatmap, isLoading: isLoadingSeatmap, refetch: refetchSeatmap } = useCurrentSeatmap();
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
+    const queryClient = useQueryClient();
 
     const onSeatSelected = async (seatUuid: string) => {
         if (activeTicket !== null) {
@@ -102,6 +106,9 @@ export const SeatmapRenderer: React.FC<SeatmapRendererProps> = ({ activeTicket, 
                 toast.error(e.toString());
             }
             refetchSeatmap();
+            // The ticket list and ticket page show the seat too
+            queryClient.invalidateQueries([ownedTicketsDefaultQueryKey]);
+            queryClient.invalidateQueries([ticketDefaultQueryKey]);
             onSeatedTicket(activeTicket);
         }
     };

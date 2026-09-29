@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 
 import { ticketTransfersDefaultQueryKey } from './useTicketTransfers';
 import { ownedTicketsDefaultQueryKey } from './useOwnedTickets';
+import { ticketDefaultQueryKey } from './useTicket';
 
 export const useRevertTransferMutation = () => {
     const queryClient = useQueryClient();
@@ -21,6 +22,7 @@ export const useRevertTransferMutation = () => {
             queryClient.invalidateQueries([ticketTransfersDefaultQueryKey]);
             // The ticket goes back to the sender
             queryClient.invalidateQueries([ownedTicketsDefaultQueryKey]);
+            queryClient.invalidateQueries([ticketDefaultQueryKey]);
         },
     });
 };

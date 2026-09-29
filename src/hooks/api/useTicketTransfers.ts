@@ -32,7 +32,7 @@ export const useTicketTransfers = (event_uuid?: string): QueryObserverResult<Arr
     const { client } = useAuth();
 
     return useQuery<Array<Ticket.FullTicketTransfer>>({
-        queryKey: [ticketTransfersDefaultQueryKey],
+        queryKey: [ticketTransfersDefaultQueryKey, event_uuid],
         queryFn: () => _getTicketTransfers(client, event_uuid??""),
         enabled: !!event_uuid
     });

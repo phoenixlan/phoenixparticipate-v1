@@ -8,7 +8,11 @@ import { poll } from '@phoenixlan/phoenix.js';
 import { LoadingSpinner } from '../../../../../sharedComponents/LoadingSpinner';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 import { useSiteConfig } from '../../../../../hooks/api/useSiteConfig';
+import { ownedTicketsDefaultQueryKey } from '../../../../../hooks/api/useOwnedTickets';
+import { ticketAvailabilityDefaultQueryKey } from '../../../../../hooks/api/useTicketAvailability';
+import { membershipStatusDefaultQueryKey } from '../../../../../hooks/api/useMembershipStatus';
 
 const Spinner = styled.div`
     position: relative;
@@ -47,6 +51,7 @@ enum ServerStatus {
 
 export const TicketMinting: React.FC<Props> = ({ uuid }) => {
     const history = useHistory();
+    const queryClient = useQueryClient();
     const { data: siteConfig } = useSiteConfig();
 
     const POLLING_INTERVAL = 5;
@@ -59,6 +64,11 @@ export const TicketMinting: React.FC<Props> = ({ uuid }) => {
 
     useEffect(() => {
         if (status === Status.success) {
+            // The new tickets must show up on the ticket list we redirect to
+            queryClient.invalidateQueries([ownedTicketsDefaultQueryKey]);
+            queryClient.invalidateQueries([ticketAvailabilityDefaultQueryKey]);
+            queryClient.invalidateQueries([membershipStatusDefaultQueryKey]);
+
             const timoutId = setTimeout(() => {
                 history.push('/');
             }, 5000);

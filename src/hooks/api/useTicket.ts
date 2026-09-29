@@ -25,7 +25,7 @@ export const useTicket = (ticket_id: number): QueryObserverResult<Ticket.FullTic
     const { client } = useAuth();
 
     return useQuery<Ticket.FullTicket>({
-        queryKey: [ticketDefaultQueryKey],
+        queryKey: [ticketDefaultQueryKey, ticket_id],
         queryFn: () => _getTicket(client, ticket_id),
     });
 };

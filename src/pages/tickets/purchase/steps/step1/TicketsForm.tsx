@@ -32,6 +32,92 @@ const Form = styled.form`
     align-items: center;
 `;
 
+const Countdown = {
+    Box: styled.div`
+        width: 100%;
+        margin-top: ${({ theme }) => theme.spacing.l};
+        text-align: center;
+    `,
+    Units: styled.div`
+        display: flex;
+        justify-content: center;
+        gap: ${({ theme }) => theme.spacing.l};
+        margin: ${({ theme }) => theme.spacing.m} 0;
+    `,
+    Unit: styled.div`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 3.5rem;
+    `,
+    Value: styled.span`
+        font-size: ${({ theme }) => theme.fontSize.xxl};
+        font-weight: bold;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+        color: ${({ theme }) => theme.colors.primary};
+    `,
+    Label: styled.span`
+        margin-top: ${({ theme }) => theme.spacing.xxs};
+    `,
+    Date: styled.p`
+        margin: 0;
+    `,
+};
+
+interface TicketSaleCountdownProps {
+    opensAt: number;
+    onOpen: () => void;
+}
+
+const TicketSaleCountdown: React.FC<TicketSaleCountdownProps> = ({ opensAt, onOpen }) => {
+    const [now, setNow] = useState(Date.now());
+
+    useEffect(() => {
+        const interval = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const secondsLeft = Math.max(Math.ceil((opensAt - now) / 1000), 0);
+
+    useEffect(() => {
+        if (secondsLeft === 0) {
+            onOpen();
+        }
+    }, [secondsLeft === 0]);
+
+    const days = Math.floor(secondsLeft / 86400);
+    const units = [
+        { value: days, label: days === 1 ? 'dag' : 'dager' },
+        { value: Math.floor(secondsLeft / 3600) % 24, label: 'timer' },
+        { value: Math.floor(secondsLeft / 60) % 60, label: 'min' },
+        { value: secondsLeft % 60, label: 'sek' },
+    ].filter((unit, i) => i > 0 || unit.value > 0);
+
+    return (
+        <Countdown.Box>
+            <Header2>Billettsalget åpner om</Header2>
+            <Countdown.Units>
+                {units.map((unit) => (
+                    <Countdown.Unit key={unit.label}>
+                        <Countdown.Value>{String(unit.value).padStart(2, '0')}</Countdown.Value>
+                        <Countdown.Label>{unit.label}</Countdown.Label>
+                    </Countdown.Unit>
+                ))}
+            </Countdown.Units>
+            <Countdown.Date>
+                {new Date(opensAt).toLocaleString('nb-NO', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })}
+            </Countdown.Date>
+        </Countdown.Box>
+    );
+};
+
 interface Props {
     ticketTypes: Array<TicketType.TicketType>;
     ticketVouchers: Array<TicketVoucher.BasicTicketVoucher>;
@@ -101,6 +187,8 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
     const { data: currentEvent, isLoading: isLoadingCurrentEvent } = useCurrentEvent();
     const { data: ticketAvailability, isLoading: isLoadingTicketAvailability } = useTicketAvailability();
     const [canBypassTicketSaleRestriction, setCanBypassTicketSaleRestriction] = useState(false);
+    // Set by the countdown so the form opens by itself when the sale starts
+    const [hasCountdownEnded, setHasCountdownEnded] = useState(false);
     const { data: siteConfig } = useSiteConfig();
     const features = siteConfig?.features ?? [];
 
@@ -203,15 +291,17 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
     );
     const isSoldOut = admissionAvailability.length > 0 && admissionAvailability.every((entry) => entry.remaining === 0);
 
-    const admissionTickets = ticketTypes.filter(
-        (type) => type.grants_admission && (type.requires_membership || type.grants_membership),
-    );
-    const noMembershipTickets = ticketTypes.filter(
-        (type) => type.grants_admission && !(type.requires_membership || type.grants_membership),
-    );
-    const otherTickets = ticketTypes.filter((type) => !type.grants_admission);
+    // Most expensive first within each category
+    const byPriceDescending = (a: TicketType.TicketType, b: TicketType.TicketType) => b.price - a.price;
+    const admissionTickets = ticketTypes
+        .filter((type) => type.grants_admission && (type.requires_membership || type.grants_membership))
+        .sort(byPriceDescending);
+    const noMembershipTickets = ticketTypes
+        .filter((type) => type.grants_admission && !(type.requires_membership || type.grants_membership))
+        .sort(byPriceDescending);
+    const otherTickets = ticketTypes.filter((type) => !type.grants_admission).sort(byPriceDescending);
 
-    const ticketSaleOpen = new Date().getTime() > bookingTime * 1000;
+    const ticketSaleOpen = hasCountdownEnded || new Date().getTime() > bookingTime * 1000;
 
     return (
         <Skeleton loading={isLoading}>
@@ -311,10 +401,10 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             </PositiveButton>
                         </>
                     ) : (
-                        <>
-                            <Header2>Billettsalget har ikke åpnet</Header2>
-                            <p>Billettsalget åpner {new Date(bookingTime * 1000).toLocaleString()}</p>
-                        </>
+                        <TicketSaleCountdown
+                            opensAt={bookingTime * 1000}
+                            onOpen={() => setHasCountdownEnded(true)}
+                        />
                     )}
                 </Form>
                 <UnlockTicketTypeForm />

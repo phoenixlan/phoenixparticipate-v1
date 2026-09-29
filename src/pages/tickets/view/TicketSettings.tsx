@@ -12,6 +12,7 @@ import { Header2 } from '../../../sharedComponents/Header2';
 import { ShadowBox } from '../../../sharedComponents/boxes/ShadowBox';
 import { useTransferTicketMutation } from '../../../hooks/api/useTransferTicketMutation';
 import { useSiteConfig } from '../../../hooks/api/useSiteConfig';
+import { useCurrentEvent } from '../../../hooks';
 import { useAuth } from '../../../authentication/useAuth';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -70,6 +71,7 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
     const history = useHistory();
     const { client } = useAuth();
     const { data: siteConfig } = useSiteConfig();
+    const { data: currentEvent } = useCurrentEvent();
     const [loading, setLoading] = useState(false);
 
     const [state, setState] = useState<ModificationState>(ModificationState.NONE);
@@ -82,8 +84,9 @@ export const TicketSettings: React.FC<TicketSettingsProps> = ({ ticket }) => {
     const transferTicketMutation = useTransferTicketMutation();
 
     const isOwner = ticket.owner.uuid === client.user?.uuid;
-    const canSetSeater = isOwner && ticket.ticket_type.seatable && (siteConfig?.features ?? []).includes('seatmap');
-    const canTransfer = isOwner && ticket.ticket_type.transferable && !ticket.checked_in;
+    const isCurrentEvent = !!currentEvent && ticket.event.uuid === currentEvent.uuid;
+    const canSetSeater = isOwner && isCurrentEvent && ticket.ticket_type.seatable && (siteConfig?.features ?? []).includes('seatmap');
+    const canTransfer = isOwner && isCurrentEvent && ticket.ticket_type.transferable && !ticket.checked_in;
     const hasOtherSeater = !!ticket.seater && ticket.seater.uuid !== ticket.owner.uuid;
 
     const updateSeater = async (seaterEmail: string | undefined) => {

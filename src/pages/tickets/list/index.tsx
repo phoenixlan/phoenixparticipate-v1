@@ -25,6 +25,8 @@ import { TicketTransfer } from './TicketTransfer';
 import { TicketEntry } from './TicketEntry';
 import { InfoBox } from '../../../sharedComponents/NoticeBox';
 import { useSiteConfig } from '../../../hooks/api/useSiteConfig';
+import { EVENT_BRAND } from '../../../event_brand';
+import { useCurrentEventBrand } from '../../../hooks/api/useCurrentEventBrand';
 
 const BuyTicketPrompt = styled.div`
     text-align: center;
@@ -50,6 +52,7 @@ export const Tickets: React.FC = () => {
     const { data: ticketVouchers, isLoading: isTicketVouchersLoading } = useOwnedTicketVouchers();
     const { data: ticketTransfers, isLoading: isLoadingTicketTransfers } = useTicketTransfers(currentEvent?.uuid);
     const { data: siteConfig } = useSiteConfig();
+    const { data: eventBrand } = useCurrentEventBrand();
     const features = siteConfig?.features ?? [];
     const siteName = siteConfig?.name;
 
@@ -60,10 +63,13 @@ export const Tickets: React.FC = () => {
         history.push('/buy');
     };
 
-    const currentTickets = (ownedTickets ?? [])
+    // Tickets for other event brands belong on those brands' sites
+    const brandTickets = (ownedTickets ?? []).filter((ticket) => ticket.event.event_brand_uuid === EVENT_BRAND);
+
+    const currentTickets = brandTickets
         .filter((ticket: Ticket.FullTicket) => ticket.event.uuid === (currentEvent?.uuid ?? false))
         .sort((a, b) => a.ticket_id - b.ticket_id);
-    const oldTickets = (ownedTickets ?? [])
+    const oldTickets = brandTickets
         .filter((ticket: Ticket.FullTicket) => ticket.event.uuid !== (currentEvent?.uuid ?? false))
         .sort((a, b) => a.ticket_id - b.ticket_id);
 
@@ -169,7 +175,7 @@ export const Tickets: React.FC = () => {
                 </>)}
                 {oldTickets.length > 0 ? (
                     <>
-                        <Header1>Tidligere kjøp</Header1>
+                        <Header1>Tidligere kjøp{eventBrand ? ` for ${eventBrand.name}` : ''}</Header1>
                         <TicketEntryContainer>
                             {oldTickets.map((ticket) => (
                                 <TicketEntry key={ticket.ticket_id} ticket={ticket} />

@@ -33,7 +33,6 @@ const S = {
         }
     `,
     TicketId: styled.span`
-        text-align: center;
         white-space: nowrap;
     `,
     Cell: styled.div`
@@ -54,6 +53,9 @@ const S = {
     Label: styled.span`
         font-size: ${({ theme }) => theme.fontSize.s};
         color: ${({ theme }) => theme.colors.DarkGray};
+    `,
+    NoSeat: styled.span`
+        font-style: italic;
     `,
     ArrowRightSquare: styled(ArrowRightSquare)`
         height: 1.5em;
@@ -94,9 +96,9 @@ export const TicketEntry: React.FC<TicketEntryProps> = ({ ticket, showEvent }) =
                             ) : ticket.ticket_type.seatable ? (
                                 <b>Ikke seatet</b>
                             ) : ticket.ticket_type.grants_admission ? (
-                                <S.Label>Ingen sitteplass</S.Label>
+                                <S.NoSeat>Ingen sitteplass</S.NoSeat>
                             ) : (
-                                <S.Label>Gir ikke inngang</S.Label>
+                                <S.NoSeat>Gir ikke inngang</S.NoSeat>
                             )}
                         </S.Cell>
                     )}

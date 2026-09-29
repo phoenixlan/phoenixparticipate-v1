@@ -3,7 +3,7 @@ import { Avatar, RefreshError } from '@phoenixlan/phoenix.js';
 import { useAuth } from '../../authentication/useAuth';
 import { AuthClient } from '../../authentication/client/AuthClient';
 
-export const avatarDefaultQueryKey = 'getCrews';
+export const avatarDefaultQueryKey = 'getAvatar';
 
 const _getAvatar = (client: AuthClient, uuid?: string): Promise<Avatar.Avatar | undefined> => {
     try {

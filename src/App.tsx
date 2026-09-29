@@ -16,7 +16,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { InstallAppBanner } from './sharedComponents/InstallAppBanner';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 60*1000 // 1 minute
+        }
+    }
+});
 
 export const App: React.FC = () => {
     return (

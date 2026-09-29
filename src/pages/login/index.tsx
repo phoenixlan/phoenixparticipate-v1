@@ -24,7 +24,9 @@ const StyledLogoContainer = styled.div`
 
 export const Login: React.FC = () => {
     const { data: siteConfig } = useSiteConfig();
-    const logoUrl = siteConfig?.logo ? `${process.env.BASE_URL}/${siteConfig.logo}` : null;
+    const logoUrl = siteConfig?.logo
+        ? `${process.env.BASE_URL?.replace(/\/+$/, '')}/${siteConfig.logo.replace(/^\/+/, '')}`
+        : null;
 
     return (
         <CenterBox centerVertically={true}>

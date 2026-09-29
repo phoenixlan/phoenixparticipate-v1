@@ -63,7 +63,9 @@ const LogoSkeleton = styled.div`
 
 export const Header: React.FC<Props> = ({ onClick }) => {
     const { data: siteConfig, isLoading } = useSiteConfig();
-    const logoUrl = siteConfig?.logo ? `${process.env.BASE_URL}/${siteConfig.logo}` : null;
+    const logoUrl = siteConfig?.logo
+        ? `${process.env.BASE_URL?.replace(/\/+$/, '')}/${siteConfig.logo.replace(/^\/+/, '')}`
+        : null;
 
     return (
         <Container>

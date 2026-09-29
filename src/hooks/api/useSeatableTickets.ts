@@ -34,7 +34,7 @@ export const useSeatableTickets = (
     const { client } = useAuth();
 
     return useQuery<Array<Ticket.FullTicket>>({
-        queryKey: [seatableTicketsDefaultQueryKey],
+        queryKey: [seatableTicketsDefaultQueryKey, event_uuid],
         queryFn: () => _getSeatableTickets(client, event_uuid as string | undefined), // enabled filters away null
         enabled: event_uuid !== null, // null means not available yet
     });
