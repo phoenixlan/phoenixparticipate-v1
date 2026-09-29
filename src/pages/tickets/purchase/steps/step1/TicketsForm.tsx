@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import styled from 'styled-components';
-import { TicketAvailability, TicketType, TicketVoucher, User } from '@phoenixlan/phoenix.js';
+import { Roles, TicketAvailability, TicketType, TicketVoucher, User } from '@phoenixlan/phoenix.js';
 import { PositiveButton } from '../../../../../sharedComponents/forms/Button';
 import { ChosenTicketType } from '../../utils/types';
 import { ErrorMessage } from '../../../../../sharedComponents/forms/ErrorMessage';
@@ -24,6 +24,7 @@ import { useMembershipStatus } from '../../../../../hooks/api/useMembershipStatu
 import { InfoBox, WarningBox } from '../../../../../sharedComponents/NoticeBox';
 import { useSiteConfig } from '../../../../../hooks/api/useSiteConfig';
 import { useTicketAvailability } from '../../../../../hooks/api/useTicketAvailability';
+import { EVENT_BRAND } from '../../../../../event_brand';
 
 const Form = styled.form`
     display: flex;
@@ -201,7 +202,10 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
             const token = (await Promise.resolve(
                 auth.client.parsedToken ? auth.client.parsedToken() : { placeholder: true },
             )) as User.Oauth.JWTPayload;
-            if (token.roles.indexOf('ticket_bypass_ticketsale_start_restriction') !== -1) {
+            if (
+                Roles.hasGlobalRole(token, Roles.TICKET_BYPASS_TICKETSALE_START_RESTRICTION) ||
+                Roles.hasBrandRole(token, EVENT_BRAND, Roles.TICKET_BYPASS_TICKETSALE_START_RESTRICTION)
+            ) {
                 setCanBypassTicketSaleRestriction(true);
             }
         };

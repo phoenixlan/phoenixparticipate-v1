@@ -7,6 +7,7 @@ import React from 'react';
 import { Header2 } from '../../../sharedComponents/Header2';
 import styled from 'styled-components';
 import { useSiteConfig } from '../../../hooks/api/useSiteConfig';
+import { useCurrentEventBrand } from '../../../hooks/api/useCurrentEventBrand';
 import { TextSkeleton } from '../../../sharedComponents/TextSkeleton';
 import { Ticket } from '@styled-icons/entypo/Ticket';
 import { Checklist } from '@styled-icons/octicons/Checklist';
@@ -101,7 +102,8 @@ const StyledCheckAll = styled(CheckAll)`
 
 export const Tutorial: React.FC = () => {
     const { data: siteConfig } = useSiteConfig();
-    const name = siteConfig?.name;
+    const { data: eventBrand } = useCurrentEventBrand();
+    const name = eventBrand?.name;
     const features = siteConfig?.features ?? [];
     return (
         <Container>
