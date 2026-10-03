@@ -197,7 +197,14 @@ export const Form: React.FC = () => {
                 if (!storeSession) {
                     return <SkeletonPlaceholder />;
                 }
-                return <PaymentMethods isFree={storeSession.total === 0} onClick={setPaymentMethod} />;
+                return (
+                    <PaymentMethods
+                        isFree={storeSession.total === 0}
+                        chosenTickets={chosenTickets}
+                        ticketTypes={ticketTypes}
+                        onClick={setPaymentMethod}
+                    />
+                );
             case Step.Confirmation:
                 if (!paymentInfo) {
                     return <SkeletonPlaceholder />;

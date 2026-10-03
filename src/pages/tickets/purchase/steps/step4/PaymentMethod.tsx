@@ -31,8 +31,17 @@ const Name = styled.span`
     margin-left: ${({ theme }) => theme.spacing.m};
 `;
 
+// Fixed width so the names line up no matter how wide each logo is
 const LogoContainer = styled.div`
     height: 40px;
+    width: 64px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+        max-width: 100%;
+    }
 `;
 
 interface Props {

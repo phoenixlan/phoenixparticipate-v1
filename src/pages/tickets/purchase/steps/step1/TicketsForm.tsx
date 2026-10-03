@@ -128,9 +128,8 @@ interface Props {
 // Hard limit on how many tickets can be bought in one purchase, regardless of availability
 const MAX_TICKETS_PER_PURCHASE = 10;
 
-// max is how many tickets of the type the cart may contain, remaining is how many more can be added.
-// Both are null if nothing limits the ticket type
-type CartAvailability = { [ticketTypeUuid: string]: { max: number | null; remaining: number | null } };
+// How many tickets of each type the cart may contain. null if nothing limits the ticket type
+type CartAvailability = { [ticketTypeUuid: string]: { max: number | null } };
 
 // Form values can be strings, so they are normalized to numbers
 const toAmount = (value: unknown): number => {
@@ -175,10 +174,8 @@ const applyCartToAvailability = (
             limits.push(remaining - usedByOthers);
         }
 
-        const max = limits.length > 0 ? Math.max(Math.min(...limits), 0) : null;
         result[uuid] = {
-            max,
-            remaining: max === null ? null : Math.max(max - toAmount(cart[uuid]), 0),
+            max: limits.length > 0 ? Math.max(Math.min(...limits), 0) : null,
         };
     }
     return result;
@@ -274,6 +271,8 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
         return amount;
     };
     const cartAvailability = applyCartToAvailability(ticketAvailability, cart);
+    // What is actually left, shown to the user without the tickets they have picked taken out
+    const stockAvailability = applyCartToAvailability(ticketAvailability, {});
 
     const getTotalAmount = () => {
         let amount = 0;
@@ -344,14 +343,13 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             name={ticketType.name}
                             uuid={ticketType.uuid}
                             description={ticketType.description ?? undefined}
-                            amount={formMethods.watch(ticketType.uuid)}
                             price={ticketType.price}
                             isSeatable={ticketType.seatable}
                             grantsMembership={ticketType.grants_membership}
                             grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                             max={getMax(ticketType.uuid)}
-                            remaining={cartAvailability[ticketType.uuid]?.remaining ?? null}
+                            remaining={stockAvailability[ticketType.uuid]?.max ?? null}
                         />
                     ))}
                     {noMembershipTickets.length > 0 ? <Header2>Spesielle billetter</Header2> : null}
@@ -361,14 +359,13 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             name={ticketType.name}
                             uuid={ticketType.uuid}
                             description={ticketType.description ?? undefined}
-                            amount={formMethods.watch(ticketType.uuid)}
                             price={ticketType.price}
                             isSeatable={ticketType.seatable}
                             grantsMembership={ticketType.grants_membership}
                             grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                             max={getMax(ticketType.uuid)}
-                            remaining={cartAvailability[ticketType.uuid]?.remaining ?? null}
+                            remaining={stockAvailability[ticketType.uuid]?.max ?? null}
                         />
                     ))}
                     {otherTickets.length > 0 ? <Header2>Annet</Header2> : null}
@@ -378,14 +375,13 @@ export const TicketsForm: React.FC<Props> = ({ ticketTypes, ticketVouchers, onSu
                             name={ticketType.name}
                             uuid={ticketType.uuid}
                             description={ticketType.description ?? undefined}
-                            amount={formMethods.watch(ticketType.uuid)}
                             price={ticketType.price}
                             isSeatable={ticketType.seatable}
                             grantsMembership={ticketType.grants_membership}
                             grantsAdmission={ticketType.grants_admission}
                             enabled={ticketSaleOpen || canBypassTicketSaleRestriction}
                             max={getMax(ticketType.uuid)}
-                            remaining={cartAvailability[ticketType.uuid]?.remaining ?? null}
+                            remaining={stockAvailability[ticketType.uuid]?.max ?? null}
                         />
                     ))}
                     {ticketSaleOpen || canBypassTicketSaleRestriction ? (

@@ -12,19 +12,69 @@ import { TextSkeleton } from './TextSkeleton';
 
 const IosBanner = styled.div<{ isIpad: boolean }>`
     position: fixed;
-    ${({ isIpad }) => (isIpad ? 'top: ' : 'bottom: ')} 0px;
+    left: 0;
+    right: 0;
+    ${({ isIpad }) =>
+        isIpad ? 'top: env(safe-area-inset-top, 0px);' : 'bottom: env(safe-area-inset-bottom, 0px);'}
+    z-index: 1000;
     margin: ${({ theme }) => theme.spacing.xs};
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* The iPad share button sits in the top right corner, the iPhone one in the middle of the bottom bar */
+    ${({ isIpad }) => (isIpad ? 'align-items: flex-end;' : '')}
 `;
 
-const Container = styled.div`
-    padding: ${({ theme }) => theme.spacing.xxs};
-    border: 1px solid ${({ theme }) => theme.colors.DarkGray};
-    background-color: ${({ theme }) => theme.colors.White};
+const IosCard = styled.div`
+    position: relative;
+    /* Keeps the pointer's shadow from drawing over the card */
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: ${({ theme }) => theme.spacing.xs};
     width: 100%;
+    max-width: 24rem;
+    padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.xl}
+        ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.xs};
+    background-color: ${({ theme }) => theme.colors.White};
+    border-radius: ${({ theme }) => theme.borderRadius.l};
+    box-shadow: ${({ theme }) => theme.shadow.modal};
+    box-sizing: border-box;
+`;
+
+const AppIcon = styled.div`
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: ${({ theme }) => theme.borderRadius.m};
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.White};
+`;
+
+const IosText = styled.div`
+    line-height: 1.3;
+`;
+
+const IosTitle = styled.div`
+    font-weight: bold;
+`;
+
+const ShareIcon = styled(IosShare)`
+    color: ${({ theme }) => theme.colors.primary};
+    vertical-align: text-bottom;
+`;
+
+// Points at the share button in Safari
+const Pointer = styled.div<{ isIpad: boolean }>`
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: ${({ theme }) => theme.colors.White};
+    transform: rotate(45deg);
+    box-shadow: ${({ theme }) => theme.shadow.levelEffect};
+    ${({ isIpad }) => (isIpad ? 'margin: 0 4.5rem -0.375rem 0;' : 'margin: -0.375rem 0 0 0;')}
 `;
 
 const AndroidBanner = styled.div`
@@ -48,23 +98,38 @@ const AndroidContainer = styled.div`
     justify-content: space-evenly;
 `;
 
-const Arrow = styled.div<{ isPad: boolean }>`
-    width: 0;
-    height: 0;
-    ${({ isPad, theme }) =>
-        isPad
-            ? `
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
+const CloseButton = styled.button`
+    position: absolute;
+    top: ${({ theme }) => theme.spacing.xxs};
+    right: ${({ theme }) => theme.spacing.xxs};
+    width: 1.5rem;
+    height: 1.5rem;
+    border: none;
+    border-radius: 100%;
+    background-color: ${({ theme }) => theme.colors.LightGray};
+    cursor: pointer;
+    transition: background-color ${({ theme }) => theme.transition.default};
 
-    border-bottom: 20px solid ${theme.colors.DarkGray};
-  `
-            : `
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-  
-    border-top: 20px solid ${theme.colors.DarkGray};
-  `}
+    &:hover {
+        background-color: ${({ theme }) => theme.colors.Gray};
+    }
+
+    &::before,
+    &::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0.7rem;
+        height: 2px;
+        background-color: ${({ theme }) => theme.colors.Black};
+        content: '';
+    }
+    &::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+    &::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
 `;
 
 const Icon = styled.div`
@@ -187,16 +252,21 @@ export const InstallAppBanner: React.FC = () => {
                 <>
                     {showIosInstallMessage && (
                         <IosBanner isIpad={isIpad()}>
-                            {isIpad() && <Arrow isPad={isIpad()} />}
-                            <Container>
-                                <Icon onClick={onHideBannerClick} />
-                                <PlusSquareFill size="1rem" />{' '}
-                                <span>
-                                    Installer {name ?? <TextSkeleton />}-appen på iPhonen din: klikk{' '}
-                                    <IosShare size="1rem" /> og deretter &quot;Add to homescreen&quot;.
-                                </span>
-                            </Container>
-                            {!isIpad() && <Arrow isPad={isIpad()} />}
+                            {isIpad() && <Pointer isIpad={true} />}
+                            <IosCard>
+                                <CloseButton type="button" aria-label="Lukk" onClick={onHideBannerClick} />
+                                <AppIcon>
+                                    <PlusSquareFill size="1.1rem" />
+                                </AppIcon>
+                                <IosText>
+                                    <IosTitle>
+                                        Installer {name ?? <TextSkeleton />}-appen på {isIpad() ? 'iPaden' : 'iPhonen'}{' '}
+                                        din
+                                    </IosTitle>
+                                    Trykk på <ShareIcon size="1.1rem" /> og velg &quot;Legg til på Hjem-skjerm&quot;.
+                                </IosText>
+                            </IosCard>
+                            {!isIpad() && <Pointer isIpad={false} />}
                         </IosBanner>
                     )}
                     {installable && (

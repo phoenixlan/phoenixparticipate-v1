@@ -3,7 +3,7 @@
  * @project phoenixparticipate-v1
  * @author andreasjj
  */
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -55,6 +55,8 @@ const Button = styled.button`
     position: relative;
     border-radius: ${({ theme }) => theme.borderRadius.s};
     transition: background-color 150ms ease;
+    /* Quick taps shouldn't be treated as double tap to zoom on phones */
+    touch-action: manipulation;
 
     &:hover {
         background-color: ${({ theme }) => theme.colors.Gray};
@@ -92,51 +94,28 @@ interface _Props {
     max: number;
     tabindex: number;
     value: number | string;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (value: number) => void;
 }
 
 const _NumberInput: React.FC<_Props> = ({ min, max, tabindex, value, onChange }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const ref = useRef<HTMLInputElement>(null);
 
-    const setNativeValue = (element: HTMLInputElement, newValue: number) => {
-        const descriptor = Object.getOwnPropertyDescriptor(element, 'value');
-        const valueSetter = descriptor?.set;
-        const prototype = Object.getPrototypeOf(element);
-        const prototypeDescriptor = Object.getOwnPropertyDescriptor(prototype, 'value');
-        const prototypeValueSetter = prototypeDescriptor?.set;
-
-        if (valueSetter && prototypeValueSetter && valueSetter !== prototypeValueSetter) {
-            prototypeValueSetter.call(element, newValue);
-        } else if (valueSetter) {
-            valueSetter.call(element, newValue);
-        }
-    };
-
-    const createSyntheticEvent = (newValue: number) => {
-        if (ref && ref.current) {
-            setNativeValue(ref.current, newValue);
-            ref.current.dispatchEvent(new Event('input', { bubbles: true }));
-        }
+    const currentValue = () => {
+        const val = typeof value === 'string' ? parseInt(value) : value;
+        return isNaN(val) ? min : val;
     };
 
     const onPlusButtonClick = () => {
-        let val = value;
-        if (typeof val === 'string') {
-            val = parseInt(val);
-        }
+        const val = currentValue();
         if (val < max) {
-            createSyntheticEvent(val + 1);
+            onChange(val + 1);
         }
     };
 
     const onMinusButtonClick = () => {
-        let val = value;
-        if (typeof val === 'string') {
-            val = parseInt(val);
-        }
+        const val = currentValue();
         if (val > min) {
-            createSyntheticEvent(val - 1);
+            onChange(val - 1);
         }
     };
 
@@ -162,14 +141,12 @@ const _NumberInput: React.FC<_Props> = ({ min, max, tabindex, value, onChange })
             <Input
                 type="number"
                 readOnly
-                ref={ref}
                 min={min}
                 name="quantity"
                 value={value}
                 onFocus={focus}
                 onBlur={blur}
                 disabled={false}
-                onChange={onChange}
                 onKeyDown={onKeyDown}
                 tabIndex={-1}
             />

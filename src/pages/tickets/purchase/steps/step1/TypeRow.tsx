@@ -37,10 +37,19 @@ const Availability = styled.div`
 const TicketPresentation = styled.div`
     flex: 5;
     padding: ${({ theme }) => theme.spacing.xxs};
+
+    @media (max-width: ${({ theme }) => theme.media.smallTablet}) {
+        flex-basis: 100%;
+    }
 `;
 
 const Price = styled(Center)`
     flex: 1;
+
+    @media (max-width: ${({ theme }) => theme.media.smallTablet}) {
+        text-align: left;
+        padding: ${({ theme }) => theme.spacing.xxs};
+    }
 `;
 
 const FullPrice = styled.div`
@@ -57,6 +66,13 @@ const Row = styled.div`
     padding: ${({ theme }) => theme.spacing.m} 0 ${({ theme }) => theme.spacing.m} 0;
 `;
 
+// On mobile the price and ticket selector go on their own line under the ticket text
+const TicketRow = styled(Row)`
+    @media (max-width: ${({ theme }) => theme.media.smallTablet}) {
+        flex-wrap: wrap;
+    }
+`;
+
 const WarningSymbol = styled.span`
     color: orange;
     font-size: 1.5em;
@@ -64,7 +80,6 @@ const WarningSymbol = styled.span`
 `;
 
 interface Props {
-    amount: number;
     price: number;
     name: string;
     uuid: string;
@@ -74,7 +89,7 @@ interface Props {
     max: number;
     enabled: boolean;
     isSeatable: boolean;
-    // How many more tickets of this type can be added to the cart. null if unlimited
+    // How many tickets of this type are left, not counting the ones in the cart. null if unlimited
     remaining?: number | null;
 }
 
@@ -82,7 +97,6 @@ interface Props {
 const LOW_AVAILABILITY_THRESHOLD = 10;
 
 export const TypeRow: React.FC<Props> = ({
-    amount,
     price,
     name,
     uuid,
@@ -101,8 +115,7 @@ export const TypeRow: React.FC<Props> = ({
             return null;
         }
         if (remaining === 0) {
-            // Having picked every remaining ticket isn't the same as the ticket type being sold out
-            return Number(amount) > 0 ? 'Ingen flere igjen' : 'Utsolgt';
+            return 'Utsolgt';
         }
         return `Kun ${remaining} igjen`;
     };
@@ -110,7 +123,7 @@ export const TypeRow: React.FC<Props> = ({
 
     return (
         <Container>
-            <Row>
+            <TicketRow>
                 <TicketPresentation>
                     <Name>
                         {membershipStatus && grantsMembership ? <WarningSymbol>⚠</WarningSymbol> : null}
@@ -125,7 +138,7 @@ export const TypeRow: React.FC<Props> = ({
                         <NumberInput name={uuid} max={max} />
                     </>
                 ) : null}
-            </Row>
+            </TicketRow>
             {membershipStatus && grantsMembership ? (
                 <Row>
                     {grantsAdmission ? (
